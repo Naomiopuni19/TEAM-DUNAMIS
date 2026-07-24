@@ -24,13 +24,24 @@ export function Header({
 }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [visible, setVisible] = useState(true)
-  const [atTop, setAtTop] = useState(() => window.scrollY < 16)
+  const [overHero, setOverHero] = useState(isHome)
   const lastScrollPosition = useRef(window.scrollY)
 
   useEffect(() => {
+    const updateHeroState = () => {
+      if (!isHome) {
+        setOverHero(false)
+        return
+      }
+
+      const hero = document.querySelector<HTMLElement>('[data-home-hero]')
+      const headerHeight = window.innerWidth >= 640 ? 96 : 80
+      setOverHero(Boolean(hero && hero.getBoundingClientRect().bottom > headerHeight))
+    }
+
     const handleScroll = () => {
       const currentPosition = window.scrollY
-      setAtTop(currentPosition < 16)
+      updateHeroState()
       const scrollDelta = currentPosition - lastScrollPosition.current
 
       if (Math.abs(scrollDelta) < 4) return
@@ -49,11 +60,16 @@ export function Header({
       lastScrollPosition.current = currentPosition
     }
 
+    updateHeroState()
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [menuOpen])
+    window.addEventListener('resize', updateHeroState)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', updateHeroState)
+    }
+  }, [isHome, menuOpen])
 
-  const blendsWithHero = isHome && atTop && !menuOpen
+  const blendsWithHero = isHome && overHero && !menuOpen
 
   return (
     <header

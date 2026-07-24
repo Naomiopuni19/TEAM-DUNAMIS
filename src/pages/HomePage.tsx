@@ -32,7 +32,10 @@ const categories = [
 export function HomePage({ onAdd }: HomePageProps) {
   return (
     <>
-      <section className="relative isolate min-h-screen overflow-hidden bg-[#22171b] text-white">
+      <section
+        data-home-hero
+        className="relative isolate min-h-screen overflow-hidden bg-[#22171b] text-white"
+      >
         <img
           src={`${imageBase}/hero-home.jpg`}
           alt="Model wearing a long body-wave HD lace wig"
