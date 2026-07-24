@@ -1,121 +1,83 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useState } from 'react'
+import { AuthPanel } from './components/AuthPanel'
+import { CartDrawer } from './components/CartDrawer'
+import { Footer } from './components/Footer'
+import { Header } from './components/Header'
+import type { Product } from './data/catalog'
+import { AboutPage } from './pages/AboutPage'
+import { BookingPage } from './pages/BookingPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { HomePage } from './pages/HomePage'
+import { ServicesPage } from './pages/ServicesPage'
+import { ShopPage } from './pages/ShopPage'
+
+function currentRoute() {
+  const route = window.location.hash.replace(/^#\//, '').split('?')[0]
+  return route || 'home'
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [route, setRoute] = useState(currentRoute)
+  const [cart, setCart] = useState<Product[]>([])
+  const [cartOpen, setCartOpen] = useState(false)
+  const [authOpen, setAuthOpen] = useState(false)
+
+  useEffect(() => {
+    const syncRoute = () => {
+      setRoute(currentRoute())
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    window.addEventListener('hashchange', syncRoute)
+    return () => window.removeEventListener('hashchange', syncRoute)
+  }, [])
+
+  function addToCart(product: Product) {
+    setCart((items) => [...items, product])
+    setCartOpen(true)
+  }
+
+  let page
+  switch (route) {
+    case 'services':
+      page = <ServicesPage />
+      break
+    case 'shop':
+      page = <ShopPage onAdd={addToCart} />
+      break
+    case 'appointments':
+      page = <BookingPage />
+      break
+    case 'dashboard':
+      page = <DashboardPage />
+      break
+    case 'about':
+      page = <AboutPage />
+      break
+    default:
+      page = <HomePage onAdd={addToCart} />
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    <div className="min-h-screen bg-[#fffaf8] text-[#604c55]">
+      <Header
+        key={route}
+        cartCount={cart.length}
+        isHome={route === 'home'}
+        onOpenCart={() => setCartOpen(true)}
+        onOpenAccount={() => setAuthOpen(true)}
+      />
+      <div className={route === 'home' ? '' : 'pt-20 sm:pt-24'}>{page}</div>
+      <Footer />
+      <AuthPanel open={authOpen} onClose={() => setAuthOpen(false)} />
+      <CartDrawer
+        items={cart}
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        onRemove={(index) =>
+          setCart((items) => items.filter((_, itemIndex) => itemIndex !== index))
+        }
+      />
+    </div>
   )
 }
 
