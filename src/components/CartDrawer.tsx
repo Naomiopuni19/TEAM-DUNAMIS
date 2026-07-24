@@ -1,16 +1,77 @@
+import { useState } from 'react'
+import { useAppData } from '../context/appData'
 import type { Product } from '../data/catalog'
+import { productImage } from '../data/catalog'
+import { api } from '../lib/api'
 
 type CartDrawerProps = {
   items: Product[]
   open: boolean
   onClose: () => void
   onRemove: (index: number) => void
+  onRequireAuth: () => void
+  onOrderComplete: () => void
 }
 
-export function CartDrawer({ items, open, onClose, onRemove }: CartDrawerProps) {
+export function CartDrawer({
+  items,
+  open,
+  onClose,
+  onRemove,
+  onRequireAuth,
+  onOrderComplete,
+}: CartDrawerProps) {
+  const { token, user, refreshCatalog } = useAppData()
+  const [momoNumber, setMomoNumber] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState('')
+
   if (!open) return null
 
   const total = items.reduce((sum, item) => sum + item.price, 0)
+
+  async function checkout() {
+    if (!token) {
+      setMessage('Sign in or create an account to complete checkout.')
+      onRequireAuth()
+      return
+    }
+
+    setBusy(true)
+    setMessage('')
+    try {
+      const quantities = new Map<string, number>()
+      items.forEach((item) =>
+        quantities.set(item.id, (quantities.get(item.id) ?? 0) + 1),
+      )
+      const result = await api.createOrder(
+        token,
+        [...quantities].map(([productId, quantity]) => ({
+          productId,
+          quantity,
+        })),
+      )
+
+      if (momoNumber.trim()) {
+        const payment = await api.initiatePayment(token, {
+          type: 'order',
+          refId: result.order.id,
+          momoNumber: momoNumber.trim(),
+        })
+        setMessage(
+          `Order created. Mobile Money payment ${payment.paymentReference} is ${payment.status}.`,
+        )
+      } else {
+        setMessage('Your order was created and is awaiting payment.')
+      }
+      onOrderComplete()
+      await refreshCatalog()
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Checkout failed.')
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 bg-[#24131b]/55 backdrop-blur-sm">
@@ -24,7 +85,7 @@ export function CartDrawer({ items, open, onClose, onRemove }: CartDrawerProps) 
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#d92c83]">
-              Your selection
+              Your bag
             </p>
             <h2 className="mt-2 font-serif text-3xl text-[#3e2530]">Shopping bag</h2>
           </div>
@@ -42,13 +103,17 @@ export function CartDrawer({ items, open, onClose, onRemove }: CartDrawerProps) 
             <div className="rounded-2xl bg-[#f8e5ed] p-6 text-center">
               <p className="font-serif text-2xl text-[#3e2530]">Your bag is waiting.</p>
               <p className="mt-2 text-sm text-[#765c68]">
-                Explore the boutique and add something beautiful.
+                Browse the shop and add a product when you are ready.
               </p>
             </div>
           ) : (
             items.map((item, index) => (
               <article key={`${item.id}-${index}`} className="flex gap-4 border-b border-[#ecd8e1] pb-5">
-                <img src={item.image} alt="" className="h-24 w-20 rounded-xl object-cover" />
+                <img
+                  src={productImage(item)}
+                  alt=""
+                  className="h-24 w-20 rounded-xl object-cover"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="font-serif text-lg text-[#3e2530]">{item.name}</p>
                   <p className="mt-2 text-sm font-semibold text-[#b32269]">
@@ -72,13 +137,31 @@ export function CartDrawer({ items, open, onClose, onRemove }: CartDrawerProps) 
             <span>Total</span>
             <span>GH₵{total.toLocaleString()}</span>
           </div>
+          <label className="mt-4 block">
+            <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em] text-[#765b67]">
+              Mobile Money number (optional)
+            </span>
+            <input
+              type="tel"
+              value={momoNumber}
+              onChange={(event) => setMomoNumber(event.target.value)}
+              placeholder={user?.phone ?? '024 000 0000'}
+              className="h-12 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 text-sm outline-none focus:border-[#dc2d83]"
+            />
+          </label>
           <button
             type="button"
-            disabled={!items.length}
+            onClick={() => void checkout()}
+            disabled={!items.length || busy}
             className="mt-5 min-h-13 w-full rounded-full bg-[#d92c83] px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] text-white disabled:opacity-40"
           >
-            Continue to checkout
+            {busy ? 'Processing…' : 'Continue to checkout'}
           </button>
+          {message && (
+            <p className="mt-3 text-sm leading-6 text-[#74485a]" role="status">
+              {message}
+            </p>
+          )}
         </div>
       </aside>
     </div>

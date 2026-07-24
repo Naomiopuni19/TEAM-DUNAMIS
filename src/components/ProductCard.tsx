@@ -1,4 +1,4 @@
-import type { Product } from '../data/catalog'
+import { productImage, type Product } from '../data/catalog'
 
 type ProductCardProps = {
   product: Product
@@ -10,13 +10,13 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
     <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-[#efd7e1] bg-white shadow-[0_12px_35px_rgba(87,43,61,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(87,43,61,0.12)]">
       <div className="relative aspect-[4/5] overflow-hidden bg-[#f6edf0]">
         <img
-          src={product.image}
+          src={productImage(product)}
           alt={product.name}
           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
-        {product.badge && (
+        {!product.inStock && (
           <span className="absolute left-4 top-4 rounded-full bg-[#fff9f7]/95 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#b32269]">
-            {product.badge}
+            Out of stock
           </span>
         )}
       </div>
@@ -35,9 +35,10 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
           <button
             type="button"
             onClick={() => onAdd(product)}
-            className="rounded-full bg-[#dc2d83] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#b92068] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#dc2d83]"
+            disabled={!product.inStock}
+            className="rounded-full bg-[#dc2d83] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#b92068] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#dc2d83] disabled:cursor-not-allowed disabled:bg-[#c7aeb9]"
           >
-            Add to bag
+            {product.inStock ? 'Add to bag' : 'Unavailable'}
           </button>
         </div>
       </div>

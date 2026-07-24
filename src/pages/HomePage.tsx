@@ -1,5 +1,6 @@
 import { ProductCard } from '../components/ProductCard'
-import { imageBase, products, type Product } from '../data/catalog'
+import { useAppData } from '../context/appData'
+import { imageBase, type Product } from '../data/catalog'
 
 type HomePageProps = {
   onAdd: (product: Product) => void
@@ -30,6 +31,23 @@ const categories = [
 ]
 
 export function HomePage({ onAdd }: HomePageProps) {
+  const { products, services, catalogLoading, catalogError } = useAppData()
+  const serviceCategories = Array.from(
+    new Map(
+      services.map((service) => [
+        service.category.name,
+        {
+          ...service.category,
+          imageUrl: service.category.imageUrl || service.images[0] || '',
+        },
+      ]),
+    ).values(),
+  ).sort(
+    (first, second) =>
+      ['Braiding', 'Makeup', 'Nails', 'Lashes'].indexOf(first.name) -
+      ['Braiding', 'Makeup', 'Nails', 'Lashes'].indexOf(second.name),
+  )
+
   return (
     <>
       <section
@@ -76,7 +94,7 @@ export function HomePage({ onAdd }: HomePageProps) {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#d92c83]">
-              Curated for every ritual
+              Shop by category
             </p>
             <h2 className="mt-4 font-serif text-4xl leading-tight text-[#3e2530] sm:text-5xl">
               Hair that looks beautiful and feels like you.
@@ -138,38 +156,50 @@ export function HomePage({ onAdd }: HomePageProps) {
             </a>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {products.slice(0, 3).map((product) => (
-              <ProductCard key={product.id} product={product} onAdd={onAdd} />
-            ))}
+            {catalogLoading ? (
+              <p className="sm:col-span-2 lg:col-span-3">Loading client favourites…</p>
+            ) : catalogError ? (
+              <p className="sm:col-span-2 lg:col-span-3 text-[#8b435f]">
+                {catalogError}
+              </p>
+            ) : (
+              products
+                .slice(0, 3)
+                .map((product) => (
+                  <ProductCard key={product.id} product={product} onAdd={onAdd} />
+                ))
+            )}
           </div>
         </div>
       </section>
 
-      <section className="grid bg-[#fffaf8] lg:grid-cols-2">
+      <section className="grid bg-[#fffaf8] lg:grid-cols-[0.85fr_1.15fr]">
         <div className="flex items-center px-6 py-16 sm:px-10 sm:py-20 lg:px-12 lg:py-24 xl:px-24">
           <div className="max-w-xl">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#d92c83]">
               Kumasi salon
             </p>
             <h2 className="mt-4 font-serif text-4xl leading-tight text-[#3e2530] sm:text-5xl">
-              Artistry, care and enough time for every client.
+              Careful beauty services with enough time for every client.
             </h2>
             <p className="mt-6 text-base leading-8 text-[#745f68]">
-              From seamless frontal installs to restorative treatments, each
-              appointment begins with your hair, lifestyle and desired finish.
+              From braiding and makeup to nails and lashes, every appointment
+              begins with the look you want and the details that matter to you.
             </p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-3">
-              {[
-                ['Frontal install', '2h 30m'],
-                ['Wig revamp', '1h 30m'],
-                ['Wash & steam', '1h'],
-              ].map(([name, time]) => (
-                <div key={name} className="border-t border-[#e2b8ca] pt-4">
-                  <p className="font-serif text-lg text-[#3e2530]">{name}</p>
-                  <p className="mt-1 text-xs uppercase tracking-[0.12em] text-[#8f707d]">
-                    {time}
+            <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4">
+              {serviceCategories.map((category) => (
+                <a
+                  key={category.id}
+                  href={`#/services?section=${category.name.toLowerCase()}`}
+                  className="border-t border-[#e2b8ca] pt-4"
+                >
+                  <p className="font-serif text-lg text-[#3e2530]">
+                    {category.name}
                   </p>
-                </div>
+                  <p className="mt-1 text-xs uppercase tracking-[0.12em] text-[#8f707d]">
+                    Explore services
+                  </p>
+                </a>
               ))}
             </div>
             <a
@@ -180,17 +210,31 @@ export function HomePage({ onAdd }: HomePageProps) {
             </a>
           </div>
         </div>
-        <img
-          src={`${imageBase}/service-lace-install.jpg`}
-          alt="Stylist completing a lace installation"
-          className="h-full min-h-[520px] w-full object-cover"
-        />
+        <div className="grid min-h-[600px] grid-cols-2">
+          {serviceCategories.map((category) => (
+            <a
+              key={category.id}
+              href={`#/services?section=${category.name.toLowerCase()}`}
+              className="group relative min-h-[300px] overflow-hidden bg-[#4b2637]"
+            >
+              <img
+                src={category.imageUrl}
+                alt={`${category.name} service`}
+                className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#29151f]/80 via-transparent to-transparent" />
+              <p className="absolute inset-x-0 bottom-0 p-5 font-serif text-2xl text-white sm:p-7">
+                {category.name}
+              </p>
+            </a>
+          ))}
+        </div>
       </section>
 
       <section className="bg-[#4b2637] px-6 py-16 text-center text-white sm:px-10 sm:py-20 lg:py-24">
         <blockquote className="mx-auto max-w-4xl font-serif text-3xl leading-snug sm:text-4xl lg:text-5xl">
-          “Luxury is feeling understood—from your first consultation to the final
-          mirror moment.”
+          “Every appointment starts with listening to what you want and ends
+          with a style that feels right for you.”
         </blockquote>
         <p className="mt-7 text-xs font-bold uppercase tracking-[0.24em] text-[#f2a7c9]">
           Beryl Vance · Founder

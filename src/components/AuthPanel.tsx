@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { useAppData } from '../context/appData'
 
 type AuthPanelProps = {
   open: boolean
@@ -6,18 +7,35 @@ type AuthPanelProps = {
 }
 
 export function AuthPanel({ open, onClose }: AuthPanelProps) {
+  const { login, register } = useAppData()
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [message, setMessage] = useState('')
+  const [busy, setBusy] = useState(false)
 
   if (!open) return null
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setMessage(
-      mode === 'login'
-        ? 'Welcome back. Your client area is ready.'
-        : 'Your client profile has been created.',
-    )
+    setBusy(true)
+    setMessage('')
+    const form = new FormData(event.currentTarget)
+
+    try {
+      if (mode === 'login') {
+        await login(String(form.get('phone')), String(form.get('password')))
+      } else {
+        await register(
+          String(form.get('name')),
+          String(form.get('phone')),
+          String(form.get('password')),
+        )
+      }
+      onClose()
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Unable to sign in.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
@@ -40,7 +58,7 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
           Client account
         </p>
         <h2 id="auth-title" className="mt-3 font-serif text-4xl text-[#3e2530]">
-          {mode === 'login' ? 'Welcome back' : 'Join the ritual'}
+          {mode === 'login' ? 'Welcome back' : 'Create your account'}
         </h2>
         <p className="mt-3 text-sm leading-6 text-[#765c68]">
           {mode === 'login'
@@ -54,31 +72,60 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
               <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em]">
                 Full name
               </span>
-              <input required className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]" />
+              <input
+                required
+                name="name"
+                minLength={2}
+                autoComplete="name"
+                className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]"
+              />
             </label>
           )}
           <label className="block">
             <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em]">
-              Email
+              Phone number
             </span>
-            <input required type="email" className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]" />
+            <input
+              required
+              name="phone"
+              type="tel"
+              minLength={7}
+              maxLength={20}
+              autoComplete="tel"
+              className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]"
+            />
           </label>
           <label className="block">
             <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em]">
               Password
             </span>
-            <input required type="password" className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]" />
+            <input
+              required
+              name="password"
+              type="password"
+              minLength={6}
+              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+              className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]"
+            />
           </label>
           <button
             type="submit"
-            className="min-h-13 w-full rounded-full bg-[#d92c83] px-6 py-3 font-serif text-xl font-bold text-white transition hover:bg-[#b92068]"
+            disabled={busy}
+            className="min-h-13 w-full rounded-full bg-[#d92c83] px-6 py-3 font-serif text-xl font-bold text-white transition hover:bg-[#b92068] disabled:opacity-60"
           >
-            {mode === 'login' ? 'Login' : 'Create account'}
+            {busy
+              ? 'Please wait…'
+              : mode === 'login'
+                ? 'Login'
+                : 'Create account'}
           </button>
         </form>
 
         {message && (
-          <p className="mt-4 rounded-xl bg-white/50 px-4 py-3 text-sm text-[#6b4657]" role="status">
+          <p
+            className="mt-4 rounded-xl bg-white/50 px-4 py-3 text-sm text-[#8b3157]"
+            role="alert"
+          >
             {message}
           </p>
         )}
@@ -90,7 +137,9 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
           }}
           className="mt-5 text-sm font-semibold text-[#9f205f] underline underline-offset-4"
         >
-          {mode === 'login' ? 'Create a client account' : 'I already have an account'}
+          {mode === 'login'
+            ? 'Create a client account'
+            : 'I already have an account'}
         </button>
       </section>
     </div>

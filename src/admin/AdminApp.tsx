@@ -1,0 +1,33 @@
+import { AdminShell } from './components/AdminShell'
+import { currentAdminSection } from './adminNavigation'
+import { AnalyticsAdminPage } from './pages/AnalyticsAdminPage'
+import { AppointmentsAdminPage } from './pages/AppointmentsAdminPage'
+import { CustomersAdminPage } from './pages/CustomersAdminPage'
+import { OrdersAdminPage } from './pages/OrdersAdminPage'
+import { OverviewAdminPage } from './pages/OverviewAdminPage'
+import { PaymentsAdminPage } from './pages/PaymentsAdminPage'
+import { ProductsAdminPage } from './pages/ProductsAdminPage'
+import { ServicesAdminPage } from './pages/ServicesAdminPage'
+import { SettingsAdminPage } from './pages/SettingsAdminPage'
+
+const pages = {
+  overview: OverviewAdminPage,
+  appointments: AppointmentsAdminPage,
+  services: ServicesAdminPage,
+  products: ProductsAdminPage,
+  orders: OrdersAdminPage,
+  customers: CustomersAdminPage,
+  payments: PaymentsAdminPage,
+  analytics: AnalyticsAdminPage,
+  settings: SettingsAdminPage,
+}
+
+export function AdminApp() {
+  const section = currentAdminSection()
+  const Page = pages[section as keyof typeof pages] ?? OverviewAdminPage
+  return (
+    <AdminShell>
+      <Page />
+    </AdminShell>
+  )
+}

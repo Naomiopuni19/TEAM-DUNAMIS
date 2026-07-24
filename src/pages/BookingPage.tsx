@@ -1,30 +1,99 @@
 import { useMemo, useState } from 'react'
-import { services } from '../data/catalog'
+import { useAppData } from '../context/appData'
+import { formatDuration } from '../data/catalog'
+import { api, type Availability } from '../lib/api'
 
 const times = ['09:00 AM', '10:30 AM', '12:00 PM', '02:00 PM', '03:30 PM']
-const dates = [
-  ['Mon', '28'],
-  ['Tue', '29'],
-  ['Wed', '30'],
-  ['Thu', '31'],
-  ['Fri', '01'],
-]
 
-export function BookingPage() {
+type BookingPageProps = {
+  onRequireAuth: () => void
+}
+
+export function BookingPage({ onRequireAuth }: BookingPageProps) {
+  const { services, catalogLoading, catalogError, token, user } = useAppData()
   const serviceFromHash = new URLSearchParams(
     window.location.hash.split('?')[1],
   ).get('service')
   const [step, setStep] = useState(1)
-  const [selectedService, setSelectedService] = useState(
-    services.find((service) => service.id === serviceFromHash)?.id ?? '',
-  )
+  const [selectedService, setSelectedService] = useState(serviceFromHash ?? '')
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
+  const [availability, setAvailability] = useState<Availability | null>(null)
+  const [momoNumber, setMomoNumber] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const dates = useMemo(
+    () =>
+      Array.from({ length: 5 }, (_, index) => {
+        const date = new Date()
+        date.setDate(date.getDate() + index + 1)
+        return {
+          iso: date.toISOString().slice(0, 10),
+          day: date.toLocaleDateString('en-GB', { weekday: 'short' }),
+          date: date.toLocaleDateString('en-GB', { day: '2-digit' }),
+        }
+      }),
+    [],
+  )
 
   const activeService = useMemo(
     () => services.find((service) => service.id === selectedService),
-    [selectedService],
+    [selectedService, services],
   )
+
+  async function chooseDate(date: string) {
+    setSelectedDate(date)
+    setSelectedTime('')
+    setAvailability(null)
+    setMessage('')
+    if (!selectedService) return
+
+    try {
+      setAvailability(await api.availability(selectedService, date))
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : 'Unable to check availability.',
+      )
+    }
+  }
+
+  async function requestBooking() {
+    if (!token) {
+      setMessage('Sign in or create a client account to complete your booking.')
+      onRequireAuth()
+      return
+    }
+
+    setBusy(true)
+    setMessage('')
+    try {
+      const result = await api.createBooking(token, {
+        serviceId: selectedService,
+        date: selectedDate,
+        timeSlot: selectedTime,
+      })
+
+      if (momoNumber.trim()) {
+        const payment = await api.initiatePayment(token, {
+          type: 'booking',
+          refId: result.booking.id,
+          momoNumber: momoNumber.trim(),
+        })
+        setMessage(
+          `Booking requested. Mobile Money payment ${payment.paymentReference} is ${payment.status}.`,
+        )
+      } else {
+        setMessage('Your booking request was submitted successfully.')
+      }
+    } catch (error) {
+      setMessage(
+        error instanceof Error ? error.message : 'Unable to request this booking.',
+      )
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
     <main className="min-h-[760px] bg-[#f9e8ef] px-5 py-12 sm:px-10 sm:py-20 lg:px-12">
@@ -68,16 +137,27 @@ export function BookingPage() {
         <section className="mt-9 rounded-[1.75rem] border border-[#ebc8d7] bg-[#fffaf8] p-5 shadow-[0_20px_55px_rgba(80,34,54,0.08)] sm:mt-10 sm:rounded-[2rem] sm:p-10">
           {step === 1 && (
             <div>
-              <h2 className="font-serif text-3xl text-[#3e2530]">Select a service</h2>
+              <h2 className="font-serif text-3xl text-[#3e2530]">
+                Select a service
+              </h2>
               <p className="mt-2 text-sm text-[#745f68]">
-                Prices shown are starting prices and may vary after consultation.
+                Prices are supplied by the salon and shown as a range.
               </p>
+              {catalogLoading && <p className="mt-7">Loading services…</p>}
+              {catalogError && (
+                <p className="mt-7 text-[#8b435f]">{catalogError}</p>
+              )}
               <div className="mt-7 grid gap-3 md:grid-cols-2">
                 {services.map((service) => (
                   <button
                     key={service.id}
                     type="button"
-                    onClick={() => setSelectedService(service.id)}
+                    onClick={() => {
+                      setSelectedService(service.id)
+                      setSelectedDate('')
+                      setSelectedTime('')
+                      setAvailability(null)
+                    }}
                     className={`flex items-start justify-between gap-4 rounded-2xl border p-5 text-left transition ${
                       selectedService === service.id
                         ? 'border-[#dc2d83] bg-[#fbe0eb] shadow-sm'
@@ -89,11 +169,13 @@ export function BookingPage() {
                         {service.name}
                       </span>
                       <span className="mt-1 block text-xs text-[#8f707d]">
-                        {service.duration}
+                        {service.category.name} ·{' '}
+                        {formatDuration(service.durationMinutes)}
                       </span>
                     </span>
                     <span className="whitespace-nowrap text-sm font-bold text-[#b32269]">
-                      GH₵{service.price}
+                      GH₵{service.priceMin.toLocaleString()}–
+                      {service.priceMax.toLocaleString()}
                     </span>
                   </button>
                 ))}
@@ -103,31 +185,45 @@ export function BookingPage() {
 
           {step === 2 && (
             <div>
-              <h2 className="font-serif text-3xl text-[#3e2530]">Choose your time</h2>
+              <h2 className="font-serif text-3xl text-[#3e2530]">
+                Choose your time
+              </h2>
               <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-5">
-                {dates.map(([day, date]) => (
+                {dates.map((date) => (
                   <button
-                    key={`${day}-${date}`}
+                    key={date.iso}
                     type="button"
-                    onClick={() => setSelectedDate(`${day} ${date}`)}
+                    onClick={() => void chooseDate(date.iso)}
                     className={`rounded-2xl border px-4 py-4 text-center transition ${
-                      selectedDate === `${day} ${date}`
+                      selectedDate === date.iso
                         ? 'border-[#dc2d83] bg-[#dc2d83] text-white'
                         : 'border-[#ecd8e1] bg-white text-[#604c55]'
                     }`}
                   >
-                    <span className="block text-xs uppercase tracking-[0.12em]">{day}</span>
-                    <span className="mt-1 block font-serif text-2xl">{date}</span>
+                    <span className="block text-xs uppercase tracking-[0.12em]">
+                      {date.day}
+                    </span>
+                    <span className="mt-1 block font-serif text-2xl">
+                      {date.date}
+                    </span>
                   </button>
                 ))}
               </div>
+              {availability && (
+                <p className="mt-5 text-sm text-[#745f68]">
+                  {availability.available
+                    ? `${availability.slotsRemaining} booking spaces remain for this service category.`
+                    : 'This service category is fully booked for the selected date.'}
+                </p>
+              )}
               <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {times.map((time) => (
                   <button
                     key={time}
                     type="button"
+                    disabled={!availability?.available}
                     onClick={() => setSelectedTime(time)}
-                    className={`rounded-full border px-4 py-3 text-sm font-semibold transition ${
+                    className={`rounded-full border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
                       selectedTime === time
                         ? 'border-[#dc2d83] bg-[#fbe0eb] text-[#a51e61]'
                         : 'border-[#e5cbd6] bg-white text-[#604c55]'
@@ -143,17 +239,31 @@ export function BookingPage() {
           {step === 3 && (
             <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr]">
               <div>
-                <h2 className="font-serif text-3xl text-[#3e2530]">Your details</h2>
-                <div className="mt-7 grid gap-5 sm:grid-cols-2">
-                  {['Full name', 'Phone number', 'Email address'].map((label) => (
-                    <label key={label} className={label === 'Email address' ? 'sm:col-span-2' : ''}>
-                      <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em] text-[#765b67]">
-                        {label}
-                      </span>
-                      <input className="h-13 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 outline-none focus:border-[#dc2d83] focus:ring-4 focus:ring-[#dc2d83]/10" />
-                    </label>
-                  ))}
-                </div>
+                <h2 className="font-serif text-3xl text-[#3e2530]">
+                  Confirm your booking
+                </h2>
+                {user ? (
+                  <div className="mt-7 rounded-2xl border border-[#e6c5d3] bg-white p-5">
+                    <p className="font-semibold text-[#3e2530]">{user.name}</p>
+                    <p className="mt-1 text-sm text-[#745f68]">{user.phone}</p>
+                  </div>
+                ) : (
+                  <p className="mt-7 rounded-2xl bg-[#f7e4ec] p-5 text-sm leading-7 text-[#745f68]">
+                    You’ll be asked to sign in before the request is submitted.
+                  </p>
+                )}
+                <label className="mt-5 block">
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em] text-[#765b67]">
+                    Mobile Money number (optional)
+                  </span>
+                  <input
+                    type="tel"
+                    value={momoNumber}
+                    onChange={(event) => setMomoNumber(event.target.value)}
+                    placeholder={user?.phone ?? '024 000 0000'}
+                    className="h-13 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 outline-none focus:border-[#dc2d83] focus:ring-4 focus:ring-[#dc2d83]/10"
+                  />
+                </label>
               </div>
               <aside className="rounded-2xl bg-[#4b2637] p-6 text-white">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#f2a7c9]">
@@ -165,19 +275,31 @@ export function BookingPage() {
                 <dl className="mt-5 space-y-3 text-sm text-white/75">
                   <div className="flex justify-between gap-4">
                     <dt>Date</dt>
-                    <dd>{selectedDate || 'To be selected'}</dd>
+                    <dd>{selectedDate}</dd>
                   </div>
                   <div className="flex justify-between gap-4">
                     <dt>Time</dt>
-                    <dd>{selectedTime || 'To be selected'}</dd>
+                    <dd>{selectedTime}</dd>
                   </div>
                   <div className="flex justify-between gap-4 border-t border-white/15 pt-3">
-                    <dt>Starting at</dt>
-                    <dd>GH₵{activeService?.price ?? '—'}</dd>
+                    <dt>Price range</dt>
+                    <dd>
+                      GH₵{activeService?.priceMin.toLocaleString()}–
+                      {activeService?.priceMax.toLocaleString()}
+                    </dd>
                   </div>
                 </dl>
               </aside>
             </div>
+          )}
+
+          {message && (
+            <p
+              role="status"
+              className="mt-6 rounded-xl bg-[#f7e4ec] px-4 py-3 text-sm text-[#74485a]"
+            >
+              {message}
+            </p>
           )}
 
           <div className="mt-9 flex items-center justify-between border-t border-[#ecd8e1] pt-6">
@@ -204,9 +326,11 @@ export function BookingPage() {
             ) : (
               <button
                 type="button"
-                className="rounded-full bg-[#dc2d83] px-7 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white"
+                onClick={() => void requestBooking()}
+                disabled={busy}
+                className="rounded-full bg-[#dc2d83] px-7 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50"
               >
-                Request booking
+                {busy ? 'Submitting…' : 'Request booking'}
               </button>
             )}
           </div>

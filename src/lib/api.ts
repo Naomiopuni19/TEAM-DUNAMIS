@@ -1,0 +1,392 @@
+import type { Product, Service, User } from '../data/catalog'
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '')
+
+if (!apiBaseUrl) {
+  throw new Error('VITE_API_BASE_URL is not configured')
+}
+
+type ApiOptions = RequestInit & {
+  token?: string | null
+}
+
+type AuthResponse = {
+  user: User
+  token: string
+}
+
+export type Availability = {
+  date: string
+  serviceId: string
+  categoryId: string
+  dailyCap: number
+  bookedCount: number
+  slotsRemaining: number
+  available: boolean
+}
+
+export type AdminBooking = {
+  id: string
+  date: string
+  timeSlot: string
+  status: string
+  user: Pick<User, 'id' | 'name' | 'phone'>
+  service: { id: string; name: string }
+  category: { id: string; name: string }
+}
+
+export type AdminOrder = {
+  id: string
+  status: string
+  totalAmount: number
+  createdAt: string
+  user: Pick<User, 'id' | 'name' | 'phone'>
+  items: Array<{
+    productId: string
+    name: string
+    quantity: number
+    unitPrice: number
+  }>
+}
+
+export type AdminCustomer = {
+  id: string
+  name: string
+  phone: string
+  createdAt: string
+  bookingCount: number
+  orderCount: number
+  totalSpent: number | string
+}
+
+export type AdminPayment = {
+  id: string
+  reference: string
+  paymentType: 'booking' | 'order'
+  amount: number | string
+  status: 'pending' | 'success' | 'failed'
+  momoNumber: string
+  createdAt: string
+  customer: Pick<User, 'id' | 'name' | 'phone'>
+}
+
+export type AdminAnalytics = {
+  metrics: {
+    customers: number
+    appointments: number
+    orders: number
+    revenue: number | string
+  }
+  popularServices: Array<{ name: string; bookings: number }>
+  bestSellingProducts: Array<{ name: string; units: number }>
+  revenueTrend: Array<{ month: string; amount: number | string }>
+}
+
+export type AdminSettings = {
+  businessName: string
+  phone: string
+  address: string
+  openingHours: Record<string, string>
+  notifications: Record<string, boolean>
+  paymentMethods: Record<string, boolean>
+  updatedAt?: string
+}
+
+export type AdminStaff = {
+  id: string
+  name: string
+  phone: string
+  isActive: boolean
+  createdAt: string
+}
+
+export type CustomerBooking = {
+  id: string
+  date: string
+  timeSlot: string
+  status: string
+  serviceName: string
+  categoryName: string
+}
+
+export type CustomerOrder = {
+  id: string
+  status: string
+  totalAmount: number | string
+  createdAt: string
+  items: Array<{
+    productId: string
+    name: string
+    quantity: number
+    unitPrice: number | string
+  }>
+}
+
+export class ApiError extends Error {
+  status: number
+
+  constructor(status: number, message: string) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+  }
+}
+
+async function request<T>(path: string, options: ApiOptions = {}) {
+  const headers = new Headers(options.headers)
+  if (options.body) headers.set('Content-Type', 'application/json')
+  if (options.token) headers.set('Authorization', `Bearer ${options.token}`)
+
+  const response = await fetch(`${apiBaseUrl}${path}`, {
+    ...options,
+    headers,
+  })
+  const payload = await response.json().catch(() => null)
+
+  if (!response.ok) {
+    throw new ApiError(
+      response.status,
+      payload?.error ?? 'Unable to complete your request',
+    )
+  }
+
+  return payload as T
+}
+
+function normalizeProduct(product: Omit<Product, 'price' | 'image'> & {
+  price: number | string
+}) {
+  return {
+    ...product,
+    price: Number(product.price),
+    image: product.images[0] ?? '',
+  } satisfies Product
+}
+
+function normalizeService(
+  service: Omit<Service, 'durationMinutes' | 'priceMin' | 'priceMax'> & {
+    durationMinutes: number | string
+    priceMin: number | string
+    priceMax: number | string
+  },
+) {
+  return {
+    ...service,
+    durationMinutes: Number(service.durationMinutes),
+    priceMin: Number(service.priceMin),
+    priceMax: Number(service.priceMax),
+  } satisfies Service
+}
+
+export const api = {
+  async products() {
+    const data = await request<
+      Array<Omit<Product, 'price' | 'image'> & { price: number | string }>
+    >('/products')
+    return data.map(normalizeProduct)
+  },
+  async services() {
+    const data = await request<
+      Array<
+        Omit<Service, 'durationMinutes' | 'priceMin' | 'priceMax'> & {
+          durationMinutes: number | string
+          priceMin: number | string
+          priceMax: number | string
+        }
+      >
+    >('/services')
+    return data.map(normalizeService)
+  },
+  login(phone: string, password: string) {
+    return request<AuthResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ phone, password }),
+    })
+  },
+  register(name: string, phone: string, password: string) {
+    return request<AuthResponse>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name, phone, password }),
+    })
+  },
+  me(token: string) {
+    return request<{ user: User }>('/auth/me', { token })
+  },
+  updateProfile(token: string, body: { name: string; phone: string }) {
+    return request<{ user: User }>('/auth/me', {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  changePassword(
+    token: string,
+    body: { currentPassword: string; newPassword: string },
+  ) {
+    return request<{ message: string }>('/auth/password', {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  availability(serviceId: string, date: string) {
+    const query = new URLSearchParams({ serviceId, date })
+    return request<Availability>(`/bookings/availability?${query}`)
+  },
+  createBooking(
+    token: string,
+    body: { serviceId: string; date: string; timeSlot: string },
+  ) {
+    return request<{ booking: { id: string; status: string } }>('/bookings', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  createOrder(
+    token: string,
+    items: Array<{ productId: string; quantity: number }>,
+  ) {
+    return request<{
+      order: { id: string; totalAmount: number; status: string }
+    }>('/orders', {
+      method: 'POST',
+      token,
+      body: JSON.stringify({ items }),
+    })
+  },
+  initiatePayment(
+    token: string,
+    body: { type: 'booking' | 'order'; refId: string; momoNumber: string },
+  ) {
+    return request<{ paymentReference: string; amount: number; status: string }>(
+      '/payments/initiate',
+      {
+        method: 'POST',
+        token,
+        body: JSON.stringify(body),
+      },
+    )
+  },
+  adminBookings(token: string) {
+    return request<AdminBooking[]>('/bookings', { token })
+  },
+  updateBookingStatus(token: string, id: string, status: string) {
+    return request<{ booking: AdminBooking }>(`/bookings/${id}/status`, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify({ status }),
+    })
+  },
+  rescheduleBooking(token: string, id: string, date: string, timeSlot: string) {
+    return request<{ booking: AdminBooking }>(`/bookings/${id}/schedule`, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify({ date, timeSlot }),
+    })
+  },
+  adminOrders(token: string) {
+    return request<AdminOrder[]>('/orders', { token })
+  },
+  updateOrderStatus(token: string, id: string, status: string) {
+    return request<{ order: AdminOrder }>(`/orders/${id}/status`, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify({ status }),
+    })
+  },
+  categories() {
+    return request<Array<{ id: string; name: string; dailyCap: number }>>(
+      '/categories',
+    )
+  },
+  createService(token: string, body: Omit<Service, 'id' | 'category'> & {
+    categoryId: string
+  }) {
+    return request<{ service: Service }>('/services', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  updateService(token: string, id: string, body: Partial<Service> & {
+    categoryId?: string
+  }) {
+    return request<{ service: Service }>(`/services/${id}`, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  deleteService(token: string, id: string) {
+    return request<null>(`/services/${id}`, { method: 'DELETE', token })
+  },
+  createProduct(token: string, body: Omit<Product, 'id' | 'image' | 'inStock'>) {
+    return request<{ product: Product }>('/products', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  updateProduct(token: string, id: string, body: Partial<Product>) {
+    return request<{ product: Product }>(`/products/${id}`, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  deleteProduct(token: string, id: string) {
+    return request<null>(`/products/${id}`, { method: 'DELETE', token })
+  },
+  adminCustomers(token: string) {
+    return request<AdminCustomer[]>('/admin/customers', { token })
+  },
+  adminCustomer(token: string, id: string) {
+    return request<AdminCustomer & {
+      bookings: CustomerBooking[]
+      orders: CustomerOrder[]
+    }>(`/admin/customers/${id}`, { token })
+  },
+  adminPayments(token: string) {
+    return request<AdminPayment[]>('/admin/payments', { token })
+  },
+  adminAnalytics(token: string) {
+    return request<AdminAnalytics>('/admin/analytics', { token })
+  },
+  adminSettings(token: string) {
+    return request<AdminSettings>('/admin/settings', { token })
+  },
+  updateAdminSettings(token: string, body: Partial<AdminSettings>) {
+    return request<AdminSettings>('/admin/settings', {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  adminStaff(token: string) {
+    return request<AdminStaff[]>('/admin/staff', { token })
+  },
+  createAdminStaff(
+    token: string,
+    body: { name: string; phone: string; password: string },
+  ) {
+    return request<{ staff: AdminStaff }>('/admin/staff', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  updateAdminStaffStatus(token: string, id: string, isActive: boolean) {
+    return request<{ staff: AdminStaff }>(`/admin/staff/${id}/status`, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify({ isActive }),
+    })
+  },
+  myBookings(token: string) {
+    return request<CustomerBooking[]>('/bookings/me', { token })
+  },
+  myOrders(token: string) {
+    return request<CustomerOrder[]>('/orders/me', { token })
+  },
+}

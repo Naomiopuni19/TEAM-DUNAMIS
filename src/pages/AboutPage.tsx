@@ -18,7 +18,7 @@ export function AboutPage() {
               Beautiful hair begins with being listened to.
             </h1>
             <p className="mt-6 text-base leading-8 text-[#745f68]">
-              Beryl&apos;s Beauty Mark is a Kumasi-based hair boutique and salon
+              Beryl&apos;s Beauty Mark is a Kumasi-based hair store and salon
               built around quality, honest guidance and personalised finishing.
               We select every texture carefully and give every appointment the
               time it deserves.

@@ -61,7 +61,6 @@ export function Footer() {
             <a href="#/shop" className="hover:text-white">Shop</a>
             <a href="#/services" className="hover:text-white">Services</a>
             <a href="#/appointments" className="hover:text-white">Appointments</a>
-            <a href="#/dashboard" className="hover:text-white">Dashboard</a>
           </div>
         </nav>
         <nav>
@@ -71,8 +70,15 @@ export function Footer() {
           <div className="mt-4 grid gap-3 text-sm text-white/65">
             <a href="#/about" className="hover:text-white">About</a>
             <a href="#/privacy" className="hover:text-white">Privacy policy</a>
+            <a href="#/faqs" className="hover:text-white">FAQs</a>
             <a href="#/terms" className="hover:text-white">Terms of service</a>
             <a href="tel:0591911212" className="hover:text-white">059 191 1212</a>
+            <a
+              href="#/staff-login"
+              className="mt-2 border-t border-white/10 pt-4 font-semibold text-[#f1a3c6] hover:text-white"
+            >
+              Staff Portal
+            </a>
           </div>
         </nav>
       </div>
