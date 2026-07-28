@@ -1,15 +1,17 @@
 import { pool, query } from "../config/db.js";
 import { HttpError } from "../utils/httpError.js";
 
-export async function createOrder(userId, requestedItems) {
+export async function createOrder(userId, requestedItems, delivery) {
   const client = await pool.connect();
   try {
     await client.query("begin");
     const orderResult = await client.query(
-      `insert into orders (user_id, status, total_amount)
-       values ($1, 'pending_payment', 0)
-       returning id, user_id as "userId", status, total_amount as "totalAmount"`,
-      [userId]
+      `insert into orders (user_id, status, total_amount, delivery_name, delivery_phone, delivery_address, delivery_notes)
+       values ($1, 'pending_payment', 0, $2, $3, $4, $5)
+       returning id, user_id as "userId", status, total_amount as "totalAmount",
+                 delivery_name as "deliveryName", delivery_phone as "deliveryPhone",
+                 delivery_address as "deliveryAddress", delivery_notes as "deliveryNotes"`,
+      [userId, delivery.name, delivery.phone, delivery.address, delivery.notes || null]
     );
     const order = orderResult.rows[0];
     let total = 0;
@@ -49,7 +51,9 @@ export async function createOrder(userId, requestedItems) {
       `update orders
        set total_amount = $1, updated_at = now()
        where id = $2
-       returning id, user_id as "userId", status, total_amount as "totalAmount"`,
+       returning id, user_id as "userId", status, total_amount as "totalAmount",
+                 delivery_name as "deliveryName", delivery_phone as "deliveryPhone",
+                 delivery_address as "deliveryAddress", delivery_notes as "deliveryNotes"`,
       [total, order.id]
     );
     await client.query("commit");
@@ -65,6 +69,8 @@ export async function createOrder(userId, requestedItems) {
 export async function listOrdersForUser(userId) {
   const result = await query(
     `select o.id, o.status, o.total_amount as "totalAmount", o.created_at as "createdAt",
+            o.delivery_name as "deliveryName", o.delivery_phone as "deliveryPhone",
+            o.delivery_address as "deliveryAddress", o.delivery_notes as "deliveryNotes",
             coalesce(json_agg(json_build_object(
               'productId', p.id, 'name', p.name, 'quantity', oi.quantity,
               'unitPrice', oi.unit_price
@@ -83,6 +89,8 @@ export async function listOrdersForUser(userId) {
 export async function listOrders(status) {
   const result = await query(
     `select o.id, o.status, o.total_amount as "totalAmount", o.created_at as "createdAt",
+            o.delivery_name as "deliveryName", o.delivery_phone as "deliveryPhone",
+            o.delivery_address as "deliveryAddress", o.delivery_notes as "deliveryNotes",
             json_build_object('id', u.id, 'name', u.name, 'phone', u.phone) as "user",
             coalesce(json_agg(json_build_object(
               'productId', p.id, 'name', p.name, 'quantity', oi.quantity,

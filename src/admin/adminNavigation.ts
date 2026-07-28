@@ -3,19 +3,23 @@ import {
   FiCalendar,
   FiCreditCard,
   FiGrid,
+  FiImage,
   FiPackage,
   FiScissors,
   FiSettings,
   FiShoppingBag,
+  FiStar,
   FiUsers,
 } from 'react-icons/fi'
 
 export const adminNavigation = [
   ['overview', 'Overview', FiGrid],
   ['appointments', 'Appointments', FiCalendar],
+  ['homepage', 'Homepage', FiImage],
   ['services', 'Services', FiScissors],
   ['products', 'Products', FiPackage],
   ['orders', 'Orders', FiShoppingBag],
+  ['reviews', 'Reviews', FiStar],
   ['customers', 'Customers', FiUsers],
   ['payments', 'Payments', FiCreditCard],
   ['analytics', 'Analytics', FiBarChart2],

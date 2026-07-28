@@ -5,16 +5,20 @@ import { AdminApp } from './admin/AdminApp'
 import { CartDrawer } from './components/CartDrawer'
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
+import { PaymentVerifier } from './components/PaymentVerifier'
 import type { Product } from './data/catalog'
 import { AccountPage } from './pages/AccountPage'
 import { AboutPage } from './pages/AboutPage'
 import { BookingPage } from './pages/BookingPage'
 import { HomePage } from './pages/HomePage'
 import { FaqPage } from './pages/FaqPage'
+import { PaymentCompletePage } from './pages/PaymentCompletePage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { ServicesPage } from './pages/ServicesPage'
 import { ShopPage } from './pages/ShopPage'
 import { StaffLoginPage } from './pages/StaffLoginPage'
+import { ReviewsPage } from './pages/ReviewsPage'
+import { TermsPage } from './pages/TermsPage'
 
 function currentRoute() {
   const route = window.location.hash.replace(/^#\//, '').split('?')[0]
@@ -72,6 +76,12 @@ function App() {
     case 'privacy':
       page = <PrivacyPage />
       break
+    case 'terms':
+      page = <TermsPage />
+      break
+    case 'reviews':
+      page = <ReviewsPage />
+      break
     case 'faqs':
       page = <FaqPage />
       break
@@ -81,46 +91,55 @@ function App() {
     case 'account':
       page = <AccountPage onRequireAuth={() => setAuthOpen(true)} />
       break
+    case 'payment-complete':
+      page = <PaymentCompletePage />
+      break
     default:
       page = <HomePage onAdd={addToCart} />
   }
 
   if (route === 'dashboard') {
     return (
-      <div key={locationKey} className="min-h-screen bg-[#f8f3f5] text-[#604c55]">
-        {page}
-      </div>
+      <>
+        <PaymentVerifier />
+        <div key={locationKey} className="min-h-screen bg-[#f8f3f5] text-[#604c55]">
+          {page}
+        </div>
+      </>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#fffaf8] text-[#604c55]">
-      <Header
-        key={route}
-        cartCount={cart.length}
-        isHome={route === 'home'}
-        onOpenCart={() => setCartOpen(true)}
-        onOpenAccount={() => setAuthOpen(true)}
-      />
-      <div
-        key={locationKey}
-        className={route === 'home' ? '' : 'pt-20 sm:pt-24'}
-      >
-        {page}
+    <>
+      <PaymentVerifier />
+      <div className="min-h-screen bg-[#fffaf8] text-[#604c55]">
+        <Header
+          key={route}
+          cartCount={cart.length}
+          isHome={route === 'home'}
+          onOpenCart={() => setCartOpen(true)}
+          onOpenAccount={() => setAuthOpen(true)}
+        />
+        <div
+          key={locationKey}
+          className={route === 'home' ? '' : 'pt-20 sm:pt-24'}
+        >
+          {page}
+        </div>
+        <Footer />
+        <AuthPanel open={authOpen} onClose={() => setAuthOpen(false)} />
+        <CartDrawer
+          items={cart}
+          open={cartOpen}
+          onClose={() => setCartOpen(false)}
+          onRequireAuth={() => setAuthOpen(true)}
+          onOrderComplete={() => setCart([])}
+          onRemove={(index) =>
+            setCart((items) => items.filter((_, itemIndex) => itemIndex !== index))
+          }
+        />
       </div>
-      <Footer />
-      <AuthPanel open={authOpen} onClose={() => setAuthOpen(false)} />
-      <CartDrawer
-        items={cart}
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        onRequireAuth={() => setAuthOpen(true)}
-        onOrderComplete={() => setCart([])}
-        onRemove={(index) =>
-          setCart((items) => items.filter((_, itemIndex) => itemIndex !== index))
-        }
-      />
-    </div>
+    </>
   )
 }
 

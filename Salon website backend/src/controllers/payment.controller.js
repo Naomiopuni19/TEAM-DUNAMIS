@@ -4,7 +4,8 @@ import {
   createPayment,
   findPaymentAmount,
   findPaymentByReference,
-  updatePaymentStatus
+  updatePaymentStatus,
+  markPaymentSuccessAndUnlock
 } from "../models/payment.model.js";
 import { notFound } from "../utils/httpError.js";
 
@@ -14,20 +15,70 @@ const initiateSchema = z.object({
   momoNumber: z.string().min(7).max(20)
 });
 
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+
 export async function initiate(req, res) {
   const body = initiateSchema.parse(req.body);
   const amount = await findPaymentAmount(body.type, body.refId, req.user.id);
   if (amount === null) throw notFound(`${body.type} not found`);
 
-  const payment = await createPayment({
-    reference: `MOMO-${crypto.randomUUID()}`,
+  const reference = `SALON-${crypto.randomUUID()}`;
+
+  await createPayment({
+    reference,
     userId: req.user.id,
     type: body.type,
     refId: body.refId,
     momoNumber: body.momoNumber,
     amount
   });
-  res.status(201).json(payment);
+
+  const paystackResponse = await fetch("https://api.paystack.co/transaction/initialize", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: `${req.user.phone}@customer.salon`,
+      amount: Math.round(amount * 100),
+      reference,
+      callback_url: `${FRONTEND_URL}/#/payment-complete`
+    })
+  });
+
+  const paystackData = await paystackResponse.json();
+
+  if (!paystackData.status) {
+    throw new Error(paystackData.message || "Could not start payment with Paystack");
+  }
+
+  res.status(201).json({
+    paymentReference: reference,
+    amount,
+    status: "pending",
+    authorizationUrl: paystackData.data.authorization_url
+  });
+}
+
+export async function verify(req, res) {
+  const reference = req.params.reference;
+
+  const paystackResponse = await fetch(
+    `https://api.paystack.co/transaction/verify/${reference}`,
+    { headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` } }
+  );
+  const paystackData = await paystackResponse.json();
+
+  if (paystackData.data?.status === "success") {
+    const unlocked = await markPaymentSuccessAndUnlock(reference);
+    if (!unlocked) throw notFound("Payment not found");
+    res.json({ reference, status: "success", amount: unlocked.amount });
+  } else {
+    await updatePaymentStatus(reference, "failed");
+    res.json({ reference, status: "failed" });
+  }
 }
 
 export async function webhook(req, res) {

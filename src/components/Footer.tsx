@@ -69,6 +69,7 @@ export function Footer() {
           </h3>
           <div className="mt-4 grid gap-3 text-sm text-white/65">
             <a href="#/about" className="hover:text-white">About</a>
+            <a href="#/reviews" className="hover:text-white">Reviews</a>
             <a href="#/privacy" className="hover:text-white">Privacy policy</a>
             <a href="#/faqs" className="hover:text-white">FAQs</a>
             <a href="#/terms" className="hover:text-white">Terms of service</a>
@@ -83,7 +84,7 @@ export function Footer() {
         </nav>
       </div>
       <div className="border-t border-white/10 px-6 py-5 text-center text-xs text-white/45">
-        © 2026 Beryl&apos;s Beauty Mark. All rights reserved.
+        Â© 2026 Beryl&apos;s Beauty Mark. All rights reserved.
       </div>
     </footer>
   )

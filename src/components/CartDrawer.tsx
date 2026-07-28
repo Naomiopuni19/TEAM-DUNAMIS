@@ -21,7 +21,7 @@ export function CartDrawer({
   onRequireAuth,
   onOrderComplete,
 }: CartDrawerProps) {
-  const { token, user, refreshCatalog } = useAppData()
+  const { token, user } = useAppData()
   const [momoNumber, setMomoNumber] = useState('')
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
@@ -34,6 +34,10 @@ export function CartDrawer({
     if (!token) {
       setMessage('Sign in or create an account to complete checkout.')
       onRequireAuth()
+      return
+    }
+    if (!momoNumber.trim()) {
+      setMessage('Please enter a phone number to continue.')
       return
     }
 
@@ -52,23 +56,16 @@ export function CartDrawer({
         })),
       )
 
-      if (momoNumber.trim()) {
-        const payment = await api.initiatePayment(token, {
-          type: 'order',
-          refId: result.order.id,
-          momoNumber: momoNumber.trim(),
-        })
-        setMessage(
-          `Order created. Mobile Money payment ${payment.paymentReference} is ${payment.status}.`,
-        )
-      } else {
-        setMessage('Your order was created and is awaiting payment.')
-      }
+      const payment = await api.initiatePayment(token, {
+        type: 'order',
+        refId: result.order.id,
+        momoNumber: momoNumber.trim(),
+      })
+
       onOrderComplete()
-      await refreshCatalog()
+      window.location.href = payment.authorizationUrl
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Checkout failed.')
-    } finally {
       setBusy(false)
     }
   }
@@ -94,7 +91,7 @@ export function CartDrawer({
             onClick={onClose}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f5e1e9] text-2xl"
           >
-            ×
+            x
           </button>
         </div>
 
@@ -117,7 +114,7 @@ export function CartDrawer({
                 <div className="min-w-0 flex-1">
                   <p className="font-serif text-lg text-[#3e2530]">{item.name}</p>
                   <p className="mt-2 text-sm font-semibold text-[#b32269]">
-                    GH₵{item.price.toLocaleString()}
+                    GHC {item.price.toLocaleString()}
                   </p>
                   <button
                     type="button"
@@ -135,11 +132,11 @@ export function CartDrawer({
         <div className="border-t border-[#e7ccd7] pt-5">
           <div className="flex justify-between font-serif text-xl text-[#3e2530]">
             <span>Total</span>
-            <span>GH₵{total.toLocaleString()}</span>
+            <span>GHC {total.toLocaleString()}</span>
           </div>
           <label className="mt-4 block">
             <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em] text-[#765b67]">
-              Mobile Money number (optional)
+              Phone number
             </span>
             <input
               type="tel"
@@ -155,7 +152,7 @@ export function CartDrawer({
             disabled={!items.length || busy}
             className="mt-5 min-h-13 w-full rounded-full bg-[#d92c83] px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] text-white disabled:opacity-40"
           >
-            {busy ? 'Processing…' : 'Continue to checkout'}
+            {busy ? 'Redirecting to payment...' : 'Pay now'}
           </button>
           {message && (
             <p className="mt-3 text-sm leading-6 text-[#74485a]" role="status">

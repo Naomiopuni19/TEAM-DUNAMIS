@@ -40,6 +40,10 @@ export type AdminOrder = {
   status: string
   totalAmount: number
   createdAt: string
+  deliveryName?: string
+  deliveryPhone?: string
+  deliveryAddress?: string
+  deliveryNotes?: string
   user: Pick<User, 'id' | 'name' | 'phone'>
   items: Array<{
     productId: string
@@ -178,7 +182,87 @@ function normalizeService(
   } satisfies Service
 }
 
+export type HeroSlide = {
+  id: string
+  eyebrow: string
+  title: string
+  subtitle: string
+  imageUrl: string
+  sortOrder: number
+  isActive?: boolean
+}
+
+export type Review = {
+  id: string
+  rating: number
+  comment: string
+  mediaUrl?: string
+  mediaType?: 'photo' | 'video'
+  status?: string
+  createdAt: string
+  customerName: string
+  serviceName: string
+}
+
+export type ReviewableBooking = {
+  bookingId: string
+  serviceName: string
+  date: string
+}
+
 export const api = {
+  heroSlides() {
+    return request<HeroSlide[]>('/hero-slides')
+  },
+  adminHeroSlides(token: string) {
+    return request<HeroSlide[]>('/hero-slides/admin', { token })
+  },
+  createHeroSlide(
+    token: string,
+    body: { eyebrow: string; title: string; subtitle: string; imageUrl: string; sortOrder: number },
+  ) {
+    return request<{ slide: HeroSlide }>('/hero-slides', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  updateHeroSlide(token: string, id: string, body: Partial<HeroSlide>) {
+    return request<{ slide: HeroSlide }>(`/hero-slides/${id}`, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  deleteHeroSlide(token: string, id: string) {
+    return request<null>(`/hero-slides/${id}`, { method: 'DELETE', token })
+  },
+  reviews() {
+    return request<Review[]>('/reviews')
+  },
+  adminReviews(token: string) {
+    return request<Review[]>('/reviews/admin', { token })
+  },
+  myReviewableBookings(token: string) {
+    return request<ReviewableBooking[]>('/reviews/mine', { token })
+  },
+  createReview(
+    token: string,
+    body: { bookingId: string; rating: number; comment?: string; mediaUrl?: string; mediaType?: 'photo' | 'video' },
+  ) {
+    return request<{ review: Review }>('/reviews', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  updateReviewStatus(token: string, id: string, status: 'approved' | 'rejected') {
+    return request<{ review: Review }>(`/reviews/${id}/status`, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify({ status }),
+    })
+  },
   async products() {
     const data = await request<
       Array<Omit<Product, 'price' | 'image'> & { price: number | string }>
@@ -259,13 +343,21 @@ export const api = {
     token: string,
     body: { type: 'booking' | 'order'; refId: string; momoNumber: string },
   ) {
-    return request<{ paymentReference: string; amount: number; status: string }>(
-      '/payments/initiate',
-      {
-        method: 'POST',
-        token,
-        body: JSON.stringify(body),
-      },
+    return request<{
+      paymentReference: string
+      amount: number
+      status: string
+      authorizationUrl: string
+    }>('/payments/initiate', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  verifyPayment(token: string, reference: string) {
+    return request<{ reference: string; status: string; amount?: number }>(
+      `/payments/${reference}/verify`,
+      { token },
     )
   },
   adminBookings(token: string) {

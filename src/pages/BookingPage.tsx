@@ -80,12 +80,10 @@ export function BookingPage({ onRequireAuth }: BookingPageProps) {
           refId: result.booking.id,
           momoNumber: momoNumber.trim(),
         })
-        setMessage(
-          `Booking requested. Mobile Money payment ${payment.paymentReference} is ${payment.status}.`,
-        )
-      } else {
-        setMessage('Your booking request was submitted successfully.')
+        window.location.href = payment.authorizationUrl
+        return
       }
+      setMessage('Your booking request was submitted. You can pay online from your account, or in the studio.')
     } catch (error) {
       setMessage(
         error instanceof Error ? error.message : 'Unable to request this booking.',
@@ -106,7 +104,7 @@ export function BookingPage({ onRequireAuth }: BookingPageProps) {
             Book an appointment
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-[#745f68]">
-            Choose your service and preferred time. We’ll confirm every detail
+            Choose your service and preferred time. Weâ€™ll confirm every detail
             before your visit.
           </p>
         </div>
@@ -143,7 +141,7 @@ export function BookingPage({ onRequireAuth }: BookingPageProps) {
               <p className="mt-2 text-sm text-[#745f68]">
                 Prices are supplied by the salon and shown as a range.
               </p>
-              {catalogLoading && <p className="mt-7">Loading services…</p>}
+              {catalogLoading && <p className="mt-7">Loading servicesâ€¦</p>}
               {catalogError && (
                 <p className="mt-7 text-[#8b435f]">{catalogError}</p>
               )}
@@ -169,12 +167,12 @@ export function BookingPage({ onRequireAuth }: BookingPageProps) {
                         {service.name}
                       </span>
                       <span className="mt-1 block text-xs text-[#8f707d]">
-                        {service.category.name} ·{' '}
+                        {service.category.name} Â·{' '}
                         {formatDuration(service.durationMinutes)}
                       </span>
                     </span>
                     <span className="whitespace-nowrap text-sm font-bold text-[#b32269]">
-                      GH₵{service.priceMin.toLocaleString()}–
+                      GHâ‚µ{service.priceMin.toLocaleString()}â€“
                       {service.priceMax.toLocaleString()}
                     </span>
                   </button>
@@ -249,7 +247,7 @@ export function BookingPage({ onRequireAuth }: BookingPageProps) {
                   </div>
                 ) : (
                   <p className="mt-7 rounded-2xl bg-[#f7e4ec] p-5 text-sm leading-7 text-[#745f68]">
-                    You’ll be asked to sign in before the request is submitted.
+                    Youâ€™ll be asked to sign in before the request is submitted.
                   </p>
                 )}
                 <label className="mt-5 block">
@@ -284,7 +282,7 @@ export function BookingPage({ onRequireAuth }: BookingPageProps) {
                   <div className="flex justify-between gap-4 border-t border-white/15 pt-3">
                     <dt>Price range</dt>
                     <dd>
-                      GH₵{activeService?.priceMin.toLocaleString()}–
+                      GHâ‚µ{activeService?.priceMin.toLocaleString()}â€“
                       {activeService?.priceMax.toLocaleString()}
                     </dd>
                   </div>
@@ -330,7 +328,7 @@ export function BookingPage({ onRequireAuth }: BookingPageProps) {
                 disabled={busy}
                 className="rounded-full bg-[#dc2d83] px-7 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50"
               >
-                {busy ? 'Submitting…' : 'Request booking'}
+                {busy ? 'Submittingâ€¦' : 'Request booking'}
               </button>
             )}
           </div>

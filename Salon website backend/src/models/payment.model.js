@@ -52,3 +52,22 @@ export async function findPaymentByReference(reference, userId) {
   );
   return result.rows[0] || null;
 }
+
+export async function markPaymentSuccessAndUnlock(reference) {
+  const result = await query(
+    `update payments set status = 'success', updated_at = now()
+     where reference = $1
+     returning reference, payment_type as type, ref_id as "refId", amount`,
+    [reference]
+  );
+  const payment = result.rows[0];
+  if (!payment) return null;
+
+  if (payment.type === "order") {
+    await query("update orders set status = 'paid' where id = $1", [payment.refId]);
+  } else {
+    await query("update bookings set status = 'confirmed' where id = $1", [payment.refId]);
+  }
+
+  return payment;
+}

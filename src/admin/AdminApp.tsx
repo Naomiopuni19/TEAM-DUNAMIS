@@ -3,19 +3,23 @@ import { currentAdminSection } from './adminNavigation'
 import { AnalyticsAdminPage } from './pages/AnalyticsAdminPage'
 import { AppointmentsAdminPage } from './pages/AppointmentsAdminPage'
 import { CustomersAdminPage } from './pages/CustomersAdminPage'
+import { HeroSlidesAdminPage } from './pages/HeroSlidesAdminPage'
 import { OrdersAdminPage } from './pages/OrdersAdminPage'
 import { OverviewAdminPage } from './pages/OverviewAdminPage'
 import { PaymentsAdminPage } from './pages/PaymentsAdminPage'
 import { ProductsAdminPage } from './pages/ProductsAdminPage'
+import { ReviewsAdminPage } from './pages/ReviewsAdminPage'
 import { ServicesAdminPage } from './pages/ServicesAdminPage'
 import { SettingsAdminPage } from './pages/SettingsAdminPage'
 
 const pages = {
   overview: OverviewAdminPage,
   appointments: AppointmentsAdminPage,
+  homepage: HeroSlidesAdminPage,
   services: ServicesAdminPage,
   products: ProductsAdminPage,
   orders: OrdersAdminPage,
+  reviews: ReviewsAdminPage,
   customers: CustomersAdminPage,
   payments: PaymentsAdminPage,
   analytics: AnalyticsAdminPage,

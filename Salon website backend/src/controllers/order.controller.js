@@ -15,11 +15,18 @@ const orderSchema = z.object({
         quantity: z.number().int().positive()
       })
     )
-    .min(1)
+    .min(1),
+  delivery: z.object({
+    name: z.string().min(2),
+    phone: z.string().min(7).max(20),
+    address: z.string().min(5),
+    notes: z.string().optional()
+  })
 });
 
 export async function create(req, res) {
-  const result = await createOrder(req.user.id, orderSchema.parse(req.body).items);
+  const body = orderSchema.parse(req.body);
+  const result = await createOrder(req.user.id, body.items, body.delivery);
   res.status(201).json(result);
 }
 
@@ -34,7 +41,7 @@ export async function index(req, res) {
 
 export async function updateStatus(req, res) {
   const body = z.object({
-    status: z.enum(["pending_payment", "paid", "cancelled", "fulfilled"])
+    status: z.enum(["pending_payment", "paid", "preparing", "out_for_delivery", "fulfilled", "cancelled"])
   }).parse(req.body);
   const order = await updateOrderStatus(req.params.id, body.status);
   if (!order) throw notFound("Order not found");
