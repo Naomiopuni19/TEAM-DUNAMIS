@@ -37,9 +37,9 @@ export function AccountPage(props) {
     }
   }
 
-  const [bookings, setBookings] = useState([])
-  const [orders, setOrders] = useState([])
-  const [reviewable, setReviewable] = useState([])
+  const [bookings, setBookings] = useState<CustomerBooking[]>([])
+  const [orders, setOrders] = useState<CustomerOrder[]>([])
+  const [reviewable, setReviewable] = useState<ReviewableBooking[]>([])
   const [recordsLoading, setRecordsLoading] = useState(Boolean(token))
   const [recordsError, setRecordsError] = useState('')
   const [message, setMessage] = useState('')
@@ -49,7 +49,7 @@ export function AccountPage(props) {
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState('')
   const [mediaUrl, setMediaUrl] = useState('')
-  const [mediaType, setMediaType] = useState(undefined)
+  const [mediaType, setMediaType] = useState<'photo' | 'video' | undefined>(undefined)
   const [reviewSubmitting, setReviewSubmitting] = useState(false)
   const [reviewMessage, setReviewMessage] = useState('')
 
