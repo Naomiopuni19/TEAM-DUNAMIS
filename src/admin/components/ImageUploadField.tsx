@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent } from 'react'
 
-const CLOUD_NAME = 'your-cloud-name'
+const CLOUD_NAME = 'dwgeqdw4'
 const UPLOAD_PRESET = 'salon_media'
 
 type ImageUploadFieldProps = {

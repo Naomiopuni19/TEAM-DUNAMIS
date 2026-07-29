@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent } from 'react'
 
-const CLOUD_NAME = 'your-cloud-name'
+const CLOUD_NAME = 'dwgeqdw4'
 const UPLOAD_PRESET = 'salon_media'
 
 type ImageUploadFieldProps = {
@@ -56,7 +56,7 @@ export function ImageUploadField({ label, value, onChange }: ImageUploadFieldPro
       )}
 
       <label className="flex h-13 w-full cursor-pointer items-center justify-center rounded-xl border border-dashed border-[#d99eb7] bg-[#fff7fa] text-sm font-semibold text-[#9f205f] hover:bg-[#fdeef4]">
-        {uploading ? 'Uploading…' : value ? 'Replace photo' : 'Upload a photo'}
+        {uploading ? 'Uploadingâ€¦' : value ? 'Replace photo' : 'Upload a photo'}
         <input
           type="file"
           accept="image/*"
