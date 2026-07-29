@@ -16,6 +16,7 @@ export const adminNavigation = [
   ['overview', 'Overview', FiGrid],
   ['appointments', 'Appointments', FiCalendar],
   ['homepage', 'Homepage', FiImage],
+  ['shop-tiles', 'Shop tiles', FiPackage],
   ['services', 'Services', FiScissors],
   ['products', 'Products', FiPackage],
   ['orders', 'Orders', FiShoppingBag],

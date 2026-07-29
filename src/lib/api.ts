@@ -210,7 +210,44 @@ export type ReviewableBooking = {
   date: string
 }
 
+export type ShopCategoryTile = {
+  id: string
+  title: string
+  label: string
+  copy: string
+  imageUrl: string
+  href: string
+  sortOrder: number
+  isActive?: boolean
+}
+
 export const api = {
+  shopCategoryTiles() {
+    return request<ShopCategoryTile[]>('/shop-category-tiles')
+  },
+  adminShopCategoryTiles(token: string) {
+    return request<ShopCategoryTile[]>('/shop-category-tiles/admin', { token })
+  },
+  createShopCategoryTile(
+    token: string,
+    body: { title: string; label: string; copy: string; imageUrl: string; href: string; sortOrder: number },
+  ) {
+    return request<{ tile: ShopCategoryTile }>('/shop-category-tiles', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  updateShopCategoryTile(token: string, id: string, body: Partial<ShopCategoryTile>) {
+    return request<{ tile: ShopCategoryTile }>('/shop-category-tiles/' + id, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  deleteShopCategoryTile(token: string, id: string) {
+    return request<null>('/shop-category-tiles/' + id, { method: 'DELETE', token })
+  },
   heroSlides() {
     return request<HeroSlide[]>('/hero-slides')
   },

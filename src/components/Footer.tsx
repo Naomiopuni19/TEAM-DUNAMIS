@@ -19,7 +19,7 @@ export function Footer() {
               id="newsletter-email"
               type="email"
               placeholder="Email address"
-              className="h-13 w-full flex-1 rounded-full border border-white/25 bg-white/10 px-5 text-sm text-white outline-none backdrop-blur-md placeholder:text-white/60 focus:border-[#d6b56e] focus:bg-white/15"
+              className="h-13 w-full flex-1 rounded-full border border-white/40 bg-white/20 px-5 text-sm text-white outline-none backdrop-blur-md placeholder:text-white/80 focus:border-[#d6b56e] focus:bg-white/25"
             />
             <button
               type="submit"

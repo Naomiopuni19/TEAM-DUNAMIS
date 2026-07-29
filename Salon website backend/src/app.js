@@ -14,6 +14,7 @@ import paymentRoutes from "./routes/payments.routes.js";
 import productRoutes from "./routes/products.routes.js";
 import reviewRoutes from "./routes/reviews.routes.js";
 import serviceRoutes from "./routes/services.routes.js";
+import shopCategoryTileRoutes from "./routes/shopCategoryTiles.routes.js";
 import systemRoutes from "./routes/system.routes.js";
 
 export const app = express();
@@ -30,6 +31,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/hero-slides", heroSlideRoutes);
+app.use("/api/shop-category-tiles", shopCategoryTileRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);

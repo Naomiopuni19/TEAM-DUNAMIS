@@ -11,11 +11,13 @@ import { ProductsAdminPage } from './pages/ProductsAdminPage'
 import { ReviewsAdminPage } from './pages/ReviewsAdminPage'
 import { ServicesAdminPage } from './pages/ServicesAdminPage'
 import { SettingsAdminPage } from './pages/SettingsAdminPage'
+import { ShopTilesAdminPage } from './pages/ShopTilesAdminPage'
 
 const pages = {
   overview: OverviewAdminPage,
   appointments: AppointmentsAdminPage,
   homepage: HeroSlidesAdminPage,
+  'shop-tiles': ShopTilesAdminPage,
   services: ServicesAdminPage,
   products: ProductsAdminPage,
   orders: OrdersAdminPage,

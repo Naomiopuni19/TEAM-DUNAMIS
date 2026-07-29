@@ -2,35 +2,13 @@ import { useEffect, useState } from 'react'
 import { ProductCard } from '../components/ProductCard'
 import { useAppData } from '../context/appData'
 import { imageBase, type Product } from '../data/catalog'
-import { api, type HeroSlide } from '../lib/api'
+import { api, type HeroSlide, type ShopCategoryTile } from '../lib/api'
 
 type HomePageProps = {
   onAdd: (product: Product) => void
 }
 
-const categories = [
-  {
-    title: 'Signature Wigs',
-    label: 'Wigs',
-    copy: 'Natural-looking HD lace, full ends and soft movement.',
-    image: imageBase + '/product-hd-lace-wig.jpg',
-    href: '#/shop?category=Wigs',
-  },
-  {
-    title: 'Raw Bundles',
-    label: 'Bundles',
-    copy: 'Premium textures selected for density, longevity and lustre.',
-    image: imageBase + '/product-burmese-wave.jpg',
-    href: '#/shop?category=Bundles',
-  },
-  {
-    title: 'Hair Care',
-    label: 'Aftercare',
-    copy: 'Thoughtful formulas to protect your investment between visits.',
-    image: imageBase + '/product-hair-mask.jpg',
-    href: '#/shop?category=Hair Care',
-  },
-]
+
 
 function HeroBanner() {
   const [slides, setSlides] = useState<HeroSlide[]>([])
@@ -126,6 +104,17 @@ export function HomePage(props) {
   const catalogLoading = appData.catalogLoading
   const catalogError = appData.catalogError
 
+  const [categoryTiles, setCategoryTiles] = useState<ShopCategoryTile[]>([])
+  useEffect(function () {
+    let cancelled = false
+    api.shopCategoryTiles().then(function (data) {
+      if (!cancelled) setCategoryTiles(data)
+    })
+    return function () {
+      cancelled = true
+    }
+  }, [])
+
   const categoryMap = new Map()
   for (const service of services) {
     categoryMap.set(service.category.name, {
@@ -156,11 +145,11 @@ export function HomePage(props) {
           </div>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:mt-12 lg:grid-cols-3">
-            {categories.map(function (category, categoryIndex) {
+            {categoryTiles.map(function (category, categoryIndex) {
               const spanClass = categoryIndex === 2 ? 'md:col-span-2 lg:col-span-1' : ''
               return (
-                <a key={category.title} href={category.href} className={'group relative min-h-[420px] overflow-hidden rounded-[2rem] bg-[#5e3447] sm:min-h-[450px] ' + spanClass}>
-                  <img src={category.image} alt="" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                <a key={category.id} href={category.href} className={'group relative min-h-[420px] overflow-hidden rounded-[2rem] bg-[#5e3447] sm:min-h-[450px] ' + spanClass}>
+                  <img src={category.imageUrl} alt="" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#24131b]/90 via-[#24131b]/15 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-7 text-white">
                     <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#f5b0d0]">{category.label}</p>
