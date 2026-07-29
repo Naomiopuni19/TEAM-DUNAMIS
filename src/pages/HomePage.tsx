@@ -36,7 +36,7 @@ function HeroBanner() {
   const [slides, setSlides] = useState<HeroSlide[]>([])
   const [index, setIndex] = useState(0)
 
-  useEffect(() => {
+  useEffect(function () {
     let cancelled = false
     api.heroSlides().then(function (data) {
       if (!cancelled) setSlides(data)
@@ -46,7 +46,7 @@ function HeroBanner() {
     }
   }, [])
 
-  useEffect(() => {
+  useEffect(function () {
     if (slides.length < 2) return
     const timer = setInterval(function () {
       setIndex(function (current) {
@@ -118,7 +118,7 @@ function HeroBanner() {
   )
 }
 
-export function HomePage(props: HomePageProps) {
+export function HomePage(props) {
   const onAdd = props.onAdd
   const appData = useAppData()
   const products = appData.products
@@ -190,7 +190,6 @@ export function HomePage(props: HomePageProps) {
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {catalogLoading && <p className="sm:col-span-2 lg:col-span-3">Loading client favourites...</p>}
-            {!catalogLoading && catalogError && <p className="sm:col-span-2 lg:col-span-3 text-[#8b435f]">{catalogError}</p>}
             {!catalogLoading && !catalogError && products.slice(0, 3).map(function (product) {
               return <ProductCard key={product.id} product={product} onAdd={onAdd} />
             })}
