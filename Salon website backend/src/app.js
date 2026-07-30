@@ -7,6 +7,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/auth.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import bookingRoutes from "./routes/bookings.routes.js";
+import businessInfoRoutes from "./routes/businessInfo.routes.js";
 import categoryRoutes from "./routes/categories.routes.js";
 import heroSlideRoutes from "./routes/heroSlides.routes.js";
 import orderRoutes from "./routes/orders.routes.js";
@@ -28,6 +29,7 @@ app.use("/health", systemRoutes);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/business-info", businessInfoRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/hero-slides", heroSlideRoutes);

@@ -22,7 +22,10 @@ export function CartDrawer({
   onOrderComplete,
 }: CartDrawerProps) {
   const { token, user } = useAppData()
-  const [momoNumber, setMomoNumber] = useState('')
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [address, setAddress] = useState('')
+  const [notes, setNotes] = useState('')
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
 
@@ -36,8 +39,8 @@ export function CartDrawer({
       onRequireAuth()
       return
     }
-    if (!momoNumber.trim()) {
-      setMessage('Please enter a phone number to continue.')
+    if (!name.trim() || !phone.trim() || !address.trim()) {
+      setMessage('Please fill in your name, phone number and location.')
       return
     }
 
@@ -54,12 +57,18 @@ export function CartDrawer({
           productId,
           quantity,
         })),
+        {
+          name: name.trim(),
+          phone: phone.trim(),
+          address: address.trim(),
+          notes: notes.trim() || undefined,
+        },
       )
 
       const payment = await api.initiatePayment(token, {
         type: 'order',
         refId: result.order.id,
-        momoNumber: momoNumber.trim(),
+        momoNumber: phone.trim(),
       })
 
       onOrderComplete()
@@ -78,7 +87,7 @@ export function CartDrawer({
         onClick={onClose}
         className="absolute inset-0 h-full w-full"
       />
-      <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-[#fffaf8] p-6 shadow-2xl sm:p-8">
+      <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col overflow-y-auto bg-[#fffaf8] p-6 shadow-2xl sm:p-8">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#d92c83]">
@@ -95,7 +104,7 @@ export function CartDrawer({
           </button>
         </div>
 
-        <div className="mt-8 flex-1 space-y-5 overflow-y-auto">
+        <div className="mt-8 flex-1 space-y-5">
           {items.length === 0 ? (
             <div className="rounded-2xl bg-[#f8e5ed] p-6 text-center">
               <p className="font-serif text-2xl text-[#3e2530]">Your bag is waiting.</p>
@@ -104,51 +113,76 @@ export function CartDrawer({
               </p>
             </div>
           ) : (
-            items.map((item, index) => (
-              <article key={`${item.id}-${index}`} className="flex gap-4 border-b border-[#ecd8e1] pb-5">
-                <img
-                  src={productImage(item)}
-                  alt=""
-                  className="h-24 w-20 rounded-xl object-cover"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="font-serif text-lg text-[#3e2530]">{item.name}</p>
-                  <p className="mt-2 text-sm font-semibold text-[#b32269]">
-                    GHC {item.price.toLocaleString()}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => onRemove(index)}
-                    className="mt-2 text-xs text-[#816873] underline"
-                  >
-                    Remove
-                  </button>
-                </div>
-              </article>
-            ))
+            items.map(function (item, index) {
+              return (
+                <article key={item.id + '-' + index} className="flex gap-4 border-b border-[#ecd8e1] pb-5">
+                  <img
+                    src={productImage(item)}
+                    alt=""
+                    className="h-24 w-20 rounded-xl object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-serif text-lg text-[#3e2530]">{item.name}</p>
+                    <p className="mt-2 text-sm font-semibold text-[#b32269]">
+                      GHC {item.price.toLocaleString()}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={function () { onRemove(index) }}
+                      className="mt-2 text-xs text-[#816873] underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </article>
+              )
+            })
           )}
         </div>
 
-        <div className="border-t border-[#e7ccd7] pt-5">
+        {items.length > 0 && (
+          <div className="mt-6 space-y-4 border-t border-[#e7ccd7] pt-5">
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#765b67]">
+              Delivery details
+            </p>
+            <input
+              type="text"
+              value={name}
+              onChange={function (e) { setName(e.target.value) }}
+              placeholder="Full name"
+              className="h-12 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 text-sm outline-none focus:border-[#dc2d83]"
+            />
+            <input
+              type="tel"
+              value={phone}
+              onChange={function (e) { setPhone(e.target.value) }}
+              placeholder={user ? user.phone : '024 000 0000'}
+              className="h-12 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 text-sm outline-none focus:border-[#dc2d83]"
+            />
+            <input
+              type="text"
+              value={address}
+              onChange={function (e) { setAddress(e.target.value) }}
+              placeholder="Your location, e.g. Ayeduase, near the market"
+              className="h-12 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 text-sm outline-none focus:border-[#dc2d83]"
+            />
+            <textarea
+              value={notes}
+              onChange={function (e) { setNotes(e.target.value) }}
+              placeholder="Any notes for delivery, optional"
+              className="h-20 w-full rounded-xl border border-[#dfbdcb] bg-white p-4 text-sm outline-none focus:border-[#dc2d83]"
+            />
+          </div>
+        )}
+
+        <div className="mt-6 border-t border-[#e7ccd7] pt-5">
           <div className="flex justify-between font-serif text-xl text-[#3e2530]">
             <span>Total</span>
             <span>GHC {total.toLocaleString()}</span>
           </div>
-          <label className="mt-4 block">
-            <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em] text-[#765b67]">
-              Phone number
-            </span>
-            <input
-              type="tel"
-              value={momoNumber}
-              onChange={(event) => setMomoNumber(event.target.value)}
-              placeholder={user?.phone ?? '024 000 0000'}
-              className="h-12 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 text-sm outline-none focus:border-[#dc2d83]"
-            />
-          </label>
           <button
             type="button"
-            onClick={() => void checkout()}
+            onClick={function () { checkout() }}
             disabled={!items.length || busy}
             className="mt-5 min-h-13 w-full rounded-full bg-[#d92c83] px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] text-white disabled:opacity-40"
           >

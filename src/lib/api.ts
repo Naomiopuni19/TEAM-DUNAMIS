@@ -221,7 +221,17 @@ export type ShopCategoryTile = {
   isActive?: boolean
 }
 
+export type BusinessInfo = {
+  businessName: string
+  phone: string
+  address: string
+  openingHours: Record<string, string>
+}
+
 export const api = {
+  businessInfo() {
+    return request<BusinessInfo>('/business-info')
+  },
   shopCategoryTiles() {
     return request<ShopCategoryTile[]>('/shop-category-tiles')
   },
@@ -367,13 +377,14 @@ export const api = {
   createOrder(
     token: string,
     items: Array<{ productId: string; quantity: number }>,
+    delivery: { name: string; phone: string; address: string; notes?: string },
   ) {
     return request<{
       order: { id: string; totalAmount: number; status: string }
     }>('/orders', {
       method: 'POST',
       token,
-      body: JSON.stringify({ items }),
+      body: JSON.stringify({ items, delivery }),
     })
   },
   initiatePayment(

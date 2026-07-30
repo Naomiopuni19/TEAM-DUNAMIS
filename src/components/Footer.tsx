@@ -1,4 +1,18 @@
+import { useEffect, useState } from 'react'
+import { api } from '../lib/api'
+
 export function Footer() {
+  const [info, setInfo] = useState(null)
+
+  useEffect(function () {
+    let cancelled = false
+    api.businessInfo().then(function (data) {
+      if (!cancelled) setInfo(data)
+    })
+    return function () {
+      cancelled = true
+    }
+  }, [])
   return (
     <footer className="bg-[#402231] text-[#fff8fb]">
       <section className="border-b border-white/10 px-6 py-14 sm:px-10 lg:px-12">
@@ -47,9 +61,7 @@ export function Footer() {
             Visit
           </h3>
           <address className="mt-5 text-sm not-italic leading-8 text-white/60">
-            Ayeduase Newsite
-            <br />
-            Kumasi, Ghana
+            {info ? info.address : 'Ayeduase Newsite, Kumasi, Ghana'}
             <br />
             By appointment only
           </address>
@@ -78,7 +90,7 @@ export function Footer() {
             <a href="#/privacy" className="w-fit transition hover:text-white">Privacy policy</a>
             <a href="#/faqs" className="w-fit transition hover:text-white">FAQs</a>
             <a href="#/terms" className="w-fit transition hover:text-white">Terms of service</a>
-            <a href="tel:0591911212" className="w-fit transition hover:text-white">059 191 1212</a>
+            <a href={info ? "tel:" + info.phone.replace(/\s/g, "") : "tel:0591911212"} className="w-fit transition hover:text-white">{info ? info.phone : "059 191 1212"}</a>
               <a
               href="#/staff-login"
               className="col-span-2 mt-3 w-fit border-t border-white/10 pt-4 font-semibold text-[#f1a3c6] transition hover:text-white lg:col-span-1"
