@@ -50,12 +50,13 @@ export async function createBooking(userId, input) {
     }
 
     const result = await client.query(
-      `insert into bookings (user_id, service_id, booking_date, time_slot, status)
-       values ($1, $2, $3, $4, 'pending')
+      `insert into bookings (user_id, service_id, booking_date, time_slot, status, reference_image_url, length_label)
+       values ($1, $2, $3, $4, 'pending', $5, $6)
        returning id, user_id as "userId", service_id as "serviceId",
                  booking_date as date, time_slot as "timeSlot", status,
+                 reference_image_url as "referenceImageUrl", length_label as "lengthLabel",
                  created_at as "createdAt"`,
-      [userId, input.serviceId, input.date, input.timeSlot]
+      [userId, input.serviceId, input.date, input.timeSlot, input.referenceImageUrl || null, input.lengthLabel || null]
     );
     await client.query("commit");
     return result.rows[0];
@@ -70,6 +71,7 @@ export async function createBooking(userId, input) {
 export async function listBookingsForUser(userId) {
   const result = await query(
     `select b.id, b.booking_date as date, b.time_slot as "timeSlot", b.status,
+            b.reference_image_url as "referenceImageUrl", b.length_label as "lengthLabel",
             s.name as "serviceName", c.name as "categoryName"
      from bookings b
      join services s on s.id = b.service_id
@@ -84,6 +86,7 @@ export async function listBookingsForUser(userId) {
 export async function listBookings({ date, categoryId }) {
   const result = await query(
     `select b.id, b.booking_date as date, b.time_slot as "timeSlot", b.status,
+            b.reference_image_url as "referenceImageUrl", b.length_label as "lengthLabel",
             json_build_object('id', u.id, 'name', u.name, 'phone', u.phone) as "user",
             json_build_object('id', s.id, 'name', s.name) as "service",
             json_build_object('id', c.id, 'name', c.name) as "category"

@@ -8,6 +8,7 @@ type AuthPanelProps = {
 
 export function AuthPanel({ open, onClose }: AuthPanelProps) {
   const { login, register } = useAppData()
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
@@ -24,10 +25,18 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
       if (mode === 'login') {
         await login(String(form.get('phone')), String(form.get('password')))
       } else {
+        const password = String(form.get('password'))
+        if (password !== confirmPassword) {
+          setMessage('Passwords do not match.')
+          setBusy(false)
+          return
+        }
         await register(
           String(form.get('name')),
           String(form.get('phone')),
-          String(form.get('password')),
+          password,
+          String(form.get('email') || ''),
+          String(form.get('area') || ''),
         )
       }
       onClose()
@@ -52,7 +61,7 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
           aria-label="Close account panel"
           className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/45 text-2xl text-[#4d2838]"
         >
-          ×
+          x
         </button>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#d92c83]">
           Client account
@@ -81,6 +90,33 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
               />
             </label>
           )}
+          {mode === 'signup' && (
+            <label className="block">
+              <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em]">
+                Email
+              </span>
+              <input
+                required
+                name="email"
+                type="email"
+                autoComplete="email"
+                className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]"
+              />
+            </label>
+          )}
+          {mode === 'signup' && (
+            <label className="block">
+              <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em]">
+                Area or neighbourhood, optional
+              </span>
+              <input
+                name="area"
+                type="text"
+                placeholder="e.g. Ayeduase, Bantama"
+                className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]"
+              />
+            </label>
+          )}
           <label className="block">
             <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em]">
               Phone number
@@ -89,6 +125,9 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
               required
               name="phone"
               type="tel"
+              pattern={mode === 'signup' ? '(0|\\+233)[0-9]{9}' : undefined}
+              title={mode === 'signup' ? 'Enter a valid Ghanaian number, e.g. 024 123 4567' : undefined}
+              placeholder="024 123 4567"
               minLength={7}
               maxLength={20}
               autoComplete="tel"
@@ -103,18 +142,37 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
               required
               name="password"
               type="password"
-              minLength={6}
+              minLength={mode === 'signup' ? 8 : 6}
+              pattern={mode === 'signup' ? '(?=.*[A-Za-z])(?=.*\\d).{8,}' : undefined}
+              title={mode === 'signup' ? 'At least 8 characters, including a letter and a number' : undefined}
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
               className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]"
             />
           </label>
+          {mode === 'signup' && (
+            <label className="block">
+              <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em]">
+                Confirm password
+              </span>
+              <input
+                required
+                name="confirmPassword"
+                type="password"
+                minLength={8}
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                className="h-13 w-full rounded-xl border border-[#d99eb7] bg-white px-4 outline-none focus:border-[#d92c83]"
+              />
+            </label>
+          )}
           <button
             type="submit"
             disabled={busy}
             className="min-h-13 w-full rounded-full bg-[#d92c83] px-6 py-3 font-serif text-xl font-bold text-white transition hover:bg-[#b92068] disabled:opacity-60"
           >
             {busy
-              ? 'Please wait…'
+              ? 'Please waitÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦'
               : mode === 'login'
                 ? 'Login'
                 : 'Create account'}

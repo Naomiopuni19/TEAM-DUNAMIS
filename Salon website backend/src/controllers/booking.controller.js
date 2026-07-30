@@ -12,7 +12,9 @@ import { notFound } from "../utils/httpError.js";
 const createBookingSchema = z.object({
   serviceId: z.string().uuid(),
   date: z.string().date(),
-  timeSlot: z.string().min(3).max(20)
+  timeSlot: z.string().min(3).max(20),
+  referenceImageUrl: z.string().optional(),
+  lengthLabel: z.string().optional()
 });
 
 const statusSchema = z.object({

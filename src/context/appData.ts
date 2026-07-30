@@ -10,7 +10,7 @@ export type AppDataContextValue = {
   token: string | null
   authLoading: boolean
   login: (phone: string, password: string) => Promise<User>
-  register: (name: string, phone: string, password: string) => Promise<User>
+  register: (name: string, phone: string, password: string, email?: string, area?: string) => Promise<User>
   updateProfile: (name: string, phone: string) => Promise<User>
   changePassword: (
     currentPassword: string,

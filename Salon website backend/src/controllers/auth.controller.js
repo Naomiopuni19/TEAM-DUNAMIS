@@ -15,12 +15,27 @@ import { HttpError, notFound } from "../utils/httpError.js";
 const authSchema = z.object({
   name: z.string().min(2).optional(),
   phone: z.string().min(7).max(20),
-  password: z.string().min(6)
+  password: z.string().min(6),
+  email: z.string().email(),
+  area: z.string().max(120).optional()
+});
+
+const ghanaPhoneRegex = /^(0|\+233)[0-9]{9}$/;
+const strongPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+
+const registerSchema = z.object({
+  name: z.string().min(2),
+  phone: z.string().regex(ghanaPhoneRegex, "Enter a valid Ghanaian phone number, e.g. 024 123 4567"),
+  password: z.string().regex(strongPasswordRegex, "Password needs at least 8 characters, including a letter and a number"),
+  email: z.string().email(),
+  area: z.string().max(120).optional()
 });
 
 const profileSchema = z.object({
   name: z.string().min(2),
-  phone: z.string().min(7).max(20)
+  phone: z.string().min(7).max(20),
+  email: z.string().email().optional().or(z.literal("")),
+  area: z.string().max(120).optional()
 });
 
 const passwordSchema = z.object({
@@ -29,7 +44,14 @@ const passwordSchema = z.object({
 });
 
 function publicUser(user) {
-  return { id: user.id, name: user.name, phone: user.phone, role: user.role };
+  return {
+    id: user.id,
+    name: user.name,
+    phone: user.phone,
+    role: user.role,
+    email: user.email || null,
+    area: user.area || null
+  };
 }
 
 function signToken(user) {
@@ -39,18 +61,20 @@ function signToken(user) {
 }
 
 export async function register(req, res) {
-  const body = authSchema.required({ name: true }).parse(req.body);
+  const body = registerSchema.parse(req.body);
   const passwordHash = await bcrypt.hash(body.password, 12);
   const user = await createCustomer({
     name: body.name,
     phone: body.phone,
-    passwordHash
+    passwordHash,
+    email: body.email,
+    area: body.area || null
   });
   res.status(201).json({ user: publicUser(user), token: signToken(user) });
 }
 
 export async function login(req, res) {
-  const body = authSchema.omit({ name: true }).parse(req.body);
+  const body = authSchema.omit({ name: true, email: true, area: true }).parse(req.body);
   const user = await findUserByPhone(body.phone);
   if (!user || !(await bcrypt.compare(body.password, user.password_hash))) {
     throw new HttpError(401, "Invalid phone or password");

@@ -61,7 +61,7 @@ function App() {
       page = <ShopPage onAdd={addToCart} />
       break
     case 'appointments':
-      page = <BookingPage onRequireAuth={() => setAuthOpen(true)} />
+      page = <BookingPage onRequireAuth={() => setAuthOpen(true)} onAdd={addToCart} />
       break
     case 'dashboard':
       page = (

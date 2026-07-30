@@ -228,7 +228,39 @@ export type BusinessInfo = {
   openingHours: Record<string, string>
 }
 
+export type ServiceLengthOption = {
+  id: string
+  serviceId: string
+  label: string
+  priceMin: number
+  priceMax: number
+  sortOrder: number
+}
+
 export const api = {
+  serviceLengthOptions(serviceId: string) {
+    return request<ServiceLengthOption[]>('/service-length-options/service/' + serviceId)
+  },
+  createServiceLengthOption(
+    token: string,
+    body: { serviceId: string; label: string; priceMin: number; priceMax: number; sortOrder: number },
+  ) {
+    return request<{ option: ServiceLengthOption }>('/service-length-options', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  updateServiceLengthOption(token: string, id: string, body: Partial<ServiceLengthOption>) {
+    return request<{ option: ServiceLengthOption }>('/service-length-options/' + id, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  deleteServiceLengthOption(token: string, id: string) {
+    return request<null>('/service-length-options/' + id, { method: 'DELETE', token })
+  },
   businessInfo() {
     return request<BusinessInfo>('/business-info')
   },
@@ -334,10 +366,10 @@ export const api = {
       body: JSON.stringify({ phone, password }),
     })
   },
-  register(name: string, phone: string, password: string) {
+  register(name: string, phone: string, password: string, email?: string, area?: string) {
     return request<AuthResponse>('/auth/register', {
       method: 'POST',
-      body: JSON.stringify({ name, phone, password }),
+      body: JSON.stringify({ name, phone, password, email, area }),
     })
   },
   me(token: string) {
@@ -366,7 +398,7 @@ export const api = {
   },
   createBooking(
     token: string,
-    body: { serviceId: string; date: string; timeSlot: string },
+    body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string },
   ) {
     return request<{ booking: { id: string; status: string } }>('/bookings', {
       method: 'POST',
