@@ -172,7 +172,7 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
             className="min-h-13 w-full rounded-full bg-[#d92c83] px-6 py-3 font-serif text-xl font-bold text-white transition hover:bg-[#b92068] disabled:opacity-60"
           >
             {busy
-              ? 'Please waitÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦'
+                ? 'Please wait...'
               : mode === 'login'
                 ? 'Login'
                 : 'Create account'}
