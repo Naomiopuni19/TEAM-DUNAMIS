@@ -23,7 +23,9 @@ const links = [
   ['Home', '#/'],
   ['Services', '#/services'],
   ['Shop', '#/shop'],
+  ['Hair Extensions', '#/shop?category=Extensions'],
   ['Appointments', '#/appointments'],
+  ['About', '#/about'],
 ]
 
 export function Header({
@@ -135,35 +137,27 @@ export function Header({
           : 'border-[#ecd7e0] bg-[#fffaf8]/88 shadow-[0_8px_30px_rgba(71,35,51,0.06)] backdrop-blur-xl'
       }`}
     >
+      {!blendsWithHero && (
+        <div className="bg-[#dc2d83] py-2 text-center text-[10px] font-bold uppercase tracking-[0.24em] text-white sm:text-[11px]">
+          Premium Virgin Hair &bull; Nationwide Delivery &bull; Book Your Appointment Today
+        </div>
+      )}
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-5 px-5 sm:h-24 sm:px-8 lg:px-12">
-        <a
-          href="#/"
-          className={`shrink-0 font-serif leading-none transition-colors duration-300 ${
-            blendsWithHero ? 'text-[#f2e7eb]' : 'text-[#3e2530]'
-          }`}
-        >
+        <a href="#/" className="shrink-0 font-serif leading-none text-[#3e2530]">
           <span className="block text-[21px] font-semibold uppercase tracking-[0.16em] sm:text-2xl">
             Beryl&apos;s
           </span>
-          <span
-            className={`mt-1 block text-[8px] font-bold uppercase tracking-[0.48em] transition-colors duration-300 ${
-              blendsWithHero ? 'text-[#e9a5c4]' : 'text-[#d92c83]'
-            }`}
-          >
+          <span className="mt-1 block text-[8px] font-bold uppercase tracking-[0.48em] text-[#d92c83]">
             Beauty Mark
           </span>
         </a>
 
-        <nav aria-label="Primary navigation" className="hidden items-center gap-7 lg:flex">
+        <nav aria-label="Primary navigation" className="hidden items-center gap-6 lg:flex">
           {links.map(([label, href]) => (
             <a
               key={label}
               href={href}
-              className={`text-[11px] font-bold uppercase tracking-[0.16em] transition duration-300 ${
-                blendsWithHero
-                  ? 'text-[#e8dce1] hover:text-white'
-                  : 'text-[#604c55] hover:text-[#d92c83]'
-              }`}
+              className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#604c55] transition hover:text-[#d92c83]"
             >
               {label}
             </a>
@@ -179,11 +173,7 @@ export function Header({
             }}
             aria-label={searchOpen ? 'Close search' : 'Search products and services'}
             aria-expanded={searchOpen}
-            className={`flex h-11 items-center justify-center gap-2 rounded-full border px-3 transition duration-300 xl:min-w-48 xl:justify-start xl:px-4 ${
-              blendsWithHero
-                ? 'border-white/25 bg-white/5 text-[#eee3e7] hover:border-white/50 hover:bg-white/10'
-                : 'border-[#e4bdce] bg-white/65 text-[#604c55] hover:border-[#d92c83] hover:text-[#d92c83]'
-            }`}
+            className="flex h-11 items-center justify-center gap-2 rounded-full border border-[#e4bdce] bg-white/65 px-3 text-[#604c55] transition hover:border-[#d92c83] hover:text-[#d92c83] xl:min-w-48 xl:justify-start xl:px-4"
           >
             {searchOpen ? (
               <FiX aria-hidden="true" size={19} />
@@ -199,11 +189,7 @@ export function Header({
             onClick={onOpenCart}
             aria-label={`Open shopping bag with ${cartCount} items`}
             title="Shopping bag"
-            className={`relative flex h-11 w-11 items-center justify-center rounded-full border transition duration-300 ${
-              blendsWithHero
-                ? 'border-white/25 bg-white/5 text-[#eee3e7] hover:border-white/50 hover:bg-white/10'
-                : 'border-[#e4bdce] text-[#604c55] hover:border-[#d92c83] hover:bg-[#f8e3ec] hover:text-[#d92c83]'
-            }`}
+            className="relative flex h-11 w-11 items-center justify-center rounded-full border border-[#e4bdce] text-[#604c55] transition hover:border-[#d92c83] hover:bg-[#f8e3ec] hover:text-[#d92c83]"
           >
             <FiShoppingBag aria-hidden="true" size={20} strokeWidth={1.8} />
             {cartCount > 0 && (
@@ -230,12 +216,8 @@ export function Header({
               aria-label={user ? `Open profile menu for ${user.name}` : 'Open account'}
               aria-expanded={user ? profileOpen : undefined}
               title={user ? user.name : 'Account'}
-              className={`flex h-11 items-center justify-center gap-1 rounded-full border transition duration-300 ${
+              className={`flex h-11 items-center justify-center gap-1 rounded-full border border-[#e4bdce] text-[#604c55] transition hover:border-[#d92c83] hover:bg-[#f8e3ec] hover:text-[#d92c83] ${
                 user ? 'w-auto px-3' : 'w-11'
-              } ${
-                blendsWithHero
-                  ? 'border-white/25 bg-white/5 text-[#eee3e7] hover:border-white/50 hover:bg-white/10'
-                  : 'border-[#e4bdce] text-[#604c55] hover:border-[#d92c83] hover:bg-[#f8e3ec] hover:text-[#d92c83]'
               }`}
             >
               <FiUser aria-hidden="true" size={20} strokeWidth={1.8} />
@@ -312,9 +294,7 @@ export function Header({
             }}
             aria-expanded={menuOpen}
             aria-label="Toggle menu"
-            className={`flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full transition-colors duration-300 lg:hidden ${
-              blendsWithHero ? 'text-[#eee3e7]' : 'text-[#8f3862]'
-            }`}
+            className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full text-[#8f3862] lg:hidden"
           >
             <span className="h-px w-5 bg-current" />
             <span className="h-px w-5 bg-current" />
@@ -371,61 +351,12 @@ export function Header({
                   ))
                 ) : (
                   <p className="px-5 py-6 text-sm text-[#806a73]">
-                    No products or services match “{searchQuery}”.
+                    No products or services match "{searchQuery}"
                   </p>
                 )}
               </div>
             )}
           </div>
-        </div>
-      )}
-
-      {menuOpen && (
-        <div className="border-t border-[#ecd7e0] bg-[#fffaf8] px-5 py-6 lg:hidden">
-          <nav className="mx-auto grid max-w-7xl gap-1">
-            {links.map(([label, href]) => (
-              <a
-                key={label}
-                href={href}
-                onClick={() => setMenuOpen(false)}
-                className="rounded-xl px-4 py-3 font-serif text-xl text-[#3e2530] transition hover:bg-[#f8e3ec]"
-              >
-                {label}
-              </a>
-            ))}
-            {user ? (
-              <>
-                <a
-                  href="#/account"
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-xl px-4 py-3 font-serif text-xl text-[#3e2530] transition hover:bg-[#f8e3ec] sm:hidden"
-                >
-                  My account
-                </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    logout()
-                    setMenuOpen(false)
-                  }}
-                  className="rounded-xl px-4 py-3 text-left font-serif text-xl text-[#a52261] transition hover:bg-[#f8e3ec] sm:hidden"
-                >
-                  Sign out
-                </button>
-              </>
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  onOpenAccount()
-                  setMenuOpen(false)
-                }}
-                className="rounded-xl px-4 py-3 text-left font-serif text-xl text-[#3e2530] transition hover:bg-[#f8e3ec] sm:hidden"
-              >
-                Account
-              </button>
-            )}
-          </nav>
         </div>
       )}
     </header>

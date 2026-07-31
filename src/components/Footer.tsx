@@ -13,6 +13,7 @@ export function Footer() {
       cancelled = true
     }
   }, [])
+
   return (
     <footer className="bg-[#402231] text-[#fff8fb]">
       <section className="border-b border-white/10 px-6 py-14 sm:px-10 lg:px-12">
@@ -22,7 +23,7 @@ export function Footer() {
               Stay updated
             </p>
             <h2 className="mt-4 font-serif text-3xl leading-tight sm:text-4xl">
-              New arrivals, hair-care notes and available appointment dates.
+              New arrivals, hair care notes and available appointment dates.
             </h2>
           </div>
           <form className="flex w-full max-w-lg flex-col gap-3 sm:flex-row sm:items-center">
@@ -33,11 +34,11 @@ export function Footer() {
               id="newsletter-email"
               type="email"
               placeholder="Email address"
-              className="h-13 w-full flex-1 rounded-full border border-white/40 bg-white/20 px-5 text-sm text-white outline-none backdrop-blur-md placeholder:text-white/80 focus:border-[#d6b56e] focus:bg-white/25"
+              className="h-13 w-full flex-1 rounded-full border border-white/40 bg-white/20 px-5 text-sm text-white outline-none backdrop-blur-md placeholder:text-white/80 focus:border-[#dc2d83] focus:bg-white/25"
             />
             <button
               type="submit"
-              className="h-13 shrink-0 rounded-full bg-[#dc2d83] px-8 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#ef4d9a]"
+              className="h-13 shrink-0 rounded-full bg-[#dc2d83] px-8 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#b92068]"
             >
               Sign up
             </button>
@@ -51,12 +52,12 @@ export function Footer() {
             Beryl's
           </h2>
           <p className="mt-5 max-w-xs text-sm leading-7 text-white/60">
-            Quality raw hair, ready-to-wear wigs and professional salon services in Kumasi.
+            Quality raw hair, ready to wear wigs and professional salon services in Kumasi.
           </p>
         </div>
 
         <div>
-          <p className="h-px w-8 bg-[#d6b56e]" />
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#dc2d83]" />
           <h3 className="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-[#f1a3c6]">
             Visit
           </h3>
@@ -68,7 +69,7 @@ export function Footer() {
         </div>
 
         <nav>
-          <p className="h-px w-8 bg-[#d6b56e]" />
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#dc2d83]" />
           <h3 className="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-[#f1a3c6]">
             Explore
           </h3>
@@ -80,7 +81,7 @@ export function Footer() {
         </nav>
 
         <nav className="col-span-2 lg:col-span-1">
-          <p className="h-px w-8 bg-[#d6b56e]" />
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#dc2d83]" />
           <h3 className="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-[#f1a3c6]">
             Information
           </h3>
@@ -91,7 +92,7 @@ export function Footer() {
             <a href="#/faqs" className="w-fit transition hover:text-white">FAQs</a>
             <a href="#/terms" className="w-fit transition hover:text-white">Terms of service</a>
             <a href={info ? "tel:" + info.phone.replace(/\s/g, "") : "tel:0591911212"} className="w-fit transition hover:text-white">{info ? info.phone : "059 191 1212"}</a>
-              <a
+            <a
               href="#/staff-login"
               className="col-span-2 mt-3 w-fit border-t border-white/10 pt-4 font-semibold text-[#f1a3c6] transition hover:text-white lg:col-span-1"
             >
@@ -102,7 +103,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10 px-6 py-6 text-center text-xs text-white/40">
-        (c) 2026 Beryl's Beauty Mark. All rights reserved.
+        &#169; 2026 Beryl's Beauty Mark. All rights reserved.
       </div>
     </footer>
   )
