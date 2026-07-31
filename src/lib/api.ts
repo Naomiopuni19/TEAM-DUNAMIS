@@ -239,104 +239,104 @@ export type ServiceLengthOption = {
 
 export const api = {
   serviceLengthOptions(serviceId: string) {
-    return request<ServiceLengthOption[]>('/service-length-options/service/' + serviceId)
+    return request<ServiceLengthOption[]>('/api/service-length-options/service/' + serviceId)
   },
   createServiceLengthOption(
     token: string,
     body: { serviceId: string; label: string; priceMin: number; priceMax: number; sortOrder: number },
   ) {
-    return request<{ option: ServiceLengthOption }>('/service-length-options', {
+    return request<{ option: ServiceLengthOption }>('/api/service-length-options', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
     })
   },
   updateServiceLengthOption(token: string, id: string, body: Partial<ServiceLengthOption>) {
-    return request<{ option: ServiceLengthOption }>('/service-length-options/' + id, {
+    return request<{ option: ServiceLengthOption }>('/api/service-length-options/' + id, {
       method: 'PUT',
       token,
       body: JSON.stringify(body),
     })
   },
   deleteServiceLengthOption(token: string, id: string) {
-    return request<null>('/service-length-options/' + id, { method: 'DELETE', token })
+    return request<null>('/api/service-length-options/' + id, { method: 'DELETE', token })
   },
   businessInfo() {
-    return request<BusinessInfo>('/business-info')
+    return request<BusinessInfo>('/api/business-info')
   },
   shopCategoryTiles() {
-    return request<ShopCategoryTile[]>('/shop-category-tiles')
+    return request<ShopCategoryTile[]>('/api/shop-category-tiles')
   },
   adminShopCategoryTiles(token: string) {
-    return request<ShopCategoryTile[]>('/shop-category-tiles/admin', { token })
+    return request<ShopCategoryTile[]>('/api/shop-category-tiles/admin', { token })
   },
   createShopCategoryTile(
     token: string,
     body: { title: string; label: string; copy: string; imageUrl: string; href: string; sortOrder: number },
   ) {
-    return request<{ tile: ShopCategoryTile }>('/shop-category-tiles', {
+    return request<{ tile: ShopCategoryTile }>('/api/shop-category-tiles', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
     })
   },
   updateShopCategoryTile(token: string, id: string, body: Partial<ShopCategoryTile>) {
-    return request<{ tile: ShopCategoryTile }>('/shop-category-tiles/' + id, {
+    return request<{ tile: ShopCategoryTile }>('/api/shop-category-tiles/' + id, {
       method: 'PUT',
       token,
       body: JSON.stringify(body),
     })
   },
   deleteShopCategoryTile(token: string, id: string) {
-    return request<null>('/shop-category-tiles/' + id, { method: 'DELETE', token })
+    return request<null>('/api/shop-category-tiles/' + id, { method: 'DELETE', token })
   },
   heroSlides() {
-    return request<HeroSlide[]>('/hero-slides')
+    return request<HeroSlide[]>('/api/hero-slides')
   },
   adminHeroSlides(token: string) {
-    return request<HeroSlide[]>('/hero-slides/admin', { token })
+    return request<HeroSlide[]>('/api/hero-slides/admin', { token })
   },
   createHeroSlide(
     token: string,
     body: { eyebrow: string; title: string; subtitle: string; imageUrl: string; sortOrder: number },
   ) {
-    return request<{ slide: HeroSlide }>('/hero-slides', {
+    return request<{ slide: HeroSlide }>('/api/hero-slides', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
     })
   },
   updateHeroSlide(token: string, id: string, body: Partial<HeroSlide>) {
-    return request<{ slide: HeroSlide }>(`/hero-slides/${id}`, {
+    return request<{ slide: HeroSlide }>(`/api/hero-slides/${id}`, {
       method: 'PUT',
       token,
       body: JSON.stringify(body),
     })
   },
   deleteHeroSlide(token: string, id: string) {
-    return request<null>(`/hero-slides/${id}`, { method: 'DELETE', token })
+    return request<null>(`/api/hero-slides/${id}`, { method: 'DELETE', token })
   },
   reviews() {
-    return request<Review[]>('/reviews')
+    return request<Review[]>('/api/reviews')
   },
   adminReviews(token: string) {
-    return request<Review[]>('/reviews/admin', { token })
+    return request<Review[]>('/api/reviews/admin', { token })
   },
   myReviewableBookings(token: string) {
-    return request<ReviewableBooking[]>('/reviews/mine', { token })
+    return request<ReviewableBooking[]>('/api/reviews/mine', { token })
   },
   createReview(
     token: string,
     body: { bookingId: string; rating: number; comment?: string; mediaUrl?: string; mediaType?: 'photo' | 'video' },
   ) {
-    return request<{ review: Review }>('/reviews', {
+    return request<{ review: Review }>('/api/reviews', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
     })
   },
   updateReviewStatus(token: string, id: string, status: 'approved' | 'rejected') {
-    return request<{ review: Review }>(`/reviews/${id}/status`, {
+    return request<{ review: Review }>(`/api/reviews/${id}/status`, {
       method: 'PUT',
       token,
       body: JSON.stringify({ status }),
@@ -345,7 +345,7 @@ export const api = {
   async products() {
     const data = await request<
       Array<Omit<Product, 'price' | 'image'> & { price: number | string }>
-    >('/products')
+    >('/api/products')
     return data.map(normalizeProduct)
   },
   async services() {
@@ -357,26 +357,26 @@ export const api = {
           priceMax: number | string
         }
       >
-    >('/services')
+    >('/api/services')
     return data.map(normalizeService)
   },
   login(phone: string, password: string) {
-    return request<AuthResponse>('/auth/login', {
+    return request<AuthResponse>('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ phone, password }),
     })
   },
   register(name: string, phone: string, password: string, email?: string, area?: string) {
-    return request<AuthResponse>('/auth/register', {
+    return request<AuthResponse>('/api/auth/register', {
       method: 'POST',
       body: JSON.stringify({ name, phone, password, email, area }),
     })
   },
   me(token: string) {
-    return request<{ user: User }>('/auth/me', { token })
+    return request<{ user: User }>('/api/auth/me', { token })
   },
   updateProfile(token: string, body: { name: string; phone: string }) {
-    return request<{ user: User }>('/auth/me', {
+    return request<{ user: User }>('/api/auth/me', {
       method: 'PUT',
       token,
       body: JSON.stringify(body),
@@ -386,7 +386,7 @@ export const api = {
     token: string,
     body: { currentPassword: string; newPassword: string },
   ) {
-    return request<{ message: string }>('/auth/password', {
+    return request<{ message: string }>('/api/auth/password', {
       method: 'PUT',
       token,
       body: JSON.stringify(body),
@@ -394,13 +394,13 @@ export const api = {
   },
   availability(serviceId: string, date: string) {
     const query = new URLSearchParams({ serviceId, date })
-    return request<Availability>(`/bookings/availability?${query}`)
+    return request<Availability>(`/api/bookings/availability?${query}`)
   },
   createBooking(
     token: string,
     body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string },
   ) {
-    return request<{ booking: { id: string; status: string } }>('/bookings', {
+    return request<{ booking: { id: string; status: string } }>('/api/bookings', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
@@ -413,7 +413,7 @@ export const api = {
   ) {
     return request<{
       order: { id: string; totalAmount: number; status: string }
-    }>('/orders', {
+    }>('/api/orders', {
       method: 'POST',
       token,
       body: JSON.stringify({ items, delivery }),
@@ -428,7 +428,7 @@ export const api = {
       amount: number
       status: string
       authorizationUrl: string
-    }>('/payments/initiate', {
+    }>('/api/payments/initiate', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
@@ -436,32 +436,32 @@ export const api = {
   },
   verifyPayment(token: string, reference: string) {
     return request<{ reference: string; status: string; amount?: number }>(
-      `/payments/${reference}/verify`,
+      `/api/payments/${reference}/verify`,
       { token },
     )
   },
   adminBookings(token: string) {
-    return request<AdminBooking[]>('/bookings', { token })
+    return request<AdminBooking[]>('/api/bookings', { token })
   },
   updateBookingStatus(token: string, id: string, status: string) {
-    return request<{ booking: AdminBooking }>(`/bookings/${id}/status`, {
+    return request<{ booking: AdminBooking }>(`/api/bookings/${id}/status`, {
       method: 'PUT',
       token,
       body: JSON.stringify({ status }),
     })
   },
   rescheduleBooking(token: string, id: string, date: string, timeSlot: string) {
-    return request<{ booking: AdminBooking }>(`/bookings/${id}/schedule`, {
+    return request<{ booking: AdminBooking }>(`/api/bookings/${id}/schedule`, {
       method: 'PUT',
       token,
       body: JSON.stringify({ date, timeSlot }),
     })
   },
   adminOrders(token: string) {
-    return request<AdminOrder[]>('/orders', { token })
+    return request<AdminOrder[]>('/api/orders', { token })
   },
   updateOrderStatus(token: string, id: string, status: string) {
-    return request<{ order: AdminOrder }>(`/orders/${id}/status`, {
+    return request<{ order: AdminOrder }>(`/api/orders/${id}/status`, {
       method: 'PUT',
       token,
       body: JSON.stringify({ status }),
@@ -469,13 +469,13 @@ export const api = {
   },
   categories() {
     return request<Array<{ id: string; name: string; dailyCap: number }>>(
-      '/categories',
+      '/api/categories',
     )
   },
   createService(token: string, body: Omit<Service, 'id' | 'category'> & {
     categoryId: string
   }) {
-    return request<{ service: Service }>('/services', {
+    return request<{ service: Service }>('/api/services', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
@@ -484,81 +484,81 @@ export const api = {
   updateService(token: string, id: string, body: Partial<Service> & {
     categoryId?: string
   }) {
-    return request<{ service: Service }>(`/services/${id}`, {
+    return request<{ service: Service }>(`/api/services/${id}`, {
       method: 'PUT',
       token,
       body: JSON.stringify(body),
     })
   },
   deleteService(token: string, id: string) {
-    return request<null>(`/services/${id}`, { method: 'DELETE', token })
+    return request<null>(`/api/services/${id}`, { method: 'DELETE', token })
   },
   createProduct(token: string, body: Omit<Product, 'id' | 'image' | 'inStock'>) {
-    return request<{ product: Product }>('/products', {
+    return request<{ product: Product }>('/api/products', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
     })
   },
   updateProduct(token: string, id: string, body: Partial<Product>) {
-    return request<{ product: Product }>(`/products/${id}`, {
+    return request<{ product: Product }>(`/api/products/${id}`, {
       method: 'PUT',
       token,
       body: JSON.stringify(body),
     })
   },
   deleteProduct(token: string, id: string) {
-    return request<null>(`/products/${id}`, { method: 'DELETE', token })
+    return request<null>(`/api/products/${id}`, { method: 'DELETE', token })
   },
   adminCustomers(token: string) {
-    return request<AdminCustomer[]>('/admin/customers', { token })
+    return request<AdminCustomer[]>('/api/admin/customers', { token })
   },
   adminCustomer(token: string, id: string) {
     return request<AdminCustomer & {
       bookings: CustomerBooking[]
       orders: CustomerOrder[]
-    }>(`/admin/customers/${id}`, { token })
+    }>(`/api/admin/customers/${id}`, { token })
   },
   adminPayments(token: string) {
-    return request<AdminPayment[]>('/admin/payments', { token })
+    return request<AdminPayment[]>('/api/admin/payments', { token })
   },
   adminAnalytics(token: string) {
-    return request<AdminAnalytics>('/admin/analytics', { token })
+    return request<AdminAnalytics>('/api/admin/analytics', { token })
   },
   adminSettings(token: string) {
-    return request<AdminSettings>('/admin/settings', { token })
+    return request<AdminSettings>('/api/admin/settings', { token })
   },
   updateAdminSettings(token: string, body: Partial<AdminSettings>) {
-    return request<AdminSettings>('/admin/settings', {
+    return request<AdminSettings>('/api/admin/settings', {
       method: 'PUT',
       token,
       body: JSON.stringify(body),
     })
   },
   adminStaff(token: string) {
-    return request<AdminStaff[]>('/admin/staff', { token })
+    return request<AdminStaff[]>('/api/admin/staff', { token })
   },
   createAdminStaff(
     token: string,
     body: { name: string; phone: string; password: string },
   ) {
-    return request<{ staff: AdminStaff }>('/admin/staff', {
+    return request<{ staff: AdminStaff }>('/api/admin/staff', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
     })
   },
   updateAdminStaffStatus(token: string, id: string, isActive: boolean) {
-    return request<{ staff: AdminStaff }>(`/admin/staff/${id}/status`, {
+    return request<{ staff: AdminStaff }>(`/api/admin/staff/${id}/status`, {
       method: 'PUT',
       token,
       body: JSON.stringify({ isActive }),
     })
   },
   myBookings(token: string) {
-    return request<CustomerBooking[]>('/bookings/me', { token })
+    return request<CustomerBooking[]>('/api/bookings/me', { token })
   },
   myOrders(token: string) {
-    return request<CustomerOrder[]>('/orders/me', { token })
+    return request<CustomerOrder[]>('/api/orders/me', { token })
   },
 }
