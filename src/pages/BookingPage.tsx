@@ -36,6 +36,7 @@ export function BookingPage(props) {
   const [momoNumber, setMomoNumber] = useState('')
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
 
   const dates = useMemo(function () {
     return Array.from({ length: 5 }, function (_, index) {
@@ -406,6 +407,22 @@ export function BookingPage(props) {
                     className="h-13 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 outline-none focus:border-[#dc2d83] focus:ring-4 focus:ring-[#dc2d83]/10"
                   />
                 </label>
+
+                <div className="mt-6 rounded-2xl border border-[#e6c5d3] bg-[#f7e4ec] p-5">
+                  <p className="text-sm font-semibold text-[#3e2530]">Appointment terms</p>
+                  <p className="mt-2 text-sm leading-6 text-[#745f68]">
+                    If you arrive late for your appointment, the salon has the right to cancel and reschedule your booking, or additional charges may be added to your service.
+                  </p>
+                  <label className="mt-4 flex cursor-pointer items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={agreedToTerms}
+                      onChange={function (event) { setAgreedToTerms(event.target.checked) }}
+                      className="mt-0.5 h-4 w-4 accent-[#dc2d83]"
+                    />
+                    <span className="text-sm text-[#3e2530]">I have read and agree to these terms.</span>
+                  </label>
+                </div>
               </div>
               <aside className="rounded-2xl bg-[#4b2637] p-6 text-white">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#f2a7c9]">Booking summary</p>
@@ -475,7 +492,7 @@ export function BookingPage(props) {
               <button
                 type="button"
                 onClick={function () { requestBooking() }}
-                disabled={busy}
+                disabled={busy || !agreedToTerms}
                 className="rounded-full bg-[#dc2d83] px-7 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50"
               >
                 {busy ? 'Submitting...' : 'Request booking'}

@@ -12,7 +12,7 @@ type HomePageProps = {
 
 const announcements = [
   'Free delivery on orders over GHS 800',
-  '100% virgin human hair â€” ethically sourced',
+  '100% virgin human hair Ã¢â‚¬â€ ethically sourced',
   'Same-week appointments available in Kumasi',
   'New arrivals every Friday',
 ]
@@ -33,7 +33,7 @@ const stats = [
 
 const bookingSteps = [
   { step: '01', title: 'Choose your look', copy: 'Browse braiding, makeup, nails and lashes, then pick the service that fits.' },
-  { step: '02', title: 'Pick your slot', copy: 'Select a date and time that works for you â€” instant confirmation.' },
+  { step: '02', title: 'Pick your slot', copy: 'Select a date and time that works for you Ã¢â‚¬â€ instant confirmation.' },
   { step: '03', title: 'Sit back', copy: 'Arrive, relax, and let our stylists handle every detail with care.' },
 ]
 
@@ -42,12 +42,6 @@ const faqs = [
   { q: 'Is the hair really 100 percent human hair?', a: 'Yes. Every bundle, closure and frontal we sell is virgin human hair that can be bleached, coloured and heat styled.' },
   { q: 'Do you ship outside Ghana?', a: 'We ship worldwide. Delivery within Kumasi and Accra is 1 to 3 days, international orders arrive in 5 to 10 working days.' },
   { q: 'Can I bring my own hair to an appointment?', a: 'Absolutely. Just mention it when booking so we can allocate the right amount of time for your install.' },
-]
-
-const fallbackTiles = [
-  { id: 'fallback-wigs', label: 'Wigs', copy: 'Natural-looking HD lace, full ends and soft movement.', imageUrl: imageBase + '/product-hd-lace-wig.jpg', href: '#/shop?category=Wigs' },
-  { id: 'fallback-bundles', label: 'Bundles', copy: 'Premium textures selected for density, longevity and lustre.', imageUrl: imageBase + '/product-burmese-wave.jpg', href: '#/shop?category=Bundles' },
-  { id: 'fallback-care', label: 'Hair Care', copy: 'Thoughtful formulas to protect your investment between visits.', imageUrl: imageBase + '/product-hair-mask.jpg', href: '#/shop?category=Hair Care' },
 ]
 
 const fallbackTestimonials = [
@@ -157,8 +151,10 @@ function SectionHeading(props: { eyebrow: string; title: string; copy?: string }
     <Reveal className="text-center">
       <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#dc2d83]">{props.eyebrow}</p>
       <h2 className="mt-3 font-serif text-4xl text-[#3e2530] sm:text-5xl">{props.title}</h2>
-      <div className="mx-auto mt-4 flex items-center justify-center">
+      <div className="mx-auto mt-4 flex items-center justify-center gap-3">
+        <span className="h-px w-10 bg-[#e2b8ca]" />
         <span className="h-1.5 w-1.5 rounded-full bg-[#dc2d83]" />
+        <span className="h-px w-10 bg-[#e2b8ca]" />
       </div>
       {props.copy && (
         <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#745f68] sm:text-base">{props.copy}</p>
@@ -229,7 +225,7 @@ function HeroBanner() {
       data-home-hero
       onMouseEnter={function () { setPaused(true) }}
       onMouseLeave={function () { setPaused(false) }}
-      className="relative isolate overflow-hidden bg-[#f7e4ec] text-[#3e2530]"
+      className="relative isolate overflow-hidden bg-[#3e2530] text-white"
     >
       {slides.map(function (item, itemIndex) {
         const active = itemIndex === index
@@ -243,10 +239,9 @@ function HeroBanner() {
           />
         )
       })}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(247,228,236,0.96)_0%,rgba(247,228,236,0.85)_34%,rgba(247,228,236,0.4)_58%,rgba(247,228,236,0)_82%)]" />
-      <div className="pointer-events-none absolute -left-24 top-24 -z-10 h-72 w-72 rounded-full bg-[#dc2d83]/15 blur-3xl" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(62,37,48,0.88)_0%,rgba(62,37,48,0.62)_45%,rgba(62,37,48,0.35)_100%)]" />
 
-      <div className="mx-auto flex min-h-[88vh] max-w-7xl items-center px-6 pb-24 pt-28 sm:px-10 sm:pt-32 lg:px-12">
+      <div className="mx-auto flex min-h-[62vh] max-w-7xl items-center px-6 py-16 sm:px-10 lg:px-12">
         <div key={slide.id} className="max-w-2xl animate-[bbm-rise_800ms_cubic-bezier(0.22,1,0.36,1)_both]">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#3e2530] shadow-sm backdrop-blur">
             <span className="h-2 w-2 animate-pulse rounded-full bg-[#dc2d83]" />
@@ -433,7 +428,7 @@ function Newsletter() {
         <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#f2a7c9]">Stay in the loop</p>
         <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Get 10% off your first order</h2>
         <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-white/70">
-          New arrivals, restock alerts and appointment openings â€” straight to your inbox.
+          New arrivals, restock alerts and appointment openings Ã¢â‚¬â€ straight to your inbox.
         </p>
         <form
           className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row"
@@ -454,7 +449,7 @@ function Newsletter() {
             {sent ? 'Subscribed' : 'Subscribe'}
           </button>
         </form>
-        {sent && <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[#f2a7c9]">Thank you â€” check your inbox.</p>}
+        {sent && <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[#f2a7c9]">Thank you Ã¢â‚¬â€ check your inbox.</p>}
       </div>
     </section>
   )
@@ -574,7 +569,6 @@ export function HomePage(props: HomePageProps) {
 
   return (
     <>
-      <AnnouncementBar />
       <HeroBanner />
 
       <section className="relative z-10 bg-[#fffaf8] px-6 sm:px-10 lg:px-12">
@@ -605,8 +599,8 @@ export function HomePage(props: HomePageProps) {
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Our collection" title="Shop our collection" copy="Bundles, closures, frontals and everything you need for a flawless install." />
 
-          <div className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-            {(categoryTiles.length ? categoryTiles : fallbackTiles).map(function (category, categoryIndex) {
+          <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {categoryTiles.map(function (category, categoryIndex) {
               return (
                 <Reveal key={category.id} delay={categoryIndex * 60}>
                   <a href={category.href} className="group flex h-full flex-col overflow-hidden rounded-xl bg-white ring-1 ring-[#ecd8e1] transition hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(62,37,48,0.4)]">

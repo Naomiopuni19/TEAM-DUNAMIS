@@ -16,6 +16,26 @@ export function AppointmentsAdminPage() {
   const [drafts, setDrafts] = useState<Record<string, { date: string; time: string }>>({})
   const [showReschedule, setShowReschedule] = useState<Record<string, boolean>>({})
 
+  const [codeInput, setCodeInput] = useState('')
+  const [codeResult, setCodeResult] = useState<any>(null)
+  const [codeError, setCodeError] = useState('')
+  const [codeChecking, setCodeChecking] = useState(false)
+
+  async function checkCode() {
+    if (!token || !codeInput.trim()) return
+    setCodeChecking(true)
+    setCodeError('')
+    setCodeResult(null)
+    try {
+      const result = await api.verifyBookingCode(token, codeInput.trim())
+      setCodeResult(result.booking)
+    } catch (reason) {
+      setCodeError(reason instanceof Error ? reason.message : 'No appointment found with that code.')
+    } finally {
+      setCodeChecking(false)
+    }
+  }
+
   async function status(booking: AdminBooking, next: string) {
     if (!token) return
     try {
@@ -46,6 +66,41 @@ export function AppointmentsAdminPage() {
         title="Manage bookings"
         description="Approve, complete, reschedule or cancel customer appointments."
       />
+
+      <Panel className="mt-6">
+        <p className="font-serif text-xl text-[#3e2530]">Verify a client's code</p>
+        <p className="mt-1 text-sm text-[#806b74]">
+          Ask the client for their appointment code and check it here to confirm you have the right person.
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <input
+            value={codeInput}
+            onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+            placeholder="e.g. 7F3KQ2"
+            className={fieldClass + ' max-w-xs uppercase tracking-[0.15em]'}
+          />
+          <PrimaryButton onClick={() => checkCode()}>
+            {codeChecking ? 'Checking...' : 'Verify code'}
+          </PrimaryButton>
+        </div>
+        {codeError && (
+          <p className="mt-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">{codeError}</p>
+        )}
+        {codeResult && (
+          <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">Match found</p>
+            <p className="mt-2 font-serif text-xl text-[#3e2530]">{codeResult.customerName}</p>
+            <p className="mt-1 text-sm text-[#745f68]">{codeResult.customerPhone}</p>
+            <p className="mt-2 text-sm text-[#3e2530]">
+              {codeResult.serviceName} on {String(codeResult.date).slice(0, 10)} at {codeResult.timeSlot}
+            </p>
+            <p className="mt-2 text-xs font-bold uppercase tracking-[0.1em] text-[#a82061]">
+              Current status: {codeResult.status}
+            </p>
+          </div>
+        )}
+      </Panel>
+
       <div className="mt-8 space-y-4">
         {loading && <Notice>Loading appointments...</Notice>}
         {error && <Notice error>{error}</Notice>}

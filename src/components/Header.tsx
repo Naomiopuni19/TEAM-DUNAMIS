@@ -143,11 +143,22 @@ export function Header({
         </div>
       )}
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-5 px-5 sm:h-24 sm:px-8 lg:px-12">
-        <a href="#/" className="shrink-0 font-serif leading-none text-[#3e2530]">
+        <a
+          href="#/"
+          className={
+            'shrink-0 font-serif leading-none ' +
+            (blendsWithHero ? 'text-white' : 'text-[#3e2530]')
+          }
+        >
           <span className="block text-[21px] font-semibold uppercase tracking-[0.16em] sm:text-2xl">
             Beryl&apos;s
           </span>
-          <span className="mt-1 block text-[8px] font-bold uppercase tracking-[0.48em] text-[#d92c83]">
+          <span
+            className={
+              'mt-1 block text-[8px] font-bold uppercase tracking-[0.48em] ' +
+              (blendsWithHero ? 'text-[#f5b0d0]' : 'text-[#d92c83]')
+            }
+          >
             Beauty Mark
           </span>
         </a>
@@ -157,7 +168,10 @@ export function Header({
             <a
               key={label}
               href={href}
-              className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#604c55] transition hover:text-[#d92c83]"
+              className={
+                'text-[11px] font-bold uppercase tracking-[0.16em] transition ' +
+                (blendsWithHero ? 'text-white/90 hover:text-white' : 'text-[#604c55] hover:text-[#d92c83]')
+              }
             >
               {label}
             </a>

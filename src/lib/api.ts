@@ -111,6 +111,7 @@ export type CustomerBooking = {
   status: string
   serviceName: string
   categoryName: string
+  confirmationCode?: string
 }
 
 export type CustomerOrder = {
@@ -400,10 +401,28 @@ export const api = {
     token: string,
     body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string },
   ) {
-    return request<{ booking: { id: string; status: string } }>('/bookings', {
+    return request<{ booking: { id: string; status: string; confirmationCode: string } }>('/bookings', {
       method: 'POST',
       token,
       body: JSON.stringify(body),
+    })
+  },
+  verifyBookingCode(token: string, code: string) {
+    return request<{
+      booking: {
+        id: string
+        date: string
+        timeSlot: string
+        status: string
+        confirmationCode: string
+        customerName: string
+        customerPhone: string
+        serviceName: string
+      }
+    }>('/bookings/verify-code', {
+      method: 'POST',
+      token,
+      body: JSON.stringify({ code }),
     })
   },
   createOrder(

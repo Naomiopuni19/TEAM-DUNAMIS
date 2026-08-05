@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   createBooking,
+  findBookingByCode,
   getBookingAvailability,
   listBookings,
   listBookingsForUser,
@@ -24,6 +25,10 @@ const statusSchema = z.object({
 const scheduleSchema = z.object({
   date: z.string().date(),
   timeSlot: z.string().min(3).max(20)
+});
+
+const codeSchema = z.object({
+  code: z.string().min(4).max(10)
 });
 
 export async function availability(req, res) {
@@ -53,6 +58,13 @@ export async function index(req, res) {
     })
     .parse(req.query);
   res.json(await listBookings(filters));
+}
+
+export async function verifyCode(req, res) {
+  const body = codeSchema.parse(req.body);
+  const booking = await findBookingByCode(body.code);
+  if (!booking) throw notFound("No appointment found with that code");
+  res.json({ booking });
 }
 
 export async function updateStatus(req, res) {

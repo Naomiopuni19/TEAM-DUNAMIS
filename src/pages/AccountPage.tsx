@@ -74,6 +74,26 @@ export function AccountPage(props) {
     loadRecords()
   }, [token])
 
+  const [payingId, setPayingId] = useState('')
+  const [payMessage, setPayMessage] = useState('')
+
+  async function payForBooking(bookingId) {
+    if (!token) return
+    setPayingId(bookingId)
+    setPayMessage('')
+    try {
+      const payment = await api.initiatePayment(token, {
+        type: 'booking',
+        refId: bookingId,
+        momoNumber: user.phone,
+      })
+      window.location.href = payment.authorizationUrl
+    } catch (err) {
+      setPayMessage(err instanceof Error ? err.message : 'Unable to start payment.')
+      setPayingId('')
+    }
+  }
+
   function openReview(bookingId) {
     setReviewingId(bookingId)
     setRating(5)
@@ -284,6 +304,21 @@ export function AccountPage(props) {
                           <p className="mt-2 text-sm text-[#745f68]">
                             {new Date(booking.date).toLocaleDateString()} - {booking.timeSlot}
                           </p>
+                          {booking.confirmationCode && (
+                            <p className="mt-3 inline-flex items-center gap-2 rounded-lg bg-white px-3 py-2 text-xs font-bold text-[#3e2530]">
+                              Your code: <span className="tracking-[0.2em] text-[#dc2d83]">{booking.confirmationCode}</span>
+                            </p>
+                          )}
+                          {booking.status === 'confirmed' && (
+                            <button
+                              type="button"
+                              onClick={function () { payForBooking(booking.id) }}
+                              disabled={payingId === booking.id}
+                              className="mt-3 rounded-full bg-[#dc2d83] px-5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white disabled:opacity-50"
+                            >
+                              {payingId === booking.id ? 'Redirecting...' : 'Pay now'}
+                            </button>
+                          )}
                         </div>
                         <span className="w-fit rounded-full bg-[#f5d5e3] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#a82061]">
                           {booking.status}

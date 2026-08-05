@@ -1,6 +1,15 @@
 import { pool, query } from "../config/db.js";
 import { HttpError } from "../utils/httpError.js";
 
+function generateConfirmationCode() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
+
 async function availabilityWithClient(client, serviceId, date) {
   const result = await client.query(
     `select s.id as service_id, c.id as category_id, c.daily_cap,
@@ -49,14 +58,17 @@ export async function createBooking(userId, input) {
       );
     }
 
+    const code = generateConfirmationCode();
+
     const result = await client.query(
-      `insert into bookings (user_id, service_id, booking_date, time_slot, status, reference_image_url, length_label)
-       values ($1, $2, $3, $4, 'pending', $5, $6)
+      `insert into bookings (user_id, service_id, booking_date, time_slot, status, reference_image_url, length_label, confirmation_code)
+       values ($1, $2, $3, $4, 'pending', $5, $6, $7)
        returning id, user_id as "userId", service_id as "serviceId",
                  booking_date as date, time_slot as "timeSlot", status,
                  reference_image_url as "referenceImageUrl", length_label as "lengthLabel",
+                 confirmation_code as "confirmationCode",
                  created_at as "createdAt"`,
-      [userId, input.serviceId, input.date, input.timeSlot, input.referenceImageUrl || null, input.lengthLabel || null]
+      [userId, input.serviceId, input.date, input.timeSlot, input.referenceImageUrl || null, input.lengthLabel || null, code]
     );
     await client.query("commit");
     return result.rows[0];
@@ -72,6 +84,7 @@ export async function listBookingsForUser(userId) {
   const result = await query(
     `select b.id, b.booking_date as date, b.time_slot as "timeSlot", b.status,
             b.reference_image_url as "referenceImageUrl", b.length_label as "lengthLabel",
+            b.confirmation_code as "confirmationCode",
             s.name as "serviceName", c.name as "categoryName"
      from bookings b
      join services s on s.id = b.service_id
@@ -100,6 +113,21 @@ export async function listBookings({ date, categoryId }) {
     [date || null, categoryId || null]
   );
   return result.rows;
+}
+
+export async function findBookingByCode(code) {
+  const result = await query(
+    `select b.id, b.booking_date as date, b.time_slot as "timeSlot", b.status,
+            b.confirmation_code as "confirmationCode",
+            u.name as "customerName", u.phone as "customerPhone",
+            s.name as "serviceName"
+     from bookings b
+     join users u on u.id = b.user_id
+     join services s on s.id = b.service_id
+     where upper(b.confirmation_code) = upper($1)`,
+    [code]
+  );
+  return result.rows[0] || null;
 }
 
 export async function updateBookingStatus(id, status) {
