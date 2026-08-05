@@ -322,7 +322,7 @@ export function Header({
           <div className="grid gap-1">
             {links.map(function (item) {
               return (
-                
+                <a
                   key={item[0]}
                   href={item[1]}
                   onClick={function () { setMenuOpen(false) }}
