@@ -12,7 +12,7 @@ type HomePageProps = {
 
 const announcements = [
   'Free delivery on orders over GHS 800',
-  '100% virgin human hair Ã¢â‚¬â€ ethically sourced',
+  '100% virgin human hair ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â ethically sourced',
   'Same-week appointments available in Kumasi',
   'New arrivals every Friday',
 ]
@@ -33,7 +33,7 @@ const stats = [
 
 const bookingSteps = [
   { step: '01', title: 'Choose your look', copy: 'Browse braiding, makeup, nails and lashes, then pick the service that fits.' },
-  { step: '02', title: 'Pick your slot', copy: 'Select a date and time that works for you Ã¢â‚¬â€ instant confirmation.' },
+  { step: '02', title: 'Pick your slot', copy: 'Select a date and time that works for you ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â instant confirmation.' },
   { step: '03', title: 'Sit back', copy: 'Arrive, relax, and let our stylists handle every detail with care.' },
 ]
 
@@ -428,7 +428,7 @@ function Newsletter() {
         <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#f2a7c9]">Stay in the loop</p>
         <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Get 10% off your first order</h2>
         <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-white/70">
-          New arrivals, restock alerts and appointment openings Ã¢â‚¬â€ straight to your inbox.
+          New arrivals, restock alerts and appointment openings ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â straight to your inbox.
         </p>
         <form
           className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row"
@@ -443,13 +443,13 @@ function Newsletter() {
             value={email}
             onChange={function (event) { setEmail(event.target.value) }}
             placeholder="Your email address"
-            className="min-h-13 flex-1 rounded-full border border-white/20 bg-white/10 px-6 text-sm text-white placeholder:text-white/50 focus:border-[#f2a7c9] focus:outline-none"
+            className="min-h-13 flex-1 rounded-full border border-white/40 bg-white/20 px-6 text-sm text-white outline-none backdrop-blur-md placeholder:text-white/80 focus:border-[#f2a7c9] focus:bg-white/25"
           />
           <button className="min-h-13 rounded-full bg-[#dc2d83] px-8 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#b92068]">
             {sent ? 'Subscribed' : 'Subscribe'}
           </button>
         </form>
-        {sent && <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[#f2a7c9]">Thank you Ã¢â‚¬â€ check your inbox.</p>}
+        {sent && <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[#f2a7c9]">Thank you ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â check your inbox.</p>}
       </div>
     </section>
   )

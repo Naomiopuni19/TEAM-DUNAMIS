@@ -317,6 +317,25 @@ export function Header({
         </div>
       </div>
 
+      {menuOpen && (
+        <nav aria-label="Mobile navigation" className="border-t border-[#ecd7e0] bg-[#fffaf8] px-5 py-5 shadow-[0_18px_45px_rgba(71,35,51,0.12)] lg:hidden">
+          <div className="grid gap-1">
+            {links.map(function (item) {
+              return (
+                
+                  key={item[0]}
+                  href={item[1]}
+                  onClick={function () { setMenuOpen(false) }}
+                  className="rounded-xl px-3 py-3 text-sm font-bold uppercase tracking-[0.1em] text-[#604c55] hover:bg-[#f8e3ec]"
+                >
+                  {item[0]}
+                </a>
+              )
+            })}
+          </div>
+        </nav>
+      )}
+
       {searchOpen && (
         <div className="border-t border-[#ecd7e0] bg-[#fffaf8]/98 px-5 py-5 shadow-[0_18px_45px_rgba(71,35,51,0.12)] backdrop-blur-xl sm:px-8 lg:px-12">
           <div className="mx-auto max-w-3xl">
