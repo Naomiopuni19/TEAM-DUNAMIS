@@ -258,14 +258,14 @@ function HeroBanner() {
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a
               href="#/shop"
-              className="group inline-flex min-h-13 items-center justify-center gap-2 rounded-full bg-[#dc2d83] px-8 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white shadow-[0_18px_40px_-18px_rgba(220,45,131,0.85)] transition hover:-translate-y-0.5 hover:bg-[#b92068]"
+              className="group inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#dc2d83] px-10 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white shadow-[0_20px_60px_rgba(220,45,131,0.45)] transition hover:-translate-y-0.5 hover:bg-[#b92068] hover:shadow-[0_25px_70px_rgba(220,45,131,0.6)]"
             >
               Shop the collection
               <span className="transition-transform group-hover:translate-x-1">&#8594;</span>
             </a>
             <a
               href="#/appointments"
-              className="inline-flex min-h-13 items-center justify-center rounded-full border border-[#dc2d83] bg-white/70 px-8 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-[#dc2d83] backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
+              className="inline-flex min-h-14 items-center justify-center rounded-full border border-[#dc2d83] bg-white/70 px-10 py-4 text-sm font-bold uppercase tracking-[0.16em] text-[#dc2d83] backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
             >
               Book an appointment
             </a>
