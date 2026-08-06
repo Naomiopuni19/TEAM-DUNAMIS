@@ -428,7 +428,7 @@ export const api = {
   createOrder(
     token: string,
     items: Array<{ productId: string; quantity: number }>,
-    delivery: { name: string; phone: string; address: string; notes?: string },
+    delivery: { name: string; phone: string; address: string; notes?: string; email?: string },
   ) {
     return request<{
       order: { id: string; totalAmount: number; status: string }

@@ -20,7 +20,8 @@ const orderSchema = z.object({
     name: z.string().min(2),
     phone: z.string().min(7).max(20),
     address: z.string().min(5),
-    notes: z.string().optional()
+    notes: z.string().optional(),
+    email: z.string().email().optional()
   })
 });
 

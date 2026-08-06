@@ -24,8 +24,10 @@ export function CartDrawer({
   const { token, user } = useAppData()
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
   const [address, setAddress] = useState('')
   const [notes, setNotes] = useState('')
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
 
@@ -39,8 +41,12 @@ export function CartDrawer({
       onRequireAuth()
       return
     }
-    if (!name.trim() || !phone.trim() || !address.trim()) {
-      setMessage('Please fill in your name, phone number and location.')
+    if (!name.trim() || !phone.trim() || !address.trim() || !email.trim()) {
+      setMessage('Please fill in your name, phone number, email and location.')
+      return
+    }
+    if (!agreedToTerms) {
+      setMessage('Please agree to the return policy before paying.')
       return
     }
 
@@ -62,6 +68,7 @@ export function CartDrawer({
           phone: phone.trim(),
           address: address.trim(),
           notes: notes.trim() || undefined,
+          email: email.trim(),
         },
       )
 
@@ -160,6 +167,13 @@ export function CartDrawer({
               className="h-12 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 text-sm outline-none focus:border-[#dc2d83]"
             />
             <input
+              type="email"
+              value={email}
+              onChange={function (e) { setEmail(e.target.value) }}
+              placeholder="Email address, for your receipt"
+              className="h-12 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 text-sm outline-none focus:border-[#dc2d83]"
+            />
+            <input
               type="text"
               value={address}
               onChange={function (e) { setAddress(e.target.value) }}
@@ -172,6 +186,22 @@ export function CartDrawer({
               placeholder="Any notes for delivery, optional"
               className="h-20 w-full rounded-xl border border-[#dfbdcb] bg-white p-4 text-sm outline-none focus:border-[#dc2d83]"
             />
+
+            <div className="rounded-2xl border border-[#e6c5d3] bg-[#f7e4ec] p-4">
+              <p className="text-sm font-semibold text-[#3e2530]">Return policy</p>
+              <p className="mt-2 text-xs leading-5 text-[#745f68]">
+                Once an item has been in your possession for more than 24 hours, it is no longer eligible for return or refund.
+              </p>
+              <label className="mt-3 flex cursor-pointer items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={agreedToTerms}
+                  onChange={function (e) { setAgreedToTerms(e.target.checked) }}
+                  className="mt-0.5 h-4 w-4 accent-[#dc2d83]"
+                />
+                <span className="text-xs text-[#3e2530]">I have read and agree to this policy.</span>
+              </label>
+            </div>
           </div>
         )}
 
@@ -183,7 +213,7 @@ export function CartDrawer({
           <button
             type="button"
             onClick={function () { checkout() }}
-            disabled={!items.length || busy}
+            disabled={!items.length || busy || !agreedToTerms}
             className="mt-5 min-h-13 w-full rounded-full bg-[#d92c83] px-6 py-3 text-xs font-bold uppercase tracking-[0.15em] text-white disabled:opacity-40"
           >
             {busy ? 'Redirecting to payment...' : 'Pay now'}

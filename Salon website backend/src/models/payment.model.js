@@ -53,6 +53,45 @@ export async function findPaymentByReference(reference, userId) {
   return result.rows[0] || null;
 }
 
+export async function getOrderDetailsForEmail(orderId) {
+  const orderResult = await query(
+    `select o.id, o.total_amount as "totalAmount", o.delivery_email as "deliveryEmail",
+            u.name as "customerName", u.phone as "customerPhone", u.email as "customerEmail"
+     from orders o
+     join users u on u.id = o.user_id
+     where o.id = $1`,
+    [orderId]
+  );
+  const order = orderResult.rows[0];
+  if (!order) return null;
+  order.customerEmail = order.deliveryEmail || order.customerEmail;
+
+  const itemsResult = await query(
+    `select oi.quantity, oi.unit_price as "unitPrice", p.name
+     from order_items oi
+     join products p on p.id = oi.product_id
+     where oi.order_id = $1`,
+    [orderId]
+  );
+  order.items = itemsResult.rows;
+  return order;
+}
+
+export async function getBookingDetailsForEmail(bookingId) {
+  const result = await query(
+    `select b.id, b.booking_date as date, b.time_slot as "timeSlot",
+            b.confirmation_code as "confirmationCode",
+            s.name as "serviceName",
+            u.name as "customerName", u.phone as "customerPhone", u.email as "customerEmail"
+     from bookings b
+     join services s on s.id = b.service_id
+     join users u on u.id = b.user_id
+     where b.id = $1`,
+    [bookingId]
+  );
+  return result.rows[0] || null;
+}
+
 export async function markPaymentSuccessAndUnlock(reference) {
   const result = await query(
     `update payments set status = 'success', updated_at = now()

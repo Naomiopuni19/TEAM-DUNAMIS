@@ -16,5 +16,7 @@ export const env = {
   jwtSecret: required("JWT_SECRET"),
   corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",
   momoApiKey: process.env.MOMO_API_KEY || "",
-  momoApiSecret: process.env.MOMO_API_SECRET || ""
+  momoApiSecret: process.env.MOMO_API_SECRET || "",
+  resendApiKey: process.env.RESEND_API_KEY || "",
+  adminEmail: process.env.ADMIN_EMAIL || ""
 };

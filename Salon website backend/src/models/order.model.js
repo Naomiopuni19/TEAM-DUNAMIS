@@ -6,12 +6,13 @@ export async function createOrder(userId, requestedItems, delivery) {
   try {
     await client.query("begin");
     const orderResult = await client.query(
-      `insert into orders (user_id, status, total_amount, delivery_name, delivery_phone, delivery_address, delivery_notes)
-       values ($1, 'pending_payment', 0, $2, $3, $4, $5)
+      `insert into orders (user_id, status, total_amount, delivery_name, delivery_phone, delivery_address, delivery_notes, delivery_email)
+       values ($1, 'pending_payment', 0, $2, $3, $4, $5, $6)
        returning id, user_id as "userId", status, total_amount as "totalAmount",
                  delivery_name as "deliveryName", delivery_phone as "deliveryPhone",
-                 delivery_address as "deliveryAddress", delivery_notes as "deliveryNotes"`,
-      [userId, delivery.name, delivery.phone, delivery.address, delivery.notes || null]
+                 delivery_address as "deliveryAddress", delivery_notes as "deliveryNotes",
+                 delivery_email as "deliveryEmail"`,
+      [userId, delivery.name, delivery.phone, delivery.address, delivery.notes || null, delivery.email || null]
     );
     const order = orderResult.rows[0];
     let total = 0;

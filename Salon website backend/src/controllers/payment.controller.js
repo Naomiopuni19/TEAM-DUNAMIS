@@ -1,13 +1,17 @@
 import crypto from "node:crypto";
+import { env } from "../config/env.js";
 import { z } from "zod";
 import {
   createPayment,
   findPaymentAmount,
   findPaymentByReference,
   updatePaymentStatus,
-  markPaymentSuccessAndUnlock
+  markPaymentSuccessAndUnlock,
+  getOrderDetailsForEmail,
+  getBookingDetailsForEmail
 } from "../models/payment.model.js";
 import { notFound } from "../utils/httpError.js";
+import { sendOrderConfirmation, sendAdminOrderNotification } from "../utils/email.js";
 
 const initiateSchema = z.object({
   type: z.enum(["booking", "order"]),
@@ -74,6 +78,18 @@ export async function verify(req, res) {
   if (paystackData.data?.status === "success") {
     const unlocked = await markPaymentSuccessAndUnlock(reference);
     if (!unlocked) throw notFound("Payment not found");
+
+    if (unlocked.type === "order") {
+      const order = await getOrderDetailsForEmail(unlocked.refId);
+      if (order) {
+        sendOrderConfirmation(order.customerEmail, order);
+        sendAdminOrderNotification(order, {
+          name: order.customerName,
+          phone: order.customerPhone
+        });
+      }
+    }
+
     res.json({ reference, status: "success", amount: unlocked.amount });
   } else {
     await updatePaymentStatus(reference, "failed");
