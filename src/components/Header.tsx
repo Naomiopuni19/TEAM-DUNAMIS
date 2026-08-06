@@ -187,7 +187,7 @@ export function Header({
             }}
             aria-label={searchOpen ? 'Close search' : 'Search products and services'}
             aria-expanded={searchOpen}
-            className="flex h-11 items-center justify-center gap-2 rounded-full border border-[#e4bdce] bg-white/65 px-3 text-[#604c55] transition hover:border-[#d92c83] hover:text-[#d92c83] xl:min-w-48 xl:justify-start xl:px-4"
+            className="flex h-11 items-center justify-center gap-2 rounded-full border border-[#e4bdce] bg-white/65 px-3 text-[#604c55] transition hover:border-[#d92c83] hover:text-[#d92c83] xl:min-w-32 xl:justify-start xl:px-4"
           >
             {searchOpen ? (
               <FiX aria-hidden="true" size={19} />
