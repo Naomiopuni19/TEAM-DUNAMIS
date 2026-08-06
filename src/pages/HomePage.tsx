@@ -12,7 +12,7 @@ type HomePageProps = {
 
 const announcements = [
   'Free delivery on orders over GHS 800',
-  '100% virgin human hair ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ethically sourced',
+  '100% virgin human hair ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ethically sourced',
   'Same-week appointments available in Kumasi',
   'New arrivals every Friday',
 ]
@@ -33,7 +33,7 @@ const stats = [
 
 const bookingSteps = [
   { step: '01', title: 'Choose your look', copy: 'Browse braiding, makeup, nails and lashes, then pick the service that fits.' },
-  { step: '02', title: 'Pick your slot', copy: 'Select a date and time that works for you ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â instant confirmation.' },
+  { step: '02', title: 'Pick your slot', copy: 'Select a date and time that works for you ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â instant confirmation.' },
   { step: '03', title: 'Sit back', copy: 'Arrive, relax, and let our stylists handle every detail with care.' },
 ]
 
@@ -282,7 +282,7 @@ function HeroBanner() {
                 <Stars className="flex gap-0.5" />
                 <span className="ml-1 text-[#3e2530]">4.9 rating</span>
               </p>
-              <p className="text-xs tracking-wide text-[#745f68]">Trusted by clients across Kumasi</p>
+              <p className="text-xs tracking-wide text-white/85">Trusted by clients across Kumasi</p>
             </div>
           </div>
         </div>
@@ -428,7 +428,7 @@ function Newsletter() {
         <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#f2a7c9]">Stay in the loop</p>
         <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Get 10% off your first order</h2>
         <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-white/70">
-          New arrivals, restock alerts and appointment openings ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â straight to your inbox.
+          New arrivals, restock alerts and appointment openings ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â straight to your inbox.
         </p>
         <form
           className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row"
@@ -449,7 +449,7 @@ function Newsletter() {
             {sent ? 'Subscribed' : 'Subscribe'}
           </button>
         </form>
-        {sent && <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[#f2a7c9]">Thank you ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â check your inbox.</p>}
+        {sent && <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[#f2a7c9]">Thank you ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â check your inbox.</p>}
       </div>
     </section>
   )
@@ -572,7 +572,7 @@ export function HomePage(props: HomePageProps) {
       <HeroBanner />
 
       <section className="relative z-10 bg-[#fffaf8] px-6 sm:px-10 lg:px-12">
-        <div className="mx-auto -mt-12 max-w-7xl rounded-[1.75rem] bg-white p-6 shadow-[0_20px_60px_-30px_rgba(62,37,48,0.35)] sm:p-8">
+        <div className="mx-auto -mt-20 max-w-7xl rounded-[1.75rem] bg-white p-6 shadow-[0_20px_60px_-30px_rgba(62,37,48,0.35)] sm:p-8">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-[#ecd8e1]">
             {featureStrip.map(function (feature, featureIndex) {
               return (
