@@ -280,7 +280,7 @@ function HeroBanner() {
             <div>
               <p className="flex items-center gap-1 text-sm font-semibold text-[#c8952f]">
                 <Stars className="flex gap-0.5" />
-                <span className="ml-1 text-[#3e2530]">4.9 rating</span>
+                <span className="ml-1 text-white">4.9 rating</span>
               </p>
               <p className="text-xs tracking-wide text-white/85">Trusted by clients across Kumasi</p>
             </div>
