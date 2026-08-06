@@ -147,7 +147,7 @@ export function Header({
           href="#/"
           className={
             'shrink-0 font-serif leading-none ' +
-            (blendsWithHero ? 'text-white' : 'text-[#3e2530]')
+            'text-[#3e2530]'
           }
         >
           <span className="block text-[21px] font-semibold uppercase tracking-[0.16em] sm:text-2xl">
@@ -156,7 +156,7 @@ export function Header({
           <span
             className={
               'mt-1 block text-[8px] font-bold uppercase tracking-[0.48em] ' +
-              (blendsWithHero ? 'text-[#f5b0d0]' : 'text-[#d92c83]')
+              'text-[#d92c83]'
             }
           >
             Beauty Mark
@@ -170,7 +170,7 @@ export function Header({
               href={href}
               className={
                 'text-[11px] font-bold uppercase tracking-[0.16em] transition ' +
-                (blendsWithHero ? 'text-white/90 hover:text-white' : 'text-[#604c55] hover:text-[#d92c83]')
+                'text-[#604c55] hover:text-[#d92c83]'
               }
             >
               {label}
