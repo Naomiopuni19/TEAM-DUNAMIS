@@ -12,7 +12,7 @@ type HomePageProps = {
 
 const announcements = [
   'Free delivery on orders over GHS 800',
-  '100% virgin human hair ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ethically sourced',
+  '100% virgin human hair, ethically sourced',
   'Same-week appointments available in Kumasi',
   'New arrivals every Friday',
 ]
@@ -33,7 +33,7 @@ const stats = [
 
 const bookingSteps = [
   { step: '01', title: 'Choose your look', copy: 'Browse braiding, makeup, nails and lashes, then pick the service that fits.' },
-  { step: '02', title: 'Pick your slot', copy: 'Select a date and time that works for you ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â instant confirmation.' },
+  { step: '02', title: 'Pick your slot', copy: 'Select a date and time that works for you, instant confirmation.' },
   { step: '03', title: 'Sit back', copy: 'Arrive, relax, and let our stylists handle every detail with care.' },
 ]
 
@@ -253,7 +253,7 @@ function HeroBanner() {
             <span className="mt-1 block text-[#dc2d83]">{slide.eyebrow}</span>
           </h1>
 
-          <p className="mt-6 max-w-md text-base leading-7 text-[#745f68] sm:text-lg">{slide.subtitle}</p>
+          <p className="mt-6 max-w-md text-base leading-7 text-white/85 sm:text-lg">{slide.subtitle}</p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <a
@@ -428,7 +428,7 @@ function Newsletter() {
         <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#f2a7c9]">Stay in the loop</p>
         <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Get 10% off your first order</h2>
         <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-white/70">
-          New arrivals, restock alerts and appointment openings ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â straight to your inbox.
+          New arrivals, restock alerts and appointment openings, straight to your inbox.
         </p>
         <form
           className="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row"
@@ -449,7 +449,7 @@ function Newsletter() {
             {sent ? 'Subscribed' : 'Subscribe'}
           </button>
         </form>
-        {sent && <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[#f2a7c9]">Thank you ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â check your inbox.</p>}
+        {sent && <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[#f2a7c9]">Thank you, check your inbox.</p>}
       </div>
     </section>
   )
