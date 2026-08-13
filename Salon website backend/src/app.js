@@ -23,7 +23,13 @@ export const app = express();
 
 app.use(helmet());
 app.use(cors({ origin: env.corsOrigin, credentials: true }));
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, _res, buf) => {
+      req.rawBody = buf;
+    }
+  })
+);
 app.use(morgan("dev"));
 
 app.use("/health", systemRoutes);

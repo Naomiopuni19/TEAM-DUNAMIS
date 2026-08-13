@@ -98,6 +98,16 @@ export async function verify(req, res) {
 }
 
 export async function webhook(req, res) {
+  const signature = req.headers["x-paystack-signature"];
+  const expectedSignature = crypto
+    .createHmac("sha512", PAYSTACK_SECRET_KEY)
+    .update(req.rawBody || "")
+    .digest("hex");
+
+  if (!signature || signature !== expectedSignature) {
+    return res.status(401).json({ error: "Invalid webhook signature" });
+  }
+
   const body = z
     .object({
       reference: z.string(),
