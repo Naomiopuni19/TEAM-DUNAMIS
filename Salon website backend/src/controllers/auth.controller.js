@@ -4,6 +4,7 @@ import { z } from "zod";
 import { env } from "../config/env.js";
 import {
   createCustomer,
+  findUserByEmail,
   findUserById,
   findUserByPhone,
   findUserWithPasswordById,
@@ -75,9 +76,12 @@ export async function register(req, res) {
 
 export async function login(req, res) {
   const body = authSchema.omit({ name: true, email: true, area: true }).parse(req.body);
-  const user = await findUserByPhone(body.phone);
+  const identifier = body.phone.trim();
+  const user = identifier.includes("@")
+    ? await findUserByEmail(identifier.toLowerCase())
+    : await findUserByPhone(identifier);
   if (!user || !(await bcrypt.compare(body.password, user.password_hash))) {
-    throw new HttpError(401, "Invalid phone or password");
+    throw new HttpError(401, "Invalid login or password");
   }
   res.json({ user: publicUser(user), token: signToken(user) });
 }

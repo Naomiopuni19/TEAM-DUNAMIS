@@ -101,6 +101,7 @@ export type AdminStaff = {
   id: string
   name: string
   phone: string
+  email?: string
   isActive: boolean
   createdAt: string
 }
@@ -561,7 +562,7 @@ export const api = {
   },
   createAdminStaff(
     token: string,
-    body: { name: string; phone: string; password: string },
+    body: { name: string; phone: string; email: string; password: string },
   ) {
     return request<{ staff: AdminStaff }>('/admin/staff', {
       method: 'POST',

@@ -48,7 +48,7 @@ export function SettingsAdminPage() {
     if (!token) return
     const form = new FormData(event.currentTarget)
     try {
-      const result = await api.createAdminStaff(token, { name:String(form.get('name')), phone:String(form.get('phone')), password:String(form.get('password')) })
+      const result = await api.createAdminStaff(token, { name:String(form.get('name')), phone:String(form.get('phone')), email:String(form.get('email')), password:String(form.get('password')) })
       setStaff((items) => [...items, result.staff]); event.currentTarget.reset(); setMessage('Staff account created.')
     } catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to create staff account.') }
   }
@@ -64,7 +64,7 @@ export function SettingsAdminPage() {
   return (
     <>
       <PageHeader eyebrow="Settings" title="Business configuration" description="Manage salon details, operating hours, staff, notifications and payment methods." />
-      {loading && <div className="mt-8"><Notice>Loading settingsÃ¢â‚¬Â¦</Notice></div>}
+      {loading && <div className="mt-8"><Notice>Loading settings...</Notice></div>}
       {error && <div className="mt-8"><Notice error>{error}</Notice></div>}
       {message && <div className="mt-8"><Notice>{message}</Notice></div>}
       {data && (
@@ -102,13 +102,14 @@ export function SettingsAdminPage() {
       <div className="mt-8 grid gap-6 xl:grid-cols-2">
         <Panel>
           <h2 className="font-serif text-2xl text-[#3e2530]">Staff accounts</h2>
-          <div className="mt-5 space-y-3">{staff.map((member) => <div key={member.id} className="flex items-center justify-between rounded-xl bg-[#fbf4f7] p-3"><div><strong className="text-sm">{member.name}</strong><span className="block text-xs text-[#806b74]">{member.phone}</span></div><button onClick={() => toggle(member)} className={`text-xs font-bold ${member.isActive ? 'text-red-600' : 'text-emerald-700'}`}>{member.isActive ? 'Deactivate' : 'Activate'}</button></div>)}</div>
+          <div className="mt-5 space-y-3">{staff.map((member) => <div key={member.id} className="flex items-center justify-between rounded-xl bg-[#fbf4f7] p-3"><div><strong className="text-sm">{member.name}</strong><span className="block text-xs text-[#806b74]">{member.phone}{member.email ? " - " + member.email : ""}</span></div><button onClick={() => toggle(member)} className={`text-xs font-bold ${member.isActive ? 'text-red-600' : 'text-emerald-700'}`}>{member.isActive ? 'Deactivate' : 'Activate'}</button></div>)}</div>
         </Panel>
         <Panel>
           <h2 className="font-serif text-2xl text-[#3e2530]">Add administrator</h2>
           <form onSubmit={addStaff} className="mt-5 grid gap-3">
             <input name="name" required placeholder="Full name" className={fieldClass} />
             <input name="phone" required placeholder="Phone number" className={fieldClass} />
+            <input name="email" required type="email" placeholder="Email address" className={fieldClass} />
             <input name="password" required type="password" minLength={8} placeholder="Temporary password" className={fieldClass} />
             <PrimaryButton type="submit">Create staff account</PrimaryButton>
           </form>

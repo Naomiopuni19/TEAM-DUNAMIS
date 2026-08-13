@@ -134,12 +134,12 @@ export async function listStaff() {
   return result.rows;
 }
 
-export async function createStaff({ name, phone, passwordHash }) {
+export async function createStaff({ name, phone, email, passwordHash }) {
   const result = await query(
-    `insert into users (name, phone, password_hash, role)
-     values ($1, $2, $3, 'admin')
-     returning id, name, phone, is_active as "isActive", created_at as "createdAt"`,
-    [name, phone, passwordHash]
+    `insert into users (name, phone, email, password_hash, role)
+     values ($1, $2, $3, $4, 'admin')
+     returning id, name, phone, email, is_active as "isActive", created_at as "createdAt"`,
+    [name, phone, email, passwordHash]
   );
   return result.rows[0];
 }

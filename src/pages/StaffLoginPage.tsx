@@ -15,7 +15,7 @@ export function StaffLoginPage() {
 
     try {
       const user = await login(
-        String(form.get('phone')),
+        String(form.get('email')),
         String(form.get('password')),
       )
       if (user.role !== 'admin') {
@@ -77,16 +77,14 @@ export function StaffLoginPage() {
           <form onSubmit={submit} className="mt-8 space-y-5">
             <label className="block">
               <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em] text-[#604c55]">
-                Staff phone number
+                Staff email address
               </span>
               <input
                 required
-                name="phone"
-                type="tel"
-                minLength={7}
-                maxLength={20}
+                name="email"
+                type="email"
                 autoComplete="username"
-                placeholder="024 000 0000"
+                placeholder="you@berylsbeautymark.com"
                 className="h-14 w-full rounded-xl border border-[#dfb7c8] bg-white px-4 text-[#3e2530] outline-none placeholder:text-[#aa929c] focus:border-[#d92c83] focus:ring-4 focus:ring-[#d92c83]/10"
               />
             </label>
@@ -124,7 +122,7 @@ export function StaffLoginPage() {
               disabled={busy}
               className="min-h-14 w-full rounded-full bg-[#d92c83] px-6 py-3 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#b92068] disabled:opacity-60"
             >
-              {busy ? 'Signing in…' : 'Sign in securely'}
+              {busy ? 'Signing inÃ¢â‚¬Â¦' : 'Sign in securely'}
             </button>
           </form>
 

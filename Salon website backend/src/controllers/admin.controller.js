@@ -57,11 +57,13 @@ export async function addStaff(req, res) {
   const body = z.object({
     name: z.string().min(2),
     phone: z.string().min(7).max(20),
+    email: z.string().email(),
     password: z.string().min(8)
   }).parse(req.body);
   const member = await createStaff({
     name: body.name,
     phone: body.phone,
+    email: body.email,
     passwordHash: await bcrypt.hash(body.password, 12)
   });
   res.status(201).json({ staff: member });

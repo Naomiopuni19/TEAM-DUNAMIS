@@ -15,6 +15,11 @@ export async function findUserByPhone(phone) {
   return result.rows[0] || null;
 }
 
+export async function findUserByEmail(email) {
+  const result = await query("select * from users where email = $1", [email]);
+  return result.rows[0] || null;
+}
+
 export async function findUserById(id) {
   const result = await query(
     "select id, name, phone, role, email, area, is_active as \"isActive\" from users where id = $1",
