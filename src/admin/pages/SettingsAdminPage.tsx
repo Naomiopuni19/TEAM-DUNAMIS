@@ -26,6 +26,7 @@ export function SettingsAdminPage() {
       businessName: String(form.get('businessName')),
       phone: String(form.get('phone')),
       address: String(form.get('address')),
+      aboutImageUrl: String(form.get('aboutImageUrl') || ''),
       openingHours: Object.fromEntries(days.map((day) => [day, String(form.get(`hours-${day}`))])),
       notifications: {
         bookingEmail: form.get('bookingEmail') === 'on',
@@ -63,7 +64,7 @@ export function SettingsAdminPage() {
   return (
     <>
       <PageHeader eyebrow="Settings" title="Business configuration" description="Manage salon details, operating hours, staff, notifications and payment methods." />
-      {loading && <div className="mt-8"><Notice>Loading settings…</Notice></div>}
+      {loading && <div className="mt-8"><Notice>Loading settingsÃ¢â‚¬Â¦</Notice></div>}
       {error && <div className="mt-8"><Notice error>{error}</Notice></div>}
       {message && <div className="mt-8"><Notice>{message}</Notice></div>}
       {data && (
@@ -74,6 +75,13 @@ export function SettingsAdminPage() {
               <input name="businessName" required defaultValue={data.businessName} className={fieldClass} aria-label="Business name" />
               <input name="phone" required defaultValue={data.phone} className={fieldClass} aria-label="Business phone" />
               <input name="address" required defaultValue={data.address} className={fieldClass} aria-label="Business address" />
+              <label className="text-xs font-bold text-[#76515f]">
+                About page image URL
+                <input name="aboutImageUrl" defaultValue={data.aboutImageUrl || ''} placeholder="https://..." className={`${fieldClass} mt-1 font-normal`} aria-label="About page image URL" />
+              </label>
+              {data.aboutImageUrl && (
+                <img src={data.aboutImageUrl} alt="About page preview" className="h-32 w-full rounded-xl object-cover" />
+              )}
             </div>
           </Panel>
           <Panel>

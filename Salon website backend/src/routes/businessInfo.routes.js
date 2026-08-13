@@ -10,7 +10,8 @@ router.get("/", asyncHandler(async (_req, res) => {
     businessName: settings.businessName,
     phone: settings.phone,
     address: settings.address,
-    openingHours: settings.openingHours
+    openingHours: settings.openingHours,
+    aboutImageUrl: settings.aboutImageUrl
   });
 }));
 

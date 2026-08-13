@@ -19,7 +19,8 @@ const settingsSchema = z.object({
   address: z.string().min(2).optional(),
   openingHours: z.record(z.string()).optional(),
   notifications: z.record(z.boolean()).optional(),
-  paymentMethods: z.record(z.boolean()).optional()
+  paymentMethods: z.record(z.boolean()).optional(),
+  aboutImageUrl: z.string().optional()
 });
 
 export async function customers(_req, res) {

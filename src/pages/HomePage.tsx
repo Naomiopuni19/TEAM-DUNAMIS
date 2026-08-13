@@ -239,51 +239,36 @@ function HeroBanner() {
           />
         )
       })}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(62,37,48,0.72)_0%,rgba(62,37,48,0.48)_45%,rgba(62,37,48,0.22)_100%)]" />
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,rgba(41,21,31,0.55)_0%,rgba(41,21,31,0.78)_100%)]" />
 
-      <div className="mx-auto flex min-h-[62vh] max-w-7xl items-center px-6 py-16 sm:px-10 lg:px-12">
-        <div key={slide.id} className="max-w-2xl animate-[bbm-rise_800ms_cubic-bezier(0.22,1,0.36,1)_both]">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#3e2530] shadow-sm backdrop-blur">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[#dc2d83]" />
-            100 percent virgin human hair
-          </span>
+      <div className="mx-auto flex min-h-[92vh] max-w-4xl flex-col items-center justify-center px-6 py-20 text-center sm:px-10 lg:px-12">
+        <div key={slide.id} className="animate-[bbm-rise_800ms_cubic-bezier(0.22,1,0.36,1)_both]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[#f5a9cd]">Be bold. Be beautiful. Be you</p>
 
-          <h1 className="mt-7 font-serif text-[clamp(2.75rem,7vw,5.25rem)] leading-[1.02] tracking-[-0.03em]">
+          <h1 className="mt-5 font-serif text-[clamp(3rem,8vw,6.5rem)] leading-[0.98] tracking-[-0.03em]">
             {slide.title}
-            <span className="mt-1 block text-[#dc2d83]">{slide.eyebrow}</span>
+            <span className="mt-2 block text-[#f5a9cd]">{slide.eyebrow}</span>
           </h1>
 
-          <p className="mt-6 max-w-md text-base leading-7 text-white/85 sm:text-lg">{slide.subtitle}</p>
-
-          <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <a
               href="#/shop"
-              className="group inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-[#dc2d83] px-10 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white shadow-[0_20px_60px_rgba(220,45,131,0.45)] transition hover:-translate-y-0.5 hover:bg-[#b92068] hover:shadow-[0_25px_70px_rgba(220,45,131,0.6)]"
+              className="group inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-[#dc2d83] px-10 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white shadow-[0_20px_60px_rgba(220,45,131,0.45)] transition hover:-translate-y-0.5 hover:bg-[#b92068] hover:shadow-[0_25px_70px_rgba(220,45,131,0.6)] sm:w-auto"
             >
-              Shop the collection
+              Shop now
               <span className="transition-transform group-hover:translate-x-1">&#8594;</span>
             </a>
             <a
               href="#/appointments"
-              className="inline-flex min-h-14 items-center justify-center rounded-full border border-[#dc2d83] bg-white/70 px-10 py-4 text-sm font-bold uppercase tracking-[0.16em] text-[#dc2d83] backdrop-blur transition hover:-translate-y-0.5 hover:bg-white"
+              className="inline-flex min-h-14 w-full items-center justify-center rounded-full border border-white bg-white/10 px-10 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white hover:text-[#3e2530] sm:w-auto"
             >
-              Book an appointment
+              Book now
             </a>
           </div>
 
-          <div className="mt-10 flex items-center gap-4">
-            <div className="flex -space-x-3">
-              {slides.slice(0, 4).map(function (item) {
-                return <img key={'av-' + item.id} src={item.imageUrl} alt="" className="h-10 w-10 rounded-full border-2 border-white object-cover" />
-              })}
-            </div>
-            <div>
-              <p className="flex items-center gap-1 text-sm font-semibold text-[#c8952f]">
-                <Stars className="flex gap-0.5" />
-                <span className="ml-1 text-white">4.9 rating</span>
-              </p>
-              <p className="text-xs tracking-wide text-white/85">Trusted by clients across Kumasi</p>
-            </div>
+          <div className="mt-10 flex items-center justify-center gap-3">
+            <Stars className="flex gap-0.5 text-[#f5c56e]" />
+            <span className="text-sm font-semibold text-white">4.9 &bull; 2,400+ clients</span>
           </div>
         </div>
       </div>
@@ -293,19 +278,19 @@ function HeroBanner() {
           <button
             aria-label="Previous slide"
             onClick={function () { go(-1) }}
-            className="absolute right-20 bottom-8 z-10 hidden h-11 w-11 items-center justify-center rounded-full border border-[#e2b8ca] bg-white/80 text-[#3e2530] transition hover:bg-white sm:flex"
+            className="absolute left-6 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/15 text-white backdrop-blur transition hover:bg-white hover:text-[#3e2530] sm:flex"
           >
             &#8592;
           </button>
           <button
             aria-label="Next slide"
             onClick={function () { go(1) }}
-            className="absolute right-6 bottom-8 z-10 hidden h-11 w-11 items-center justify-center rounded-full border border-[#e2b8ca] bg-white/80 text-[#3e2530] transition hover:bg-white sm:flex"
+            className="absolute right-6 top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 bg-white/15 text-white backdrop-blur transition hover:bg-white hover:text-[#3e2530] sm:flex"
           >
             &#8594;
           </button>
 
-          <div className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+          <div className="absolute bottom-10 left-1/2 z-10 flex -translate-x-1/2 gap-2">
             {slides.map(function (item, dotIndex) {
               return (
                 <button
@@ -315,13 +300,13 @@ function HeroBanner() {
                   className="h-2 overflow-hidden rounded-full transition-all duration-300"
                   style={{
                     width: dotIndex === index ? 34 : 8,
-                    backgroundColor: dotIndex === index ? 'rgba(220,45,131,0.28)' : 'rgba(62,37,48,0.3)',
+                    backgroundColor: dotIndex === index ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.4)',
                   }}
                 >
                   {dotIndex === index && (
                     <span
                       key={'bar-' + index + '-' + String(paused)}
-                      className="block h-full rounded-full bg-[#dc2d83]"
+                      className="block h-full rounded-full bg-white"
                       style={{ animation: paused ? 'none' : 'bbm-progress 6s linear forwards', width: paused ? '100%' : undefined }}
                     />
                   )}

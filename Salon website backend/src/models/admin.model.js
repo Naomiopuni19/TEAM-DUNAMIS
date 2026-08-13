@@ -94,6 +94,7 @@ export async function getSettings() {
   const result = await query(
     `select business_name as "businessName", phone, address,
             opening_hours as "openingHours", notifications, payment_methods as "paymentMethods",
+            about_image_url as "aboutImageUrl",
             updated_at as "updatedAt"
      from business_settings where id = 1`
   );
@@ -106,18 +107,20 @@ export async function updateSettings(input) {
   const result = await query(
     `update business_settings
      set business_name = $1, phone = $2, address = $3, opening_hours = $4,
-         notifications = $5, payment_methods = $6, updated_at = now()
+         notifications = $5, payment_methods = $6, about_image_url = $7, updated_at = now()
      where id = 1
      returning business_name as "businessName", phone, address,
                opening_hours as "openingHours", notifications,
-               payment_methods as "paymentMethods", updated_at as "updatedAt"`,
+               payment_methods as "paymentMethods", about_image_url as "aboutImageUrl",
+               updated_at as "updatedAt"`,
     [
       merged.businessName,
       merged.phone,
       merged.address,
       merged.openingHours,
       merged.notifications,
-      merged.paymentMethods
+      merged.paymentMethods,
+      merged.aboutImageUrl || ''
     ]
   );
   return result.rows[0];

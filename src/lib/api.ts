@@ -93,6 +93,7 @@ export type AdminSettings = {
   openingHours: Record<string, string>
   notifications: Record<string, boolean>
   paymentMethods: Record<string, boolean>
+  aboutImageUrl?: string
   updatedAt?: string
 }
 
@@ -227,6 +228,7 @@ export type BusinessInfo = {
   phone: string
   address: string
   openingHours: Record<string, string>
+  aboutImageUrl?: string
 }
 
 export type ServiceLengthOption = {
