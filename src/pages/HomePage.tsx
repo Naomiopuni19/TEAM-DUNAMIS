@@ -780,7 +780,7 @@ export function HomePage(props: HomePageProps) {
               Treat someone to bundles, a braiding session or a full glam appointment. Delivered instantly, redeemable in salon or online.
             </p>
           </div>
-          <a href="#/shop" className="inline-flex w-fit rounded-full bg-[#3e2530] px-8 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:-translate-y-0.5 hover:bg-[#291620] lg:justify-self-end">
+          <a href="#/gift-cards" className="inline-flex w-fit rounded-full bg-[#3e2530] px-8 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:-translate-y-0.5 hover:bg-[#291620] lg:justify-self-end">
             Buy a gift card
           </a>
         </div>

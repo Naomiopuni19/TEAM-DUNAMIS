@@ -1,7 +1,7 @@
 import { pool, query } from "../config/db.js";
 import { HttpError } from "../utils/httpError.js";
 
-export async function createOrder(userId, requestedItems, delivery) {
+export async function createOrder(userId, requestedItems, delivery, giftCardCode) {
   const client = await pool.connect();
   try {
     await client.query("begin");
@@ -48,14 +48,49 @@ export async function createOrder(userId, requestedItems, delivery) {
       items.push(itemResult.rows[0]);
     }
 
+    let discount = 0;
+    let appliedCode = null;
+    let finalStatus = "pending_payment";
+
+    if (giftCardCode) {
+      const cardResult = await client.query(
+        `select id, code, balance, status from gift_cards
+         where upper(code) = upper($1)
+         for update`,
+        [giftCardCode]
+      );
+      const card = cardResult.rows[0];
+      if (!card || card.status !== "active" || Number(card.balance) <= 0) {
+        throw new HttpError(404, "That gift card code is not valid or has no balance remaining");
+      }
+
+      discount = Math.min(Number(card.balance), total);
+      appliedCode = card.code;
+
+      const newBalance = Number(card.balance) - discount;
+      await client.query(
+        `update gift_cards
+         set balance = $1, status = case when $1 <= 0 then 'used' else status end, updated_at = now()
+         where id = $2`,
+        [newBalance, card.id]
+      );
+
+      if (discount >= total) {
+        finalStatus = "paid";
+      }
+    }
+
+    const finalTotal = total - discount;
+
     const updatedOrder = await client.query(
       `update orders
-       set total_amount = $1, updated_at = now()
-       where id = $2
+       set total_amount = $1, gift_card_code = $2, gift_card_discount = $3, status = $4, updated_at = now()
+       where id = $5
        returning id, user_id as "userId", status, total_amount as "totalAmount",
                  delivery_name as "deliveryName", delivery_phone as "deliveryPhone",
-                 delivery_address as "deliveryAddress", delivery_notes as "deliveryNotes"`,
-      [total, order.id]
+                 delivery_address as "deliveryAddress", delivery_notes as "deliveryNotes",
+                 gift_card_code as "giftCardCode", gift_card_discount as "giftCardDiscount"`,
+      [finalTotal, appliedCode, discount, finalStatus, order.id]
     );
     await client.query("commit");
     return { order: updatedOrder.rows[0], items };
@@ -72,6 +107,7 @@ export async function listOrdersForUser(userId) {
     `select o.id, o.status, o.total_amount as "totalAmount", o.created_at as "createdAt",
             o.delivery_name as "deliveryName", o.delivery_phone as "deliveryPhone",
             o.delivery_address as "deliveryAddress", o.delivery_notes as "deliveryNotes",
+            o.gift_card_code as "giftCardCode", o.gift_card_discount as "giftCardDiscount",
             coalesce(json_agg(json_build_object(
               'productId', p.id, 'name', p.name, 'quantity', oi.quantity,
               'unitPrice', oi.unit_price
@@ -92,6 +128,7 @@ export async function listOrders(status) {
     `select o.id, o.status, o.total_amount as "totalAmount", o.created_at as "createdAt",
             o.delivery_name as "deliveryName", o.delivery_phone as "deliveryPhone",
             o.delivery_address as "deliveryAddress", o.delivery_notes as "deliveryNotes",
+            o.gift_card_code as "giftCardCode", o.gift_card_discount as "giftCardDiscount",
             json_build_object('id', u.id, 'name', u.name, 'phone', u.phone) as "user",
             coalesce(json_agg(json_build_object(
               'productId', p.id, 'name', p.name, 'quantity', oi.quantity,

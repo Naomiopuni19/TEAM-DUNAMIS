@@ -148,6 +148,24 @@ export function sendBookingCancelled(booking) {
   });
 }
 
+export function sendGiftCardEmail(giftCard) {
+  const recipientEmail = giftCard.recipientEmail || giftCard.purchaserEmail;
+  if (!recipientEmail) return;
+  const isGift = Boolean(giftCard.recipientEmail && giftCard.recipientEmail !== giftCard.purchaserEmail);
+  return sendEmail({
+    to: recipientEmail,
+    subject: isGift ? `${giftCard.purchaserName} sent you a gift card` : "Your gift card is ready",
+    html: `
+      <h2>${isGift ? "You've received a gift card" : "Your gift card is ready"}</h2>
+      ${isGift ? `<p>${giftCard.purchaserName} sent you a Beryl's Beauty Mark gift card.</p>` : ""}
+      ${giftCard.message ? `<p><em>"${giftCard.message}"</em></p>` : ""}
+      <p>Amount: GHC ${giftCard.amount}</p>
+      <p>Your code: <strong style="font-size:1.2em;letter-spacing:2px">${giftCard.code}</strong></p>
+      <p>Use this code at checkout on any order or appointment.</p>
+    `,
+  });
+}
+
 export function sendBookingReminder(booking) {
   if (!booking.customerEmail) return;
   return sendEmail({

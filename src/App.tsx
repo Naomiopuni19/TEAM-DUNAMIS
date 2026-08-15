@@ -12,6 +12,7 @@ import { AboutPage } from './pages/AboutPage'
 import { BookingPage } from './pages/BookingPage'
 import { HomePage } from './pages/HomePage'
 import { FaqPage } from './pages/FaqPage'
+import { GiftCardPage } from './pages/GiftCardPage'
 import { PaymentCompletePage } from './pages/PaymentCompletePage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { ServicesPage } from './pages/ServicesPage'
@@ -84,6 +85,9 @@ function App() {
       break
     case 'faqs':
       page = <FaqPage />
+      break
+    case 'gift-cards':
+      page = <GiftCardPage onRequireAuth={() => setAuthOpen(true)} />
       break
     case 'staff-login':
       page = <StaffLoginPage />

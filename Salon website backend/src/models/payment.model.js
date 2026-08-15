@@ -1,19 +1,29 @@
 import { query } from "../config/db.js";
 
 export async function findPaymentAmount(type, refId, userId) {
-  const result =
-    type === "order"
-      ? await query(
-          "select total_amount as amount from orders where id = $1 and user_id = $2",
-          [refId, userId]
-        )
-      : await query(
-          `select s.price_min as amount
-           from bookings b
-           join services s on s.id = b.service_id
-           where b.id = $1 and b.user_id = $2`,
-          [refId, userId]
-        );
+  if (type === "order") {
+    const result = await query(
+      "select total_amount as amount from orders where id = $1 and user_id = $2",
+      [refId, userId]
+    );
+    return result.rows[0]?.amount ?? null;
+  }
+
+  if (type === "gift_card") {
+    const result = await query(
+      "select amount from gift_cards where id = $1 and status = 'pending'",
+      [refId]
+    );
+    return result.rows[0]?.amount ?? null;
+  }
+
+  const result = await query(
+    `select s.price_min as amount
+     from bookings b
+     join services s on s.id = b.service_id
+     where b.id = $1 and b.user_id = $2`,
+    [refId, userId]
+  );
   return result.rows[0]?.amount ?? null;
 }
 
@@ -49,6 +59,17 @@ export async function findPaymentByReference(reference, userId) {
      from payments
      where reference = $1 and user_id = $2`,
     [reference, userId]
+  );
+  return result.rows[0] || null;
+}
+
+export async function getGiftCardForEmail(id) {
+  const result = await query(
+    `select id, code, amount, purchaser_name as "purchaserName", purchaser_email as "purchaserEmail",
+            recipient_name as "recipientName", recipient_email as "recipientEmail", message
+     from gift_cards
+     where id = $1`,
+    [id]
   );
   return result.rows[0] || null;
 }
@@ -104,6 +125,8 @@ export async function markPaymentSuccessAndUnlock(reference) {
 
   if (payment.type === "order") {
     await query("update orders set status = 'paid' where id = $1", [payment.refId]);
+  } else if (payment.type === "gift_card") {
+    await query("update gift_cards set status = 'active', updated_at = now() where id = $1", [payment.refId]);
   } else {
     await query("update bookings set status = 'confirmed' where id = $1", [payment.refId]);
   }

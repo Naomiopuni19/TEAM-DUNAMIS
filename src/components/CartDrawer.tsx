@@ -30,10 +30,31 @@ export function CartDrawer({
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
+  const [giftCardCode, setGiftCardCode] = useState('')
+  const [appliedGiftCard, setAppliedGiftCard] = useState<{ code: string; balance: number } | null>(null)
+  const [giftCardChecking, setGiftCardChecking] = useState(false)
+  const [giftCardError, setGiftCardError] = useState('')
 
   if (!open) return null
 
   const total = items.reduce((sum, item) => sum + item.price, 0)
+  const discount = appliedGiftCard ? Math.min(appliedGiftCard.balance, total) : 0
+  const finalTotal = Math.max(0, total - discount)
+
+  async function applyGiftCard() {
+    if (!giftCardCode.trim()) return
+    setGiftCardChecking(true)
+    setGiftCardError('')
+    try {
+      const result = await api.checkGiftCard(giftCardCode.trim())
+      setAppliedGiftCard({ code: result.giftCard.code, balance: result.giftCard.balance })
+    } catch (error) {
+      setGiftCardError(error instanceof Error ? error.message : 'That code could not be found.')
+      setAppliedGiftCard(null)
+    } finally {
+      setGiftCardChecking(false)
+    }
+  }
 
   async function checkout() {
     if (!token) {
@@ -70,7 +91,15 @@ export function CartDrawer({
           notes: notes.trim() || undefined,
           email: email.trim(),
         },
+        appliedGiftCard ? appliedGiftCard.code : undefined,
       )
+
+      if (result.order.status === 'paid') {
+        onOrderComplete()
+        setMessage('Your order is fully covered by your gift card and has been placed.')
+        setBusy(false)
+        return
+      }
 
       const payment = await api.initiatePayment(token, {
         type: 'order',
@@ -187,6 +216,43 @@ export function CartDrawer({
               className="h-20 w-full rounded-xl border border-[#dfbdcb] bg-white p-4 text-sm outline-none focus:border-[#dc2d83]"
             />
 
+            <div className="rounded-2xl border border-[#e6c5d3] bg-white p-4">
+              <p className="text-sm font-semibold text-[#3e2530]">Have a gift card?</p>
+              {appliedGiftCard ? (
+                <div className="mt-2 flex items-center justify-between rounded-xl bg-emerald-50 px-3 py-2">
+                  <span className="text-xs font-bold text-emerald-700">
+                    {appliedGiftCard.code} applied, GHC {appliedGiftCard.balance} available
+                  </span>
+                  <button
+                    type="button"
+                    onClick={function () { setAppliedGiftCard(null); setGiftCardCode('') }}
+                    className="text-xs font-bold text-red-600"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-2 flex gap-2">
+                  <input
+                    type="text"
+                    value={giftCardCode}
+                    onChange={function (e) { setGiftCardCode(e.target.value.toUpperCase()) }}
+                    placeholder="e.g. GIFT-AB12CD34"
+                    className="h-11 flex-1 rounded-xl border border-[#dfbdcb] bg-white px-3 text-sm uppercase tracking-[0.1em] outline-none focus:border-[#dc2d83]"
+                  />
+                  <button
+                    type="button"
+                    onClick={function () { applyGiftCard() }}
+                    disabled={giftCardChecking}
+                    className="rounded-xl bg-[#3e2530] px-4 text-xs font-bold uppercase text-white disabled:opacity-50"
+                  >
+                    {giftCardChecking ? 'Checking...' : 'Apply'}
+                  </button>
+                </div>
+              )}
+              {giftCardError && <p className="mt-2 text-xs font-semibold text-red-600">{giftCardError}</p>}
+            </div>
+
             <div className="rounded-2xl border border-[#e6c5d3] bg-[#f7e4ec] p-4">
               <p className="text-sm font-semibold text-[#3e2530]">Return policy</p>
               <p className="mt-2 text-xs leading-5 text-[#745f68]">
@@ -206,9 +272,21 @@ export function CartDrawer({
         )}
 
         <div className="mt-6 border-t border-[#e7ccd7] pt-5">
+          {discount > 0 && (
+            <div className="flex justify-between text-sm text-[#745f68]">
+              <span>Subtotal</span>
+              <span>GHC {total.toLocaleString()}</span>
+            </div>
+          )}
+          {discount > 0 && (
+            <div className="flex justify-between text-sm font-semibold text-emerald-700">
+              <span>Gift card discount</span>
+              <span>- GHC {discount.toLocaleString()}</span>
+            </div>
+          )}
           <div className="flex justify-between font-serif text-xl text-[#3e2530]">
             <span>Total</span>
-            <span>GHC {total.toLocaleString()}</span>
+            <span>GHC {finalTotal.toLocaleString()}</span>
           </div>
           <button
             type="button"

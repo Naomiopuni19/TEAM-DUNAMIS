@@ -22,12 +22,13 @@ const orderSchema = z.object({
     address: z.string().min(5),
     notes: z.string().optional(),
     email: z.string().email().optional()
-  })
+  }),
+  giftCardCode: z.string().optional()
 });
 
 export async function create(req, res) {
   const body = orderSchema.parse(req.body);
-  const result = await createOrder(req.user.id, body.items, body.delivery);
+  const result = await createOrder(req.user.id, body.items, body.delivery, body.giftCardCode);
   res.status(201).json(result);
 }
 

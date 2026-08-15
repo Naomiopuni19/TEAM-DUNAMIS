@@ -100,6 +100,14 @@ export type AdminSettings = {
   updatedAt?: string
 }
 
+export type GiftCard = {
+  id: string
+  code: string
+  amount: number
+  balance: number
+  status: string
+}
+
 export type AdminStaff = {
   id: string
   name: string
@@ -452,18 +460,19 @@ export const api = {
     token: string,
     items: Array<{ productId: string; quantity: number }>,
     delivery: { name: string; phone: string; address: string; notes?: string; email?: string },
+    giftCardCode?: string,
   ) {
     return request<{
-      order: { id: string; totalAmount: number; status: string }
+      order: { id: string; totalAmount: number; status: string; giftCardCode?: string; giftCardDiscount?: number }
     }>('/orders', {
       method: 'POST',
       token,
-      body: JSON.stringify({ items, delivery }),
+      body: JSON.stringify({ items, delivery, giftCardCode }),
     })
   },
   initiatePayment(
     token: string,
-    body: { type: 'booking' | 'order'; refId: string; momoNumber: string },
+    body: { type: 'booking' | 'order' | 'gift_card'; refId: string; momoNumber: string },
   ) {
     return request<{
       paymentReference: string
@@ -508,6 +517,19 @@ export const api = {
       token,
       body: JSON.stringify({ status }),
     })
+  },
+  purchaseGiftCard(
+    token: string,
+    body: { amount: number; purchaserName: string; purchaserEmail: string; recipientName?: string; recipientEmail?: string; message?: string },
+  ) {
+    return request<{ giftCard: GiftCard }>('/gift-cards', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  checkGiftCard(code: string) {
+    return request<{ giftCard: GiftCard }>('/gift-cards/' + code)
   },
   categories() {
     return request<Array<{ id: string; name: string; dailyCap: number; imageUrl: string }>>(

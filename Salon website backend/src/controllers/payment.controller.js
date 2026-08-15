@@ -8,13 +8,14 @@ import {
   updatePaymentStatus,
   markPaymentSuccessAndUnlock,
   getOrderDetailsForEmail,
-  getBookingDetailsForEmail
+  getBookingDetailsForEmail,
+  getGiftCardForEmail
 } from "../models/payment.model.js";
 import { notFound } from "../utils/httpError.js";
-import { sendOrderConfirmation, sendAdminOrderNotification } from "../utils/email.js";
+import { sendOrderConfirmation, sendAdminOrderNotification, sendGiftCardEmail } from "../utils/email.js";
 
 const initiateSchema = z.object({
-  type: z.enum(["booking", "order"]),
+  type: z.enum(["booking", "order", "gift_card"]),
   refId: z.string().uuid(),
   momoNumber: z.string().min(7).max(20)
 });
@@ -88,6 +89,11 @@ export async function verify(req, res) {
           phone: order.customerPhone
         });
       }
+    }
+
+    if (unlocked.type === "gift_card") {
+      const giftCard = await getGiftCardForEmail(unlocked.refId);
+      if (giftCard) sendGiftCardEmail(giftCard);
     }
 
     res.json({ reference, status: "success", amount: unlocked.amount });
