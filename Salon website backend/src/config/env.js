@@ -20,5 +20,6 @@ export const env = {
   resendApiKey: process.env.RESEND_API_KEY || "",
   adminEmail: process.env.ADMIN_EMAIL || "",
   gmailUser: process.env.GMAIL_USER || "",
-  gmailAppPassword: process.env.GMAIL_APP_PASSWORD || ""
+  gmailAppPassword: process.env.GMAIL_APP_PASSWORD || "",
+  reminderSecret: process.env.REMINDER_SECRET || ""
 };

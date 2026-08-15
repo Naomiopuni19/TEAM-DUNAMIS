@@ -7,6 +7,7 @@ import {
   mine,
   monthAvailability,
   reschedule,
+  sendReminders,
   updateStatus,
   verifyCode
 } from "../controllers/booking.controller.js";
@@ -44,5 +45,7 @@ router.put(
   requireAdmin,
   asyncHandler(approveCustomLengthRequest)
 );
+
+router.post("/send-reminders", asyncHandler(sendReminders));
 
 export default router;

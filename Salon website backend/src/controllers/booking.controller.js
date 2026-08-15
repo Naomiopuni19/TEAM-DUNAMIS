@@ -4,18 +4,22 @@ import {
   createBooking,
   findBookingByCode,
   getBookingAvailability,
+  getBookingsNeedingReminder,
   getMonthAvailability,
   listBookings,
   listBookingsForUser,
+  markReminderSent,
   rescheduleBooking,
   updateBookingStatus
 } from "../models/booking.model.js";
+import { env } from "../config/env.js";
 import { getBookingDetailsForEmail } from "../models/payment.model.js";
 import {
   sendAdminBookingNotification,
   sendBookingApproved,
   sendBookingCancelled,
   sendBookingReceived,
+  sendBookingReminder,
   sendBookingRescheduled
 } from "../utils/email.js";
 import { notFound } from "../utils/httpError.js";
@@ -128,4 +132,19 @@ export async function approveCustomLengthRequest(req, res) {
   const booking = await approveCustomLength(req.params.id, body.price);
   if (!booking) throw notFound("Booking not found");
   res.json({ booking });
+}
+
+export async function sendReminders(req, res) {
+  const providedSecret = req.headers["x-reminder-secret"];
+  if (!env.reminderSecret || providedSecret !== env.reminderSecret) {
+    return res.status(401).json({ error: "Invalid reminder secret" });
+  }
+
+  const bookings = await getBookingsNeedingReminder();
+  for (const booking of bookings) {
+    sendBookingReminder(booking);
+    await markReminderSent(booking.id);
+  }
+
+  res.json({ remindersSent: bookings.length });
 }

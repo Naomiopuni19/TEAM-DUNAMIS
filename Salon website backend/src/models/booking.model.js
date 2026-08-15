@@ -210,6 +210,26 @@ export async function rescheduleBooking(id, date, timeSlot) {
   return result.rows[0] || null;
 }
 
+export async function getBookingsNeedingReminder() {
+  const result = await query(
+    `select b.id, b.booking_date as date, b.time_slot as "timeSlot",
+            b.confirmation_code as "confirmationCode",
+            s.name as "serviceName",
+            u.name as "customerName", u.phone as "customerPhone", u.email as "customerEmail"
+     from bookings b
+     join services s on s.id = b.service_id
+     join users u on u.id = b.user_id
+     where b.status = 'confirmed'
+       and b.reminder_sent = false
+       and b.booking_date = (current_date + interval '1 day')::date`
+  );
+  return result.rows;
+}
+
+export async function markReminderSent(id) {
+  await query("update bookings set reminder_sent = true where id = $1", [id]);
+}
+
 export async function approveCustomLength(id, price) {
   const result = await query(
     `update bookings
