@@ -1,9 +1,11 @@
 import { Router } from "express";
 import {
+  approveCustomLengthRequest,
   availability,
   create,
   index,
   mine,
+  monthAvailability,
   reschedule,
   updateStatus,
   verifyCode
@@ -14,6 +16,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 const router = Router();
 
 router.get("/availability", asyncHandler(availability));
+router.get("/month-availability", asyncHandler(monthAvailability));
 router.post("/", requireAuth, asyncHandler(create));
 router.get("/me", requireAuth, asyncHandler(mine));
 router.get("/", requireAuth, requireAdmin, asyncHandler(index));
@@ -34,6 +37,12 @@ router.put(
   requireAuth,
   requireAdmin,
   asyncHandler(reschedule)
+);
+router.put(
+  "/:id/approve-custom-length",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(approveCustomLengthRequest)
 );
 
 export default router;

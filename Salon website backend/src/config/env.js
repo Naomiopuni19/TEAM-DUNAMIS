@@ -18,5 +18,7 @@ export const env = {
   momoApiKey: process.env.MOMO_API_KEY || "",
   momoApiSecret: process.env.MOMO_API_SECRET || "",
   resendApiKey: process.env.RESEND_API_KEY || "",
-  adminEmail: process.env.ADMIN_EMAIL || ""
+  adminEmail: process.env.ADMIN_EMAIL || "",
+  gmailUser: process.env.GMAIL_USER || "",
+  gmailAppPassword: process.env.GMAIL_APP_PASSWORD || ""
 };

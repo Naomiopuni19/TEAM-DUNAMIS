@@ -16,7 +16,7 @@ export async function findUserByPhone(phone) {
 }
 
 export async function findUserByEmail(email) {
-  const result = await query("select * from users where email = $1", [email]);
+  const result = await query("select * from users where lower(email) = lower($1)", [email]);
   return result.rows[0] || null;
 }
 

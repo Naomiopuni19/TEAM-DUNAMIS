@@ -33,6 +33,9 @@ export type AdminBooking = {
   user: Pick<User, 'id' | 'name' | 'phone'>
   service: { id: string; name: string }
   category: { id: string; name: string }
+  customLengthRequest?: string
+  customLengthPrice?: number
+  customLengthStatus?: string
 }
 
 export type AdminOrder = {
@@ -114,6 +117,9 @@ export type CustomerBooking = {
   serviceName: string
   categoryName: string
   confirmationCode?: string
+  customLengthRequest?: string
+  customLengthPrice?: number
+  customLengthStatus?: string
 }
 
 export type CustomerOrder = {
@@ -239,15 +245,29 @@ export type ServiceLengthOption = {
   priceMin: number
   priceMax: number
   sortOrder: number
+  imageUrl?: string
 }
 
 export const api = {
+  monthAvailability(serviceId: string, year: number, month: number) {
+    const query = new URLSearchParams({ serviceId, year: String(year), month: String(month) })
+    return request<{ dailyCap: number; bookedByDate: Record<string, number> }>(
+      '/bookings/month-availability?' + query,
+    )
+  },
+  approveCustomLength(token: string, bookingId: string, price: number) {
+    return request<{ booking: unknown }>('/bookings/' + bookingId + '/approve-custom-length', {
+      method: 'PUT',
+      token,
+      body: JSON.stringify({ price }),
+    })
+  },
   serviceLengthOptions(serviceId: string) {
     return request<ServiceLengthOption[]>('/service-length-options/service/' + serviceId)
   },
   createServiceLengthOption(
     token: string,
-    body: { serviceId: string; label: string; priceMin: number; priceMax: number; sortOrder: number },
+    body: { serviceId: string; label: string; priceMin: number; priceMax: number; sortOrder: number; imageUrl?: string },
   ) {
     return request<{ option: ServiceLengthOption }>('/service-length-options', {
       method: 'POST',
@@ -402,7 +422,7 @@ export const api = {
   },
   createBooking(
     token: string,
-    body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string },
+    body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string; customLengthRequest?: string },
   ) {
     return request<{ booking: { id: string; status: string; confirmationCode: string } }>('/bookings', {
       method: 'POST',
@@ -490,8 +510,22 @@ export const api = {
     })
   },
   categories() {
-    return request<Array<{ id: string; name: string; dailyCap: number }>>(
+    return request<Array<{ id: string; name: string; dailyCap: number; imageUrl: string }>>(
       '/categories',
+    )
+  },
+  updateCategory(
+    token: string,
+    id: string,
+    body: { dailyCap?: number; imageUrl?: string },
+  ) {
+    return request<{ category: { id: string; name: string; dailyCap: number; imageUrl: string } }>(
+      '/categories/' + id,
+      {
+        method: 'PUT',
+        token,
+        body: JSON.stringify(body),
+      },
     )
   },
   createService(token: string, body: Omit<Service, 'id' | 'category'> & {

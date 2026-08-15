@@ -309,6 +309,16 @@ export function AccountPage(props) {
                               Your code: <span className="tracking-[0.2em] text-[#dc2d83]">{booking.confirmationCode}</span>
                             </p>
                           )}
+                          {booking.customLengthStatus === 'approved' && (
+                            <p className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">
+                              Your requested style was approved at GHC {booking.customLengthPrice}
+                            </p>
+                          )}
+                          {booking.customLengthRequest && booking.customLengthStatus !== 'approved' && (
+                            <p className="mt-3 rounded-lg bg-[#fdf2e0] px-3 py-2 text-xs font-bold text-[#8a5a1f]">
+                              Your requested style is being reviewed, we will confirm a price soon.
+                            </p>
+                          )}
                           {booking.status === 'confirmed' && (
                             <button
                               type="button"

@@ -53,7 +53,7 @@ export function AuthPanel({ open, onClose }: AuthPanelProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-title"
-        className="relative w-full max-w-md rounded-[2rem] border border-[#e7b9cd] bg-[#f8d7e5] p-7 shadow-2xl sm:p-9"
+        className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-[2rem] border border-[#e7b9cd] bg-[#f8d7e5] p-7 shadow-2xl sm:p-9"
       >
         <button
           type="button"

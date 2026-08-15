@@ -20,6 +20,8 @@ export function AppointmentsAdminPage() {
   const [codeResult, setCodeResult] = useState<any>(null)
   const [codeError, setCodeError] = useState('')
   const [codeChecking, setCodeChecking] = useState(false)
+  const [priceDrafts, setPriceDrafts] = useState<Record<string, string>>({})
+  const [approvingId, setApprovingId] = useState('')
 
   async function checkCode() {
     if (!token || !codeInput.trim()) return
@@ -43,6 +45,24 @@ export function AppointmentsAdminPage() {
       await reload()
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Update failed.')
+    }
+  }
+
+  async function approveCustomLengthPrice(booking: AdminBooking) {
+    if (!token) return
+    const price = Number(priceDrafts[booking.id])
+    if (!price || price <= 0) {
+      setError('Enter a valid price before approving.')
+      return
+    }
+    setApprovingId(booking.id)
+    try {
+      await api.approveCustomLength(token, booking.id, price)
+      await reload()
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Unable to approve this price.')
+    } finally {
+      setApprovingId('')
     }
   }
 
@@ -125,6 +145,37 @@ export function AppointmentsAdminPage() {
                   {booking.status}
                 </span>
               </div>
+
+              {booking.customLengthRequest && (
+                <div className="mt-4 rounded-2xl border border-[#e6a94a] bg-[#fdf2e0] p-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#8a5a1f]">
+                    Custom length or style requested
+                  </p>
+                  <p className="mt-2 text-sm text-[#3e2530]">{booking.customLengthRequest}</p>
+
+                  {booking.customLengthStatus === 'approved' ? (
+                    <p className="mt-3 text-sm font-bold text-emerald-700">
+                      Approved at GHC {booking.customLengthPrice}
+                    </p>
+                  ) : (
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="Set a real price, GHC"
+                        value={priceDrafts[booking.id] ?? ''}
+                        onChange={(e) =>
+                          setPriceDrafts((all) => ({ ...all, [booking.id]: e.target.value }))
+                        }
+                        className={fieldClass + ' max-w-[180px]'}
+                      />
+                      <PrimaryButton onClick={() => approveCustomLengthPrice(booking)}>
+                        {approvingId === booking.id ? 'Saving...' : 'Approve with this price'}
+                      </PrimaryButton>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="mt-5 flex flex-wrap gap-2 border-t border-[#f0dfe6] pt-5">
                 {booking.status === 'pending' && (

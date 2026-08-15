@@ -1,13 +1,23 @@
 import { z } from "zod";
 import {
+  approveCustomLength,
   createBooking,
   findBookingByCode,
   getBookingAvailability,
+  getMonthAvailability,
   listBookings,
   listBookingsForUser,
   rescheduleBooking,
   updateBookingStatus
 } from "../models/booking.model.js";
+import { getBookingDetailsForEmail } from "../models/payment.model.js";
+import {
+  sendAdminBookingNotification,
+  sendBookingApproved,
+  sendBookingCancelled,
+  sendBookingReceived,
+  sendBookingRescheduled
+} from "../utils/email.js";
 import { notFound } from "../utils/httpError.js";
 
 const createBookingSchema = z.object({
@@ -15,7 +25,18 @@ const createBookingSchema = z.object({
   date: z.string().date(),
   timeSlot: z.string().min(3).max(20),
   referenceImageUrl: z.string().optional(),
-  lengthLabel: z.string().optional()
+  lengthLabel: z.string().optional(),
+  customLengthRequest: z.string().min(2).max(300).optional()
+});
+
+const approveCustomLengthSchema = z.object({
+  price: z.number().positive()
+});
+
+const monthAvailabilitySchema = z.object({
+  serviceId: z.string().uuid(),
+  year: z.coerce.number().int(),
+  month: z.coerce.number().int().min(1).max(12)
 });
 
 const statusSchema = z.object({
@@ -43,6 +64,11 @@ export async function create(req, res) {
     req.user.id,
     createBookingSchema.parse(req.body)
   );
+  const details = await getBookingDetailsForEmail(booking.id);
+  if (details) {
+    sendBookingReceived(details);
+    sendAdminBookingNotification(details);
+  }
   res.status(201).json({ booking });
 }
 
@@ -71,12 +97,35 @@ export async function updateStatus(req, res) {
   const body = statusSchema.parse(req.body);
   const booking = await updateBookingStatus(req.params.id, body.status);
   if (!booking) throw notFound("Booking not found");
+
+  const details = await getBookingDetailsForEmail(booking.id);
+  if (details) {
+    if (body.status === "confirmed") sendBookingApproved(details);
+    if (body.status === "cancelled") sendBookingCancelled(details);
+  }
+
   res.json({ booking });
 }
 
 export async function reschedule(req, res) {
   const body = scheduleSchema.parse(req.body);
   const booking = await rescheduleBooking(req.params.id, body.date, body.timeSlot);
+  if (!booking) throw notFound("Booking not found");
+
+  const details = await getBookingDetailsForEmail(booking.id);
+  if (details) sendBookingRescheduled(details);
+
+  res.json({ booking });
+}
+
+export async function monthAvailability(req, res) {
+  const params = monthAvailabilitySchema.parse(req.query);
+  res.json(await getMonthAvailability(params.serviceId, params.year, params.month));
+}
+
+export async function approveCustomLengthRequest(req, res) {
+  const body = approveCustomLengthSchema.parse(req.body);
+  const booking = await approveCustomLength(req.params.id, body.price);
   if (!booking) throw notFound("Booking not found");
   res.json({ booking });
 }

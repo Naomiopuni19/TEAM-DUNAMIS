@@ -1,17 +1,25 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { env } from "../config/env.js";
 
-const resend = env.resendApiKey ? new Resend(env.resendApiKey) : null;
+const transporter = env.gmailUser && env.gmailAppPassword
+  ? nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: env.gmailUser,
+        pass: env.gmailAppPassword
+      }
+    })
+  : null;
 
-const FROM = "Beryl's Beauty Mark <onboarding@resend.dev>";
+const FROM = "Beryl's Beauty Mark <" + env.gmailUser + ">";
 
 export async function sendEmail({ to, subject, html }) {
-  if (!env.resendApiKey) {
-    console.log("RESEND_API_KEY not set, skipping email:", subject);
+  if (!transporter) {
+    console.log("Gmail sender not set, skipping email:", subject);
     return;
   }
   try {
-    await resend.emails.send({ from: FROM, to, subject, html });
+    await transporter.sendMail({ from: FROM, to, subject, html });
   } catch (error) {
     console.error("Failed to send email:", subject, error.message);
   }
@@ -49,52 +57,6 @@ export function sendAdminOrderNotification(order, customer) {
   });
 }
 
-export function sendBookingReceived(customerEmail, booking, serviceName) {
-  if (!customerEmail) return;
-  return sendEmail({
-    to: customerEmail,
-    subject: "Your appointment request was received",
-    html: `
-      <h2>Appointment request received</h2>
-      <p>Service: ${serviceName}</p>
-      <p>Date: ${booking.date}</p>
-      <p>Time: ${booking.timeSlot}</p>
-      <p>Your confirmation code: <strong>${booking.confirmationCode}</strong></p>
-      <p>We will confirm your appointment shortly.</p>
-    `,
-  });
-}
-
-export function sendAdminBookingNotification(booking, customer, serviceName) {
-  if (!env.adminEmail) return;
-  return sendEmail({
-    to: env.adminEmail,
-    subject: "New appointment request",
-    html: `
-      <h2>New appointment request</h2>
-      <p><strong>${customer.name}</strong> (${customer.phone}) requested an appointment.</p>
-      <p>Service: ${serviceName}</p>
-      <p>Date: ${booking.date}</p>
-      <p>Time: ${booking.timeSlot}</p>
-    `,
-  });
-}
-
-export function sendBookingApproved(customerEmail, booking, serviceName) {
-  if (!customerEmail) return;
-  return sendEmail({
-    to: customerEmail,
-    subject: "Your appointment is approved, payment needed",
-    html: `
-      <h2>Your appointment is approved</h2>
-      <p>Service: ${serviceName}</p>
-      <p>Date: ${booking.date}</p>
-      <p>Time: ${booking.timeSlot}</p>
-      <p>Please complete payment from your account to secure this slot.</p>
-    `,
-  });
-}
-
 export function sendOrderStatusUpdate(customerEmail, order, status) {
   if (!customerEmail) return;
   return sendEmail({
@@ -103,6 +65,102 @@ export function sendOrderStatusUpdate(customerEmail, order, status) {
     html: `
       <h2>Order update</h2>
       <p>Your order is now: <strong>${status.replaceAll("_", " ")}</strong></p>
+    `,
+  });
+}
+
+export function sendBookingReceived(booking) {
+  if (!booking.customerEmail) return;
+  return sendEmail({
+    to: booking.customerEmail,
+    subject: "Your appointment request was received",
+    html: `
+      <h2>Appointment request received</h2>
+      <p>Service: ${booking.serviceName}</p>
+      <p>Date: ${booking.date}</p>
+      <p>Time: ${booking.timeSlot}</p>
+      <p>Your confirmation code: <strong>${booking.confirmationCode}</strong></p>
+      <p>We will notify you once your appointment has been reviewed.</p>
+    `,
+  });
+}
+
+export function sendAdminBookingNotification(booking) {
+  if (!env.adminEmail) return;
+  return sendEmail({
+    to: env.adminEmail,
+    subject: "New appointment request",
+    html: `
+      <h2>New appointment request</h2>
+      <p><strong>${booking.customerName}</strong> (${booking.customerPhone}) requested an appointment.</p>
+      <p>Service: ${booking.serviceName}</p>
+      <p>Date: ${booking.date}</p>
+      <p>Time: ${booking.timeSlot}</p>
+    `,
+  });
+}
+
+export function sendBookingApproved(booking) {
+  if (!booking.customerEmail) return;
+  return sendEmail({
+    to: booking.customerEmail,
+    subject: "Your appointment is approved",
+    html: `
+      <h2>Your appointment is approved</h2>
+      <p>Service: ${booking.serviceName}</p>
+      <p>Date: ${booking.date}</p>
+      <p>Time: ${booking.timeSlot}</p>
+      <p>Price range: GHC ${booking.priceMin} - GHC ${booking.priceMax}</p>
+      <p>Your confirmation code: <strong>${booking.confirmationCode}</strong></p>
+      <p>If you have not already paid, please complete payment from your account to secure this slot.</p>
+    `,
+  });
+}
+
+export function sendBookingRescheduled(booking) {
+  if (!booking.customerEmail) return;
+  return sendEmail({
+    to: booking.customerEmail,
+    subject: "Your appointment has a new date and time",
+    html: `
+      <h2>Your appointment was rescheduled</h2>
+      <p>Service: ${booking.serviceName}</p>
+      <p>New date: ${booking.date}</p>
+      <p>New time: ${booking.timeSlot}</p>
+      <p>Your confirmation code: <strong>${booking.confirmationCode}</strong></p>
+      <p>If this new time does not work for you, please contact the salon directly.</p>
+    `,
+  });
+}
+
+export function sendBookingCancelled(booking) {
+  if (!booking.customerEmail) return;
+  return sendEmail({
+    to: booking.customerEmail,
+    subject: "Your appointment has been cancelled",
+    html: `
+      <h2>Appointment cancelled</h2>
+      <p>Service: ${booking.serviceName}</p>
+      <p>Date: ${booking.date}</p>
+      <p>Time: ${booking.timeSlot}</p>
+      <p>If you already paid and believe this was in error, please contact the salon directly to discuss a refund.</p>
+    `,
+  });
+}
+
+export function sendBookingReminder(booking) {
+  if (!booking.customerEmail) return;
+  return sendEmail({
+    to: booking.customerEmail,
+    subject: "Your appointment is coming up",
+    html: `
+      <h2>See you soon</h2>
+      <p>This is a reminder that your appointment is coming up.</p>
+      <p>Service: ${booking.serviceName}</p>
+      <p>Date: ${booking.date}</p>
+      <p>Time: ${booking.timeSlot}</p>
+      <p>Your confirmation code: <strong>${booking.confirmationCode}</strong></p>
+      <p>Please note, if you arrive late, the salon has the right to cancel and reschedule your booking, or additional charges may apply.</p>
     `,
   });
 }

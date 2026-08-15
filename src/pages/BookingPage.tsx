@@ -5,6 +5,7 @@ import { api } from '../lib/api'
 import { ImageUploadField } from '../admin/components/ImageUploadField'
 
 const times = ['09:00 AM', '10:30 AM', '12:00 PM', '02:00 PM', '03:30 PM']
+const weekdayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
 export function BookingPage(props) {
   const onRequireAuth = props.onRequireAuth
@@ -20,6 +21,8 @@ export function BookingPage(props) {
     window.location.hash.split('?')[1],
   ).get('service')
 
+  const today = useMemo(function () { return new Date() }, [])
+
   const [step, setStep] = useState(1)
   const [selectedService, setSelectedService] = useState(serviceFromHash || '')
   const [hasOwnExtension, setHasOwnExtension] = useState(null)
@@ -29,7 +32,13 @@ export function BookingPage(props) {
   const [addedExtensionId, setAddedExtensionId] = useState(null)
   const [lengthOptions, setLengthOptions] = useState([])
   const [selectedLength, setSelectedLength] = useState(null)
+  const [wantsCustomLength, setWantsCustomLength] = useState(false)
+  const [customLengthText, setCustomLengthText] = useState('')
   const [referenceImageUrl, setReferenceImageUrl] = useState('')
+  const [calendarYear, setCalendarYear] = useState(today.getFullYear())
+  const [calendarMonth, setCalendarMonth] = useState(today.getMonth() + 1)
+  const [monthData, setMonthData] = useState(null)
+  const [monthLoading, setMonthLoading] = useState(false)
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
   const [availability, setAvailability] = useState(null)
@@ -37,18 +46,6 @@ export function BookingPage(props) {
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
   const [agreedToTerms, setAgreedToTerms] = useState(false)
-
-  const dates = useMemo(function () {
-    return Array.from({ length: 5 }, function (_, index) {
-      const date = new Date()
-      date.setDate(date.getDate() + index + 1)
-      return {
-        iso: date.toISOString().slice(0, 10),
-        day: date.toLocaleDateString('en-GB', { weekday: 'short' }),
-        date: date.toLocaleDateString('en-GB', { day: '2-digit' }),
-      }
-    })
-  }, [])
 
   const activeService = useMemo(function () {
     return services.find(function (service) { return service.id === selectedService })
@@ -66,6 +63,17 @@ export function BookingPage(props) {
     })
   }, [wantsToBuyExtension])
 
+  useEffect(function () {
+    if (step !== 2 || !selectedService) return
+    setMonthLoading(true)
+    api.monthAvailability(selectedService, calendarYear, calendarMonth).then(function (data) {
+      setMonthData(data)
+      setMonthLoading(false)
+    }).catch(function () {
+      setMonthLoading(false)
+    })
+  }, [step, selectedService, calendarYear, calendarMonth])
+
   function selectService(service) {
     setSelectedService(service.id)
     setHasOwnExtension(null)
@@ -77,6 +85,8 @@ export function BookingPage(props) {
     setAvailability(null)
     setSelectedLength(null)
     setLengthOptions([])
+    setWantsCustomLength(false)
+    setCustomLengthText('')
     api.serviceLengthOptions(service.id).then(function (options) {
       setLengthOptions(options)
     })
@@ -87,18 +97,58 @@ export function BookingPage(props) {
     setAddedExtensionId(product.id)
   }
 
-  async function chooseDate(date) {
-    setSelectedDate(date)
+  function isoDate(year, month, day) {
+    return year + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0')
+  }
+
+  async function chooseDate(iso) {
+    setSelectedDate(iso)
     setSelectedTime('')
     setAvailability(null)
     setMessage('')
     if (!selectedService) return
     try {
-      setAvailability(await api.availability(selectedService, date))
+      setAvailability(await api.availability(selectedService, iso))
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Unable to check availability.')
     }
   }
+
+  function changeMonth(direction) {
+    let nextMonth = calendarMonth + direction
+    let nextYear = calendarYear
+    if (nextMonth > 12) {
+      nextMonth = 1
+      nextYear += 1
+    }
+    if (nextMonth < 1) {
+      nextMonth = 12
+      nextYear -= 1
+    }
+    setCalendarMonth(nextMonth)
+    setCalendarYear(nextYear)
+    setSelectedDate('')
+    setSelectedTime('')
+    setAvailability(null)
+  }
+
+  const monthsAhead = (calendarYear - today.getFullYear()) * 12 + (calendarMonth - (today.getMonth() + 1))
+  const canGoBack = monthsAhead > 0
+  const canGoForward = monthsAhead < 1
+
+  const calendarDays = useMemo(function () {
+    const firstOfMonth = new Date(calendarYear, calendarMonth - 1, 1)
+    const daysInMonth = new Date(calendarYear, calendarMonth, 0).getDate()
+    const startWeekday = firstOfMonth.getDay()
+    const days = []
+    for (let i = 0; i < startWeekday; i++) {
+      days.push(null)
+    }
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push(day)
+    }
+    return days
+  }, [calendarYear, calendarMonth])
 
   async function requestBooking() {
     if (!token) {
@@ -116,6 +166,7 @@ export function BookingPage(props) {
         timeSlot: selectedTime,
         lengthLabel: selectedLength ? selectedLength.label : undefined,
         referenceImageUrl: referenceImageUrl || undefined,
+        customLengthRequest: wantsCustomLength && customLengthText.trim() ? customLengthText.trim() : undefined,
       })
 
       if (momoNumber.trim()) {
@@ -136,6 +187,7 @@ export function BookingPage(props) {
   }
 
   const extensionStepAnswered = hasOwnExtension === true || (hasOwnExtension === false && wantsToBuyExtension !== null)
+  const lengthStepAnswered = lengthOptions.length === 0 || Boolean(selectedLength) || (wantsCustomLength && customLengthText.trim().length > 1)
 
   return (
     <main className="min-h-[760px] bg-[#f9e8ef] px-5 py-12 sm:px-10 sm:py-20 lg:px-12">
@@ -198,21 +250,65 @@ export function BookingPage(props) {
                 <div className="mt-8 rounded-2xl border border-[#e6c5d3] bg-white p-6">
                   <p className="font-serif text-xl text-[#3e2530]">Choose your length</p>
                   <p className="mt-2 text-sm text-[#745f68]">Pricing depends on the length you choose.</p>
-                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
                     {lengthOptions.map(function (option) {
-                      const selected = selectedLength && selectedLength.id === option.id
+                      const selected = !wantsCustomLength && selectedLength && selectedLength.id === option.id
                       const optionClass = selected
-                        ? 'flex items-center justify-between rounded-xl border p-4 text-left transition border-[#dc2d83] bg-[#fbe0eb]'
-                        : 'flex items-center justify-between rounded-xl border p-4 text-left transition border-[#ecd8e1] bg-white hover:border-[#dc2d83]'
+                        ? 'overflow-hidden rounded-xl border text-left transition border-[#dc2d83] bg-[#fbe0eb]'
+                        : 'overflow-hidden rounded-xl border text-left transition border-[#ecd8e1] bg-white hover:border-[#dc2d83]'
                       return (
-                        <button key={option.id} type="button" onClick={function () { setSelectedLength(option) }} className={optionClass}>
-                          <span className="font-semibold text-[#3e2530]">{option.label}</span>
-                          <span className="text-sm font-bold text-[#b32269]">
-                            {'GHC ' + option.priceMin.toLocaleString() + ' - ' + option.priceMax.toLocaleString()}
-                          </span>
+                        <button
+                          key={option.id}
+                          type="button"
+                          onClick={function () {
+                            setSelectedLength(option)
+                            setWantsCustomLength(false)
+                          }}
+                          className={optionClass}
+                        >
+                          {option.imageUrl && (
+                            <img src={option.imageUrl} alt={option.label} className="h-36 w-full object-cover" />
+                          )}
+                          <div className="flex items-center justify-between p-4">
+                            <span className="font-semibold text-[#3e2530]">{option.label}</span>
+                            <span className="text-sm font-bold text-[#b32269]">
+                              {'GHC ' + option.priceMin.toLocaleString() + ' - ' + option.priceMax.toLocaleString()}
+                            </span>
+                          </div>
                         </button>
                       )
                     })}
+                  </div>
+
+                  <div className="mt-5 border-t border-[#ecd8e1] pt-5">
+                    <button
+                      type="button"
+                      onClick={function () {
+                        setWantsCustomLength(!wantsCustomLength)
+                        setSelectedLength(null)
+                      }}
+                      className={
+                        wantsCustomLength
+                          ? 'text-sm font-bold text-[#dc2d83] underline underline-offset-4'
+                          : 'text-sm font-semibold text-[#745f68] underline underline-offset-4'
+                      }
+                    >
+                      I don't see the length or style I want
+                    </button>
+
+                    {wantsCustomLength && (
+                      <div className="mt-4">
+                        <textarea
+                          value={customLengthText}
+                          onChange={function (e) { setCustomLengthText(e.target.value) }}
+                          placeholder="Describe exactly what you want, e.g. 32 inch bone straight with curtain bangs"
+                          className="h-24 w-full rounded-xl border border-[#dfbdcb] bg-white p-4 text-sm outline-none focus:border-[#dc2d83]"
+                        />
+                        <p className="mt-2 text-xs leading-5 text-[#8f707d]">
+                          We will review this and confirm a real price for your request before your appointment.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -337,21 +433,89 @@ export function BookingPage(props) {
 
           {step === 2 && (
             <div>
-              <h2 className="font-serif text-3xl text-[#3e2530]">Choose your time</h2>
-              <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-5">
-                {dates.map(function (date) {
-                  const selected = selectedDate === date.iso
-                  const dateClass = selected
-                    ? 'rounded-2xl border px-4 py-4 text-center transition border-[#dc2d83] bg-[#dc2d83] text-white'
-                    : 'rounded-2xl border px-4 py-4 text-center transition border-[#ecd8e1] bg-white text-[#604c55]'
-                  return (
-                    <button key={date.iso} type="button" onClick={function () { chooseDate(date.iso) }} className={dateClass}>
-                      <span className="block text-xs uppercase tracking-[0.12em]">{date.day}</span>
-                      <span className="mt-1 block font-serif text-2xl">{date.date}</span>
-                    </button>
-                  )
-                })}
+              <h2 className="font-serif text-3xl text-[#3e2530]">Choose your date and time</h2>
+
+              <div className="mt-7 rounded-2xl border border-[#e6c5d3] bg-white p-5">
+                <div className="flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={function () { changeMonth(-1) }}
+                    disabled={!canGoBack}
+                    className="rounded-full border border-[#e5cbd6] px-4 py-2 text-sm font-bold text-[#604c55] disabled:opacity-30"
+                  >
+                    &#8592;
+                  </button>
+                  <p className="font-serif text-xl text-[#3e2530]">
+                    {new Date(calendarYear, calendarMonth - 1, 1).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={function () { changeMonth(1) }}
+                    disabled={!canGoForward}
+                    className="rounded-full border border-[#e5cbd6] px-4 py-2 text-sm font-bold text-[#604c55] disabled:opacity-30"
+                  >
+                    &#8594;
+                  </button>
+                </div>
+
+                <div className="mt-5 grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold uppercase text-[#8f707d]">
+                  {weekdayLabels.map(function (label, i) {
+                    return <span key={i}>{label}</span>
+                  })}
+                </div>
+
+                <div className="mt-2 grid grid-cols-7 gap-1.5">
+                  {monthLoading && <p className="col-span-7 py-6 text-center text-sm text-[#745f68]">Loading availability...</p>}
+                  {!monthLoading && calendarDays.map(function (day, index) {
+                    if (!day) return <span key={'blank-' + index} />
+
+                    const iso = isoDate(calendarYear, calendarMonth, day)
+                    const dayDate = new Date(calendarYear, calendarMonth - 1, day)
+                    const isPast = dayDate < new Date(today.getFullYear(), today.getMonth(), today.getDate())
+                    const bookedCount = monthData && monthData.bookedByDate[iso] ? monthData.bookedByDate[iso] : 0
+                    const dailyCap = monthData ? monthData.dailyCap : 0
+                    const slotsLeft = Math.max(dailyCap - bookedCount, 0)
+                    const isFull = dailyCap > 0 && slotsLeft === 0
+                    const selected = selectedDate === iso
+
+                    let dayClass = 'flex h-11 items-center justify-center rounded-lg text-sm font-semibold transition '
+                    if (isPast || isFull) {
+                      dayClass += 'cursor-not-allowed bg-[#f3e6ec] text-[#c7a9b6] line-through'
+                    } else if (selected) {
+                      dayClass += 'bg-[#dc2d83] text-white'
+                    } else if (slotsLeft > 0 && slotsLeft <= 2) {
+                      dayClass += 'border border-[#e6a94a] bg-[#fdf2e0] text-[#8a5a1f]'
+                    } else {
+                      dayClass += 'border border-[#ecd8e1] bg-white text-[#604c55] hover:border-[#dc2d83]'
+                    }
+
+                    return (
+                      <button
+                        key={iso}
+                        type="button"
+                        disabled={isPast || isFull}
+                        onClick={function () { chooseDate(iso) }}
+                        className={dayClass}
+                      >
+                        {day}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                <div className="mt-4 flex flex-wrap gap-4 text-[10px] font-semibold text-[#8f707d]">
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full border border-[#ecd8e1] bg-white" /> Open
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full border border-[#e6a94a] bg-[#fdf2e0]" /> Almost full
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#f3e6ec]" /> Fully booked
+                  </span>
+                </div>
               </div>
+
               {availability && (
                 <p className="mt-5 text-sm text-[#745f68]">
                   {availability.available
@@ -440,16 +604,24 @@ export function BookingPage(props) {
                     <dt>Bringing own extension</dt>
                     <dd>{hasOwnExtension ? 'Yes' : 'No'}</dd>
                   </div>
-                  {selectedLength && (
+                  {selectedLength && !wantsCustomLength && (
                     <div className="flex justify-between gap-4">
                       <dt>Length</dt>
                       <dd>{selectedLength.label}</dd>
                     </div>
                   )}
+                  {wantsCustomLength && customLengthText.trim() && (
+                    <div className="flex justify-between gap-4">
+                      <dt>Requested style</dt>
+                      <dd className="text-right">{customLengthText.trim()}</dd>
+                    </div>
+                  )}
                   <div className="flex justify-between gap-4 border-t border-white/15 pt-3">
                     <dt>Price range</dt>
                     <dd>
-                      {selectedLength
+                      {wantsCustomLength
+                        ? 'To be confirmed'
+                        : selectedLength
                         ? 'GHC ' + selectedLength.priceMin.toLocaleString() + ' - ' + selectedLength.priceMax.toLocaleString()
                         : activeService
                         ? 'GHC ' + activeService.priceMin.toLocaleString() + ' - ' + activeService.priceMax.toLocaleString()
@@ -470,7 +642,7 @@ export function BookingPage(props) {
           <div className="mt-9 flex items-center justify-between border-t border-[#ecd8e1] pt-6">
             <button
               type="button"
-              onClick={function () { setStep(function (current) { return Math.max(1, current - 1) }) }}
+              onClick={function () { setStep(function (current) { return Math.max(1, current - 1)}) }}
               disabled={step === 1}
               className="text-sm font-bold text-[#725761] disabled:opacity-30"
             >
@@ -481,7 +653,7 @@ export function BookingPage(props) {
                 type="button"
                 onClick={function () { setStep(function (current) { return Math.min(3, current + 1) }) }}
                 disabled={
-                  (step === 1 && (!selectedService || !extensionStepAnswered || (lengthOptions.length > 0 && !selectedLength))) ||
+                  (step === 1 && (!selectedService || !extensionStepAnswered || !lengthStepAnswered)) ||
                   (step === 2 && (!selectedDate || !selectedTime))
                 }
                 className="rounded-full bg-[#dc2d83] px-7 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:cursor-not-allowed disabled:opacity-40"

@@ -90,7 +90,7 @@ export function ServicesAdminPage() {
 
   function updateLengthForm(serviceId, field, value) {
     setLengthForms(function (current) {
-      const existing = current[serviceId] || { label: '', priceMin: '', priceMax: '' }
+      const existing = current[serviceId] || { label: '', priceMin: '', priceMax: '', imageUrl: '' }
       return { ...current, [serviceId]: { ...existing, [field]: value } }
     })
   }
@@ -109,6 +109,7 @@ export function ServicesAdminPage() {
         priceMin: Number(draft.priceMin),
         priceMax: Number(draft.priceMax),
         sortOrder: 0,
+        imageUrl: draft.imageUrl || undefined,
       })
       setLengthForms(function (current) {
         const next = { ...current }
@@ -175,7 +176,7 @@ export function ServicesAdminPage() {
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
         {services.map(function (service) {
           const lengths = lengthsByService[service.id]
-          const draft = lengthForms[service.id] || { label: '', priceMin: '', priceMax: '' }
+          const draft = lengthForms[service.id] || { label: '', priceMin: '', priceMax: '', imageUrl: '' }
           return (
             <Panel key={service.id}>
               <div className="flex gap-4">
@@ -202,8 +203,11 @@ export function ServicesAdminPage() {
                   )}
                   {lengths.map(function (option) {
                     return (
-                      <div key={option.id} className="flex items-center justify-between border-b border-[#f0dfe6] py-2 text-sm last:border-0">
-                        <span>{option.label + ': GHC ' + option.priceMin + ' - ' + option.priceMax}</span>
+                      <div key={option.id} className="flex items-center justify-between gap-3 border-b border-[#f0dfe6] py-2 text-sm last:border-0">
+                        <span className="flex items-center gap-3">
+                          {option.imageUrl && <img src={option.imageUrl} alt="" className="h-10 w-10 rounded-lg object-cover" />}
+                          {option.label + ': GHC ' + option.priceMin + ' - ' + option.priceMax}
+                        </span>
                         <button onClick={function () { removeLength(service.id, option.id) }} className="text-xs font-bold text-red-600">
                           Remove
                         </button>
@@ -237,6 +241,13 @@ export function ServicesAdminPage() {
                     >
                       Add
                     </button>
+                  </div>
+                  <div className="mt-3">
+                    <ImageUploadField
+                      label="Photo for this length"
+                      value={draft.imageUrl}
+                      onChange={function (url) { updateLengthForm(service.id, 'imageUrl', url) }}
+                    />
                   </div>
                 </div>
               )}

@@ -45,6 +45,40 @@ export function getBookingAvailability(serviceId, date) {
   return availabilityWithClient(pool, serviceId, date);
 }
 
+export async function getMonthAvailability(serviceId, year, month) {
+  const start = `${year}-${String(month).padStart(2, "0")}-01`;
+  const result = await query(
+    `select b.booking_date::text as date, c.daily_cap, count(b.id)::int as booked_count
+     from services s
+     join service_categories c on c.id = s.category_id
+     join services category_service on category_service.category_id = c.id
+       and category_service.is_active = true
+     left join bookings b on b.service_id = category_service.id
+       and b.status in ('pending', 'confirmed')
+       and b.booking_date >= $2::date
+       and b.booking_date < ($2::date + interval '1 month')
+     where s.id = $1
+     group by b.booking_date, c.daily_cap`,
+    [serviceId, start]
+  );
+
+  const capResult = await query(
+    `select c.daily_cap
+     from services s
+     join service_categories c on c.id = s.category_id
+     where s.id = $1`,
+    [serviceId]
+  );
+  const dailyCap = capResult.rows[0]?.daily_cap ?? 0;
+
+  const byDate = {};
+  for (const row of result.rows) {
+    if (row.date) byDate[row.date] = row.booked_count;
+  }
+
+  return { dailyCap, bookedByDate: byDate };
+}
+
 export async function createBooking(userId, input) {
   const client = await pool.connect();
   try {
@@ -61,14 +95,30 @@ export async function createBooking(userId, input) {
     const code = generateConfirmationCode();
 
     const result = await client.query(
-      `insert into bookings (user_id, service_id, booking_date, time_slot, status, reference_image_url, length_label, confirmation_code)
-       values ($1, $2, $3, $4, 'pending', $5, $6, $7)
+      `insert into bookings (
+         user_id, service_id, booking_date, time_slot, status,
+         reference_image_url, length_label, confirmation_code,
+         custom_length_request, custom_length_status
+       )
+       values ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9)
        returning id, user_id as "userId", service_id as "serviceId",
                  booking_date as date, time_slot as "timeSlot", status,
                  reference_image_url as "referenceImageUrl", length_label as "lengthLabel",
                  confirmation_code as "confirmationCode",
+                 custom_length_request as "customLengthRequest",
+                 custom_length_status as "customLengthStatus",
                  created_at as "createdAt"`,
-      [userId, input.serviceId, input.date, input.timeSlot, input.referenceImageUrl || null, input.lengthLabel || null, code]
+      [
+        userId,
+        input.serviceId,
+        input.date,
+        input.timeSlot,
+        input.referenceImageUrl || null,
+        input.lengthLabel || null,
+        code,
+        input.customLengthRequest || null,
+        input.customLengthRequest ? "pending" : null
+      ]
     );
     await client.query("commit");
     return result.rows[0];
@@ -85,6 +135,9 @@ export async function listBookingsForUser(userId) {
     `select b.id, b.booking_date as date, b.time_slot as "timeSlot", b.status,
             b.reference_image_url as "referenceImageUrl", b.length_label as "lengthLabel",
             b.confirmation_code as "confirmationCode",
+            b.custom_length_request as "customLengthRequest",
+            b.custom_length_price as "customLengthPrice",
+            b.custom_length_status as "customLengthStatus",
             s.name as "serviceName", c.name as "categoryName"
      from bookings b
      join services s on s.id = b.service_id
@@ -100,6 +153,9 @@ export async function listBookings({ date, categoryId }) {
   const result = await query(
     `select b.id, b.booking_date as date, b.time_slot as "timeSlot", b.status,
             b.reference_image_url as "referenceImageUrl", b.length_label as "lengthLabel",
+            b.custom_length_request as "customLengthRequest",
+            b.custom_length_price as "customLengthPrice",
+            b.custom_length_status as "customLengthStatus",
             json_build_object('id', u.id, 'name', u.name, 'phone', u.phone) as "user",
             json_build_object('id', s.id, 'name', s.name) as "service",
             json_build_object('id', c.id, 'name', c.name) as "category"
@@ -150,6 +206,18 @@ export async function rescheduleBooking(id, date, timeSlot) {
      returning id, user_id as "userId", service_id as "serviceId",
                booking_date as date, time_slot as "timeSlot", status`,
     [date, timeSlot, id]
+  );
+  return result.rows[0] || null;
+}
+
+export async function approveCustomLength(id, price) {
+  const result = await query(
+    `update bookings
+     set custom_length_price = $1, custom_length_status = 'approved', updated_at = now()
+     where id = $2
+     returning id, user_id as "userId", custom_length_request as "customLengthRequest",
+               custom_length_price as "customLengthPrice", custom_length_status as "customLengthStatus"`,
+    [price, id]
   );
   return result.rows[0] || null;
 }

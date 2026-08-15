@@ -80,8 +80,8 @@ export async function getOrderDetailsForEmail(orderId) {
 export async function getBookingDetailsForEmail(bookingId) {
   const result = await query(
     `select b.id, b.booking_date as date, b.time_slot as "timeSlot",
-            b.confirmation_code as "confirmationCode",
-            s.name as "serviceName",
+            b.confirmation_code as "confirmationCode", b.status,
+            s.name as "serviceName", s.price_min as "priceMin", s.price_max as "priceMax",
             u.name as "customerName", u.phone as "customerPhone", u.email as "customerEmail"
      from bookings b
      join services s on s.id = b.service_id

@@ -12,14 +12,16 @@ const createSchema = z.object({
   label: z.string().min(2),
   priceMin: z.number().nonnegative(),
   priceMax: z.number().nonnegative(),
-  sortOrder: z.number().int().default(0)
+  sortOrder: z.number().int().default(0),
+  imageUrl: z.string().optional()
 });
 
 const updateSchema = z.object({
   label: z.string().min(2).optional(),
   priceMin: z.number().nonnegative().optional(),
   priceMax: z.number().nonnegative().optional(),
-  sortOrder: z.number().int().optional()
+  sortOrder: z.number().int().optional(),
+  imageUrl: z.string().optional()
 });
 
 export async function index(req, res) {
