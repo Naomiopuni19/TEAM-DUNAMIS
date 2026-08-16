@@ -166,7 +166,7 @@ export function Footer() {
             MAIN FOOTER CONTENT
         ==================================================== */}
 
-        <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 sm:px-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:px-12">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-6 gap-y-10 px-6 py-16 sm:gap-12 sm:px-10 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:px-12">
 
           {/* BRAND */}
 
@@ -181,7 +181,7 @@ export function Footer() {
               </div>
 
               <p className="mt-2 text-[7px] font-bold uppercase tracking-[0.3em] text-[#f5b0d0]">
-                Hair • Beauty • Luxury
+                Hair â€¢ Beauty â€¢ Luxury
               </p>
             </a>
 
@@ -321,7 +321,7 @@ export function Footer() {
                 href="#/appointments"
                 className="font-semibold text-[#f5b0d0] transition hover:text-white"
               >
-                Book Appointment →
+                Book Appointment â†’
               </a>
             </div>
 
@@ -387,7 +387,7 @@ export function Footer() {
                 href="#/staff-login"
                 className="mt-2 border-t border-white/10 pt-4 font-semibold text-[#f5b0d0] transition hover:text-white"
               >
-                Staff Portal →
+                Staff Portal â†’
               </a>
 
             </div>
@@ -497,7 +497,7 @@ export function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-6 text-center sm:px-10 md:flex-row md:text-left lg:px-12">
 
           <p className="text-[10px] text-white/35">
-            © 2026 Beryl's Beauty Mark. All rights reserved.
+            Â© 2026 Beryl's Beauty Mark. All rights reserved.
           </p>
 
           <div className="flex items-center gap-4 text-[10px] text-white/35">
@@ -523,7 +523,7 @@ export function Footer() {
               href="#"
               className="transition hover:text-[#f5b0d0]"
             >
-              Back to top ↑
+              Back to top â†‘
             </a>
           </div>
 
