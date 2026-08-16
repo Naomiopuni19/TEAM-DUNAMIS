@@ -56,7 +56,7 @@ export function Footer() {
           className="h-[18px] w-[18px]"
           aria-hidden="true"
         >
-          <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.05.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-.1.05-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.05-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.05-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.78.3-1.44.71-2.1 1.37C1.38 2.66 1 3.31.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.78.71 1.44 1.37 2.1.66.66 1.32 1.07 2.1 1.37.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.78-.3 1.44-.71 2.1-1.37.66-.66 1.07-1.32 1.37-2.1.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91-.3-.78-.71-1.44-1.37-2.1C21.34 1.38 20.68 1 19.9.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z" />
+          <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.05.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.05.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.27-.06-1.65-.07-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.05-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.05-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.78.3-1.44.71-2.1 1.37C1.38 2.66 1 3.31.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.78.71 1.44 1.37 2.1.66.66 1.32 1.07 2.1 1.37.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.78-.3 1.44-.71 2.1-1.37.66-.66 1.07-1.32 1.37-2.1.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91-.3-.78-.71-1.44-1.37-2.1C21.34 1.38 20.68 1 19.9.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z" />
         </svg>
       ),
     },
@@ -154,205 +154,239 @@ export function Footer() {
         </section>
 
         {/* =====================================================
-            MAIN FOOTER CONTENT
+            MAIN FOOTER
         ====================================================== */}
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-5 py-14 sm:px-8 md:grid-cols-2 md:gap-x-12 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-12 lg:px-12 lg:py-16">
+
+        <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-12 lg:py-16">
+
           {/* BRAND */}
-          <div className="md:col-span-2 lg:col-span-1">
+          <div className="border-b border-white/10 pb-10">
             <a href="#" className="group inline-block">
-              <div className="font-serif text-[2.25rem] italic leading-none text-white transition group-hover:text-[#f5b0d0] sm:text-4xl">
+              <div className="font-serif text-[2.4rem] italic leading-[0.9] text-white transition group-hover:text-[#f5b0d0] sm:text-4xl">
                 Beryl's <span className="font-bold">Beauty</span> Mark
               </div>
 
-              <p className="mt-2 text-[7px] font-bold uppercase tracking-[0.3em] text-[#f5b0d0]">
+              <p className="mt-3 text-[7px] font-bold uppercase tracking-[0.3em] text-[#f5b0d0]">
                 Hair • Beauty • Luxury
               </p>
             </a>
 
-            <p className="mt-5 max-w-sm text-sm leading-7 text-white/55">
-              Premium raw hair, ready-to-wear wigs and professional beauty
-              services created to help you look and feel your best.
-            </p>
+            <div className="mt-5 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+              <p className="max-w-md text-sm leading-7 text-white/55">
+                Premium raw hair, ready-to-wear wigs and professional beauty
+                services created to help you look and feel your best.
+              </p>
 
-            {/* SOCIALS */}
-            <div className="mt-7 flex gap-3">
-              {socials.map(function (item) {
-                return (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={item.label}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/65 transition duration-300 hover:-translate-y-1 hover:border-[#dc2d83] hover:bg-[#dc2d83] hover:text-white"
-                  >
-                    {item.icon}
-                  </a>
-                )
-              })}
+              <div className="flex gap-3">
+                {socials.map(function (item) {
+                  return (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={item.label}
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/65 transition duration-300 hover:-translate-y-1 hover:border-[#dc2d83] hover:bg-[#dc2d83] hover:text-white"
+                    >
+                      {item.icon}
+                    </a>
+                  )
+                })}
+              </div>
             </div>
           </div>
 
-          {/* SHOP */}
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#dc2d83]" />
-              <h3 className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#f5b0d0]">
-                Shop
-              </h3>
+          {/* =====================================================
+              SHOP / SERVICES / INFORMATION
+              SIDE BY SIDE ON MOBILE
+          ====================================================== */}
+
+          <div className="grid grid-cols-3 gap-3 pt-10 sm:gap-8 md:grid-cols-3 lg:grid-cols-3">
+
+            {/* SHOP */}
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#dc2d83]" />
+
+                <h3 className="text-[8px] font-bold uppercase tracking-[0.16em] text-[#f5b0d0] sm:text-[9px] sm:tracking-[0.22em]">
+                  Shop
+                </h3>
+              </div>
+
+              <div className="mt-5 grid gap-3 text-[11px] leading-5 text-white/55 sm:text-sm">
+                <a
+                  href="#/shop"
+                  className="transition hover:text-white"
+                >
+                  New Arrivals
+                </a>
+
+                <a
+                  href="#/shop"
+                  className="transition hover:text-white"
+                >
+                  Wigs
+                </a>
+
+                <a
+                  href="#/shop"
+                  className="transition hover:text-white"
+                >
+                  Bundles
+                </a>
+
+                <a
+                  href="#/shop"
+                  className="transition hover:text-white"
+                >
+                  Closures & Frontals
+                </a>
+
+                <a
+                  href="#/shop"
+                  className="transition hover:text-white"
+                >
+                  Hair Care
+                </a>
+
+                <a
+                  href="#/shop"
+                  className="transition hover:text-white"
+                >
+                  Best Sellers
+                </a>
+              </div>
             </div>
 
-            <div className="mt-5 grid gap-3 text-sm text-white/55">
-              <a href="#/shop" className="transition hover:translate-x-1 hover:text-white">
-                New Arrivals
-              </a>
+            {/* SERVICES */}
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#dc2d83]" />
 
-              <a href="#/shop" className="transition hover:translate-x-1 hover:text-white">
-                Wigs
-              </a>
+                <h3 className="text-[8px] font-bold uppercase tracking-[0.16em] text-[#f5b0d0] sm:text-[9px] sm:tracking-[0.22em]">
+                  Services
+                </h3>
+              </div>
 
-              <a href="#/shop" className="transition hover:translate-x-1 hover:text-white">
-                Bundles
-              </a>
+              <div className="mt-5 grid gap-3 text-[11px] leading-5 text-white/55 sm:text-sm">
+                <a
+                  href="#/services"
+                  className="transition hover:text-white"
+                >
+                  Hair Styling
+                </a>
 
-              <a href="#/shop" className="transition hover:translate-x-1 hover:text-white">
-                Closures & Frontals
-              </a>
+                <a
+                  href="#/services"
+                  className="transition hover:text-white"
+                >
+                  Braiding
+                </a>
 
-              <a href="#/shop" className="transition hover:translate-x-1 hover:text-white">
-                Hair Care
-              </a>
+                <a
+                  href="#/services"
+                  className="transition hover:text-white"
+                >
+                  Makeup
+                </a>
 
-              <a href="#/shop" className="transition hover:translate-x-1 hover:text-white">
-                Best Sellers
-              </a>
-            </div>
-          </div>
+                <a
+                  href="#/services"
+                  className="transition hover:text-white"
+                >
+                  Lashes
+                </a>
 
-          {/* SERVICES */}
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#dc2d83]" />
-              <h3 className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#f5b0d0]">
-                Services
-              </h3>
-            </div>
+                <a
+                  href="#/services"
+                  className="transition hover:text-white"
+                >
+                  Nails
+                </a>
 
-            <div className="mt-5 grid gap-3 text-sm text-white/55">
-              <a
-                href="#/services"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                Hair Styling
-              </a>
-
-              <a
-                href="#/services"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                Braiding
-              </a>
-
-              <a
-                href="#/services"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                Makeup
-              </a>
-
-              <a
-                href="#/services"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                Lashes
-              </a>
-
-              <a
-                href="#/services"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                Nails
-              </a>
-
-              <a
-                href="#/appointments"
-                className="mt-1 font-semibold text-[#f5b0d0] transition hover:text-white"
-              >
-                Book Appointment →
-              </a>
-            </div>
-          </div>
-
-          {/* INFORMATION */}
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#dc2d83]" />
-              <h3 className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#f5b0d0]">
-                Information
-              </h3>
+                <a
+                  href="#/appointments"
+                  className="font-semibold text-[#f5b0d0] transition hover:text-white"
+                >
+                  Book Now →
+                </a>
+              </div>
             </div>
 
-            <div className="mt-5 grid gap-3 text-sm text-white/55">
-              <a
-                href="#/about"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                About Us
-              </a>
+            {/* INFORMATION */}
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#dc2d83]" />
 
-              <a
-                href="#/reviews"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                Reviews
-              </a>
+                <h3 className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#f5b0d0] sm:text-[9px] sm:tracking-[0.22em]">
+                  Information
+                </h3>
+              </div>
 
-              <a
-                href="#/faq"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                FAQs
-              </a>
+              <div className="mt-5 grid gap-3 text-[11px] leading-5 text-white/55 sm:text-sm">
+                <a
+                  href="#/about"
+                  className="transition hover:text-white"
+                >
+                  About Us
+                </a>
 
-              <a
-                href="#/delivery"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                Delivery
-              </a>
+                <a
+                  href="#/reviews"
+                  className="transition hover:text-white"
+                >
+                  Reviews
+                </a>
 
-              <a
-                href="#/privacy"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                Privacy Policy
-              </a>
+                <a
+                  href="#/faq"
+                  className="transition hover:text-white"
+                >
+                  FAQs
+                </a>
 
-              <a
-                href="#/terms"
-                className="transition hover:translate-x-1 hover:text-white"
-              >
-                Terms & Conditions
-              </a>
+                <a
+                  href="#/delivery"
+                  className="transition hover:text-white"
+                >
+                  Delivery
+                </a>
 
-              <a
-                href="#/staff-login"
-                className="mt-2 border-t border-white/10 pt-4 font-semibold text-[#f5b0d0] transition hover:text-white"
-              >
-                Staff Portal →
-              </a>
+                <a
+                  href="#/privacy"
+                  className="transition hover:text-white"
+                >
+                  Privacy Policy
+                </a>
+
+                <a
+                  href="#/terms"
+                  className="transition hover:text-white"
+                >
+                  Terms
+                </a>
+
+                <a
+                  href="#/staff-login"
+                  className="font-semibold text-[#f5b0d0] transition hover:text-white"
+                >
+                  Staff Portal →
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
         {/* =====================================================
-            CONTACT BAR
+            CONTACT INFORMATION
         ====================================================== */}
+
         <div className="border-y border-white/10">
-          <div className="mx-auto grid max-w-7xl gap-4 px-5 py-7 sm:px-8 md:grid-cols-3 lg:px-12">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 px-5 py-6 sm:px-8 md:grid-cols-3 lg:px-12">
+
             {/* ADDRESS */}
-            <div className="flex min-w-0 items-start gap-4 rounded-2xl border border-white/5 bg-white/[0.025] p-4 md:border-0 md:bg-transparent md:p-0">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/5 text-[#f5b0d0]">
+            <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/5 bg-white/[0.025] p-4 md:border-0 md:bg-transparent md:p-0">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/5 text-[#f5b0d0]">
                 <svg
                   viewBox="0 0 24 24"
                   fill="currentColor"
@@ -367,7 +401,7 @@ export function Footer() {
                   Visit us
                 </p>
 
-                <p className="mt-1 text-sm leading-6 text-white/55">
+                <p className="mt-1 text-xs leading-5 text-white/55">
                   {info?.address || 'Ayeduase Newsite, Kumasi, Ghana'}
                 </p>
               </div>
@@ -380,9 +414,9 @@ export function Footer() {
                   ? `tel:${info.phone.replace(/\s/g, '')}`
                   : 'tel:0591911212'
               }
-              className="flex min-w-0 items-start gap-4 rounded-2xl border border-white/5 bg-white/[0.025] p-4 transition hover:text-white md:border-0 md:bg-transparent md:p-0"
+              className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/5 bg-white/[0.025] p-4 transition hover:text-white md:border-0 md:bg-transparent md:p-0"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/5 text-[#f5b0d0]">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/5 text-[#f5b0d0]">
                 <svg
                   viewBox="0 0 24 24"
                   fill="currentColor"
@@ -392,12 +426,12 @@ export function Footer() {
                 </svg>
               </div>
 
-              <div className="min-w-0">
+              <div>
                 <p className="text-[8px] font-bold uppercase tracking-[0.18em] text-[#f5b0d0]">
                   Call us
                 </p>
 
-                <p className="mt-1 text-sm text-white/55">
+                <p className="mt-1 text-xs text-white/55">
                   {info?.phone || '059 191 1212'}
                 </p>
               </div>
@@ -406,9 +440,9 @@ export function Footer() {
             {/* EMAIL */}
             <a
               href="mailto:bbmark.abcp@gmail.com"
-              className="flex min-w-0 items-start gap-4 rounded-2xl border border-white/5 bg-white/[0.025] p-4 transition hover:text-white md:border-0 md:bg-transparent md:p-0"
+              className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/5 bg-white/[0.025] p-4 transition hover:text-white md:border-0 md:bg-transparent md:p-0"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/5 text-[#f5b0d0]">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/5 text-[#f5b0d0]">
                 <svg
                   viewBox="0 0 24 24"
                   fill="currentColor"
@@ -418,12 +452,12 @@ export function Footer() {
                 </svg>
               </div>
 
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0">
                 <p className="text-[8px] font-bold uppercase tracking-[0.18em] text-[#f5b0d0]">
                   Email us
                 </p>
 
-                <p className="mt-1 text-[13px] leading-6 text-white/60 break-words sm:text-sm">
+                <p className="mt-1 text-[12px] leading-5 text-white/60">
                   bbmark.abcp@gmail.com
                 </p>
               </div>
@@ -434,6 +468,7 @@ export function Footer() {
         {/* =====================================================
             BOTTOM BAR
         ====================================================== */}
+
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-6 text-center sm:px-8 md:flex-row md:items-center md:justify-between md:text-left lg:px-12">
           <p className="text-[10px] leading-5 text-white/35">
             © 2026 Beryl's Beauty Mark. All rights reserved.
