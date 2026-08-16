@@ -1,8 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ProductCard } from '../components/ProductCard'
 import { useAppData } from '../context/appData'
 import { imageBase, type Product } from '../data/catalog'
-import { api, type HeroSlide, type Review, type ShopCategoryTile } from '../lib/api'
+import {
+  api,
+  type HeroSlide,
+  type Review,
+  type ShopCategoryTile,
+} from '../lib/api'
 
 type HomePageProps = {
   onAdd: (product: Product) => void
@@ -18,10 +23,22 @@ const announcements = [
 ]
 
 const featureStrip = [
-  { title: 'Premium Quality', copy: '100 percent virgin human hair that lasts.' },
-  { title: 'Easy Appointments', copy: 'Book your appointment online in minutes.' },
-  { title: 'Worldwide Shipping', copy: 'Fast, secure delivery to your door.' },
-  { title: 'Luxury Experience', copy: 'Because you deserve the very best.' },
+  {
+    title: 'Premium Quality',
+    copy: '100 percent virgin human hair that lasts.',
+  },
+  {
+    title: 'Easy Appointments',
+    copy: 'Book your appointment online in minutes.',
+  },
+  {
+    title: 'Worldwide Shipping',
+    copy: 'Fast, secure delivery to your door.',
+  },
+  {
+    title: 'Luxury Experience',
+    copy: 'Because you deserve the very best.',
+  },
 ]
 
 const stats = [
@@ -40,7 +57,7 @@ const bookingSteps = [
   {
     step: '02',
     title: 'Pick your slot',
-    copy: 'Select a date and time that works for you, instant confirmation.',
+    copy: 'Select a date and time that works for you for instant confirmation.',
   },
   {
     step: '03',
@@ -95,6 +112,7 @@ function useReveal<T extends HTMLElement>() {
   useEffect(
     function () {
       const node = ref.current
+
       if (!node || shown) return
 
       if (typeof IntersectionObserver === 'undefined') {
@@ -127,7 +145,7 @@ function useReveal<T extends HTMLElement>() {
 }
 
 function Reveal(props: {
-  children: React.ReactNode
+  children: ReactNode
   delay?: number
   className?: string
 }) {
@@ -221,22 +239,22 @@ function SectionHeading(props: {
 }) {
   return (
     <Reveal className="text-center">
-      <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#dc2d83]">
+      <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#dc2d83] sm:text-[11px] sm:tracking-[0.28em]">
         {props.eyebrow}
       </p>
 
-      <h2 className="mt-3 font-serif text-4xl text-[#3e2530] sm:text-5xl">
+      <h2 className="mt-2 font-serif text-3xl leading-tight text-[#3e2530] sm:mt-3 sm:text-5xl">
         {props.title}
       </h2>
 
-      <div className="mx-auto mt-4 flex items-center justify-center gap-3">
-        <span className="h-px w-10 bg-[#e2b8ca]" />
+      <div className="mx-auto mt-3 flex items-center justify-center gap-3 sm:mt-4">
+        <span className="h-px w-8 bg-[#e2b8ca] sm:w-10" />
         <span className="h-1.5 w-1.5 rounded-full bg-[#dc2d83]" />
-        <span className="h-px w-10 bg-[#e2b8ca]" />
+        <span className="h-px w-8 bg-[#e2b8ca] sm:w-10" />
       </div>
 
       {props.copy && (
-        <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#745f68] sm:text-base">
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#745f68] sm:mt-5 sm:text-base sm:leading-7">
           {props.copy}
         </p>
       )}
@@ -256,7 +274,7 @@ function AnnouncementBar() {
           return (
             <span
               key={item + index}
-              className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.24em]"
+              className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.18em] sm:text-[10px] sm:tracking-[0.24em]"
             >
               <span className="h-1 w-1 rounded-full bg-[#f2a7c9]" />
               {item}
@@ -268,8 +286,13 @@ function AnnouncementBar() {
       <style>
         {`
           @keyframes bbm-marquee {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
+            from {
+              transform: translateX(0);
+            }
+
+            to {
+              transform: translateX(-50%);
+            }
           }
         `}
       </style>
@@ -277,7 +300,7 @@ function AnnouncementBar() {
   )
 }
 
-/* ---------------------------------------------------------------- hero */
+/* ---------------------------------------------------------------- HERO */
 
 function HeroBanner() {
   const [slides, setSlides] = useState<HeroSlide[]>([])
@@ -334,9 +357,18 @@ function HeroBanner() {
       onMouseLeave={function () {
         setPaused(false)
       }}
-      className="relative isolate overflow-hidden bg-[#3e2530] text-white"
+      className="
+        relative isolate
+        min-h-[520px]
+        overflow-hidden
+        bg-[#3e2530]
+        text-white
+        sm:min-h-[620px]
+        lg:min-h-[720px]
+      "
     >
       {/* HERO IMAGES */}
+
       {slides.map(function (item, itemIndex) {
         const active = itemIndex === index
 
@@ -346,98 +378,175 @@ function HeroBanner() {
             src={item.imageUrl}
             alt=""
             className="
-              absolute inset-0 -z-20
+              absolute inset-0 -z-30
               h-full w-full
               object-cover
               object-[68%_center]
               transition-[opacity,transform]
               duration-[1200ms]
               ease-out
-              lg:object-[60%_center]
+              sm:object-[70%_center]
+              lg:object-[68%_center]
             "
             style={{
               opacity: active ? 1 : 0,
-              transform: active ? 'scale(1.04)' : 'scale(1)',
+              transform: active ? 'scale(1.025)' : 'scale(1)',
             }}
           />
         )
       })}
 
-      {/* LIGHTER OVERLAY SO IMAGE SHOWS */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#29151f]/75 via-[#29151f]/35 to-transparent" />
+      {/* LEFT DARK GRADIENT */}
 
-      {/* HERO CONTENT */}
       <div
         className="
-          mx-auto flex
-          min-h-[72vh]
-          max-w-5xl
-          flex-col
-          items-center
-          justify-center
+          absolute inset-0 -z-20
+          bg-gradient-to-r
+          from-[#1d0d15]/90
+          via-[#29151f]/55
+          via-[58%]
+          to-transparent
+        "
+      />
+
+      {/* MOBILE BOTTOM PROTECTION */}
+
+      <div
+        className="
+          absolute inset-x-0 bottom-0 -z-20 h-60
+          bg-gradient-to-t
+          from-[#1d0d15]/70
+          to-transparent
+          lg:hidden
+        "
+      />
+
+      {/* SUBTLE TINT */}
+
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[#3e2530]/[0.06]" />
+
+      {/* HERO CONTENT */}
+
+      <div
+        className="
+          relative mx-auto flex
+          min-h-[520px]
+          max-w-7xl
+          items-end
           px-5
-          py-16
-          text-center
-          sm:min-h-[78vh]
+          pb-20
+          pt-16
+          sm:min-h-[620px]
           sm:px-10
-          lg:min-h-[82vh]
+          sm:pb-24
+          lg:min-h-[720px]
+          lg:items-center
           lg:px-12
+          lg:pb-16
         "
       >
         <div
           key={slide.id}
-          className="animate-[bbm-rise_800ms_cubic-bezier(0.22,1,0.36,1)_both]"
+          className="
+            w-full
+            max-w-[300px]
+            text-left
+            animate-[bbm-rise_800ms_cubic-bezier(0.22,1,0.36,1)_both]
+            sm:max-w-[430px]
+            lg:max-w-[500px]
+          "
         >
-          {/* SHORT HERO LABEL */}
-          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#f5a9cd] sm:text-[11px]">
+          {/* BRAND */}
+
+          <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#f2a7c9] drop-shadow sm:text-[11px] sm:tracking-[0.28em]">
             Beryl's Beauty Mark
           </p>
 
           {/* MAIN TITLE */}
+
           <h1
             className="
-              mt-4
-              max-w-4xl
+              mt-2
+              max-w-[310px]
               font-serif
-              text-[clamp(3rem,8vw,6.2rem)]
-              leading-[0.9]
-              tracking-[-0.04em]
-              drop-shadow-[0_4px_25px_rgba(0,0,0,0.25)]
+              text-[clamp(2.7rem,12vw,4.7rem)]
+              leading-[0.88]
+              tracking-[-0.045em]
+              text-white
+              drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]
+              sm:mt-4
+              sm:max-w-[450px]
+              sm:text-[clamp(3.4rem,8vw,5.7rem)]
             "
           >
             {slide.title}
           </h1>
 
-          {/* ONLY 1–2 WORDS */}
-          <span className="mt-3 block font-serif text-3xl italic text-[#f5a9cd] sm:text-4xl">
-            {slide.eyebrow?.split(' ').slice(0, 2).join(' ')}
-          </span>
+          {/* ONLY FIRST TWO WORDS */}
+
+          {slide.eyebrow && (
+            <span
+              className="
+                mt-2
+                block
+                w-fit
+                font-serif
+                text-xl
+                italic
+                leading-none
+                text-[#f7b4d2]
+                drop-shadow-[0_3px_12px_rgba(0,0,0,0.55)]
+                sm:mt-3
+                sm:text-3xl
+              "
+            >
+              {slide.eyebrow.split(' ').slice(0, 2).join(' ')}
+            </span>
+          )}
 
           {/* BUTTONS */}
-          <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center">
+
+          <div
+            className="
+              mt-6
+              flex
+              flex-row
+              items-center
+              gap-2.5
+              sm:mt-8
+              sm:gap-3
+            "
+          >
             <a
               href="#/shop"
               className="
-                group inline-flex min-h-12 w-full
-                items-center justify-center gap-2
+                group
+                inline-flex
+                min-h-10
+                items-center
+                justify-center
+                gap-1.5
                 rounded-full
                 bg-[#dc2d83]
-                px-8 py-3.5
-                text-xs font-bold uppercase
-                tracking-[0.16em]
+                px-5
+                py-2.5
+                text-[9px]
+                font-bold
+                uppercase
+                tracking-[0.14em]
                 text-white
-                shadow-[0_20px_60px_rgba(220,45,131,0.45)]
+                shadow-[0_16px_45px_rgba(220,45,131,0.4)]
                 transition
                 hover:-translate-y-0.5
                 hover:bg-[#b92068]
-                sm:min-h-14
-                sm:w-auto
-                sm:px-10
-                sm:py-4
-                sm:text-sm
+                sm:min-h-12
+                sm:px-8
+                sm:py-3.5
+                sm:text-xs
               "
             >
               Shop now
+
               <span className="transition-transform group-hover:translate-x-1">
                 &#8594;
               </span>
@@ -446,42 +555,50 @@ function HeroBanner() {
             <a
               href="#/appointments"
               className="
-                inline-flex min-h-12 w-full
-                items-center justify-center
+                inline-flex
+                min-h-10
+                items-center
+                justify-center
                 rounded-full
-                border border-white
-                bg-white/10
-                px-8 py-3.5
-                text-xs font-bold uppercase
-                tracking-[0.16em]
+                border
+                border-white/80
+                bg-black/10
+                px-5
+                py-2.5
+                text-[9px]
+                font-bold
+                uppercase
+                tracking-[0.14em]
                 text-white
-                backdrop-blur
+                backdrop-blur-sm
                 transition
                 hover:-translate-y-0.5
                 hover:bg-white
                 hover:text-[#3e2530]
-                sm:min-h-14
-                sm:w-auto
-                sm:px-10
-                sm:py-4
-                sm:text-sm
+                sm:min-h-12
+                sm:px-8
+                sm:py-3.5
+                sm:text-xs
               "
             >
               Book now
             </a>
           </div>
 
-          {/* SMALL RATING */}
-          <div className="mt-7 flex items-center justify-center gap-2 sm:mt-10">
-            <Stars className="flex gap-0.5 text-sm text-[#f5c56e]" />
-            <span className="text-xs font-semibold text-white sm:text-sm">
+          {/* RATING */}
+
+          <div className="mt-4 flex items-center justify-start gap-2 sm:mt-6">
+            <Stars className="flex gap-0.5 text-[10px] text-[#f5c56e] sm:text-sm" />
+
+            <span className="text-[9px] font-semibold text-white drop-shadow sm:text-sm">
               4.9 · 2,400+
             </span>
           </div>
         </div>
       </div>
 
-      {/* SLIDER BUTTONS */}
+      {/* SLIDER ARROWS */}
+
       {slides.length > 1 && (
         <>
           <button
@@ -490,18 +607,27 @@ function HeroBanner() {
               go(-1)
             }}
             className="
-              absolute left-6 top-1/2 z-10
-              hidden h-11 w-11
+              absolute
+              left-5
+              top-1/2
+              z-10
+              hidden
+              h-11
+              w-11
               -translate-y-1/2
-              items-center justify-center
-              rounded-full border border-white/70
-              bg-white/15
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-white/60
+              bg-black/10
               text-white
-              backdrop-blur
+              backdrop-blur-md
               transition
               hover:bg-white
               hover:text-[#3e2530]
               sm:flex
+              lg:left-8
             "
           >
             &#8592;
@@ -513,25 +639,35 @@ function HeroBanner() {
               go(1)
             }}
             className="
-              absolute right-6 top-1/2 z-10
-              hidden h-11 w-11
+              absolute
+              right-5
+              top-1/2
+              z-10
+              hidden
+              h-11
+              w-11
               -translate-y-1/2
-              items-center justify-center
-              rounded-full border border-white/70
-              bg-white/15
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-white/60
+              bg-black/10
               text-white
-              backdrop-blur
+              backdrop-blur-md
               transition
               hover:bg-white
               hover:text-[#3e2530]
               sm:flex
+              lg:right-8
             "
           >
             &#8594;
           </button>
 
           {/* DOTS */}
-          <div className="absolute bottom-7 left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-10">
+
+          <div className="absolute bottom-5 left-5 z-10 flex gap-2 sm:bottom-8 sm:left-10 lg:left-12">
             {slides.map(function (item, dotIndex) {
               return (
                 <button
@@ -540,13 +676,13 @@ function HeroBanner() {
                   onClick={function () {
                     setIndex(dotIndex)
                   }}
-                  className="h-2 overflow-hidden rounded-full transition-all duration-300"
+                  className="h-1.5 overflow-hidden rounded-full transition-all duration-300"
                   style={{
-                    width: dotIndex === index ? 34 : 8,
+                    width: dotIndex === index ? 32 : 7,
                     backgroundColor:
                       dotIndex === index
                         ? 'rgba(255,255,255,0.35)'
-                        : 'rgba(255,255,255,0.4)',
+                        : 'rgba(255,255,255,0.45)',
                   }}
                 >
                   {dotIndex === index && (
@@ -571,8 +707,13 @@ function HeroBanner() {
       <style>
         {`
           @keyframes bbm-progress {
-            from { width: 0; }
-            to { width: 100%; }
+            from {
+              width: 0;
+            }
+
+            to {
+              width: 100%;
+            }
           }
 
           @keyframes bbm-rise {
@@ -580,6 +721,7 @@ function HeroBanner() {
               opacity: 0;
               transform: translateY(26px);
             }
+
             to {
               opacity: 1;
               transform: none;
@@ -599,15 +741,17 @@ function StatsBand() {
       <div
         className="
           mx-auto
-          grid max-w-7xl
+          grid
+          max-w-7xl
           grid-cols-2
-          gap-4
-          rounded-[1.5rem]
+          gap-3
+          rounded-[1.25rem]
           border border-[#ecd8e1]
           bg-white/60
-          p-5
+          p-4
           sm:grid-cols-4
           sm:gap-6
+          sm:rounded-[1.5rem]
           sm:p-8
         "
       >
@@ -618,7 +762,7 @@ function StatsBand() {
               delay={itemIndex * 90}
               className="text-center"
             >
-              <p className="font-serif text-3xl text-[#dc2d83] sm:text-5xl">
+              <p className="font-serif text-2xl text-[#dc2d83] sm:text-5xl">
                 <CountUp
                   value={item.value}
                   suffix={item.suffix}
@@ -626,7 +770,7 @@ function StatsBand() {
                 />
               </p>
 
-              <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.14em] text-[#745f68] sm:mt-2 sm:text-[10px]">
+              <p className="mt-1 text-[8px] font-bold uppercase tracking-[0.1em] text-[#745f68] sm:mt-2 sm:text-[10px] sm:tracking-[0.14em]">
                 {item.label}
               </p>
             </Reveal>
@@ -649,20 +793,20 @@ function BookingSteps() {
           copy="Three easy steps between you and your next favourite look."
         />
 
-        <div className="mt-10 grid gap-5 md:grid-cols-3 lg:mt-12 lg:gap-6">
+        <div className="mt-9 grid gap-4 md:grid-cols-3 lg:mt-12 lg:gap-6">
           {bookingSteps.map(function (item, itemIndex) {
             return (
               <Reveal key={item.step} delay={itemIndex * 120}>
-                <div className="group relative h-full overflow-hidden rounded-[1.25rem] border border-[#ecd8e1] bg-[#fffaf8] p-6 transition hover:-translate-y-1 hover:shadow-[0_24px_50px_-30px_rgba(62,37,48,0.5)] sm:p-8">
-                  <span className="font-serif text-5xl text-[#f0cadb] transition group-hover:text-[#dc2d83]">
+                <div className="group relative h-full overflow-hidden rounded-[1.25rem] border border-[#ecd8e1] bg-[#fffaf8] p-5 transition hover:-translate-y-1 hover:shadow-[0_24px_50px_-30px_rgba(62,37,48,0.5)] sm:p-8">
+                  <span className="font-serif text-4xl text-[#f0cadb] transition group-hover:text-[#dc2d83] sm:text-5xl">
                     {item.step}
                   </span>
 
-                  <p className="mt-4 font-serif text-2xl text-[#3e2530]">
+                  <p className="mt-3 font-serif text-xl text-[#3e2530] sm:mt-4 sm:text-2xl">
                     {item.title}
                   </p>
 
-                  <p className="mt-3 text-sm leading-7 text-[#745f68]">
+                  <p className="mt-2 text-sm leading-6 text-[#745f68] sm:mt-3 sm:leading-7">
                     {item.copy}
                   </p>
                 </div>
@@ -742,22 +886,22 @@ function Newsletter() {
 
   return (
     <section className="bg-white px-5 pb-14 sm:px-10 lg:px-12 lg:pb-24">
-      <div className="mx-auto max-w-5xl rounded-[1.5rem] bg-[#3e2530] px-6 py-10 text-center text-white sm:px-14 sm:py-16">
-        <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#f2a7c9]">
+      <div className="mx-auto max-w-5xl rounded-[1.5rem] bg-[#3e2530] px-5 py-9 text-center text-white sm:px-14 sm:py-16">
+        <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#f2a7c9] sm:text-[11px] sm:tracking-[0.28em]">
           Stay in the loop
         </p>
 
-        <h2 className="mt-3 font-serif text-3xl sm:text-4xl">
+        <h2 className="mt-3 font-serif text-2xl sm:text-4xl">
           Get 10% off your first order
         </h2>
 
-        <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-white/70">
+        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-white/70 sm:mt-4 sm:leading-7">
           New arrivals, restock alerts and appointment openings, straight to
           your inbox.
         </p>
 
         <form
-          className="mx-auto mt-7 flex max-w-md flex-col gap-3 sm:flex-row"
+          className="mx-auto mt-6 flex max-w-md flex-col gap-2.5 sm:mt-7 sm:flex-row"
           onSubmit={function (event) {
             event.preventDefault()
 
@@ -774,16 +918,16 @@ function Newsletter() {
               setEmail(event.target.value)
             }}
             placeholder="Your email address"
-            className="min-h-12 flex-1 rounded-full border border-white/40 bg-white/20 px-6 text-sm text-white outline-none backdrop-blur-md placeholder:text-white/80 focus:border-[#f2a7c9] focus:bg-white/25"
+            className="min-h-11 flex-1 rounded-full border border-white/40 bg-white/20 px-5 text-sm text-white outline-none backdrop-blur-md placeholder:text-white/80 focus:border-[#f2a7c9] focus:bg-white/25 sm:min-h-12 sm:px-6"
           />
 
-          <button className="min-h-12 rounded-full bg-[#dc2d83] px-8 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#b92068]">
+          <button className="min-h-11 rounded-full bg-[#dc2d83] px-7 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#b92068] sm:min-h-12 sm:px-8 sm:text-xs sm:tracking-[0.16em]">
             {sent ? 'Subscribed' : 'Subscribe'}
           </button>
         </form>
 
         {sent && (
-          <p className="mt-4 text-xs uppercase tracking-[0.18em] text-[#f2a7c9]">
+          <p className="mt-4 text-[10px] uppercase tracking-[0.16em] text-[#f2a7c9]">
             Thank you, check your inbox.
           </p>
         )}
@@ -817,13 +961,13 @@ function FloatingBook() {
     <a
       href="#/appointments"
       className="
-        fixed bottom-5 right-5 z-40
+        fixed bottom-4 right-4 z-40
         inline-flex items-center gap-2
         rounded-full
         bg-[#dc2d83]
-        px-5 py-3
-        text-[10px] font-bold
-        uppercase tracking-[0.16em]
+        px-4 py-2.5
+        text-[9px] font-bold
+        uppercase tracking-[0.14em]
         text-white
         shadow-[0_18px_40px_-16px_rgba(220,45,131,0.9)]
         transition-all duration-300
@@ -849,7 +993,6 @@ function FloatingBook() {
 
 export function HomePage(props: HomePageProps) {
   const onAdd = props.onAdd
-
   const appData = useAppData()
 
   const products = appData.products
@@ -895,7 +1038,14 @@ export function HomePage(props: HomePageProps) {
 
   /* -------------------------------------------------------------- services */
 
-  const categoryMap = new Map()
+  const categoryMap = new Map<
+    string,
+    {
+      id: string
+      name: string
+      imageUrl: string
+    }
+  >()
 
   for (const service of services) {
     categoryMap.set(service.category.name, {
@@ -909,7 +1059,13 @@ export function HomePage(props: HomePageProps) {
 
   const serviceCategories = Array.from(categoryMap.values()).sort(
     function (first, second) {
-      return orderList.indexOf(first.name) - orderList.indexOf(second.name)
+      const firstIndex = orderList.indexOf(first.name)
+      const secondIndex = orderList.indexOf(second.name)
+
+      return (
+        (firstIndex === -1 ? 999 : firstIndex) -
+        (secondIndex === -1 ? 999 : secondIndex)
+      )
     },
   )
 
@@ -934,11 +1090,11 @@ export function HomePage(props: HomePageProps) {
   const shownProducts = useMemo(
     function () {
       if (tab === 'new') {
-        return products.slice(-3).reverse()
+        return products.slice(-4).reverse()
       }
 
       if (tab === 'best') {
-        return products.slice(0, 3)
+        return products.slice(0, 4)
       }
 
       return products.slice(0, 6)
@@ -961,10 +1117,7 @@ export function HomePage(props: HomePageProps) {
     }
   })
 
-  const fakeNeeded = Math.max(
-    0,
-    3 - realTestimonials.length,
-  )
+  const fakeNeeded = Math.max(0, 3 - realTestimonials.length)
 
   const displayTestimonials = realTestimonials.concat(
     fallbackTestimonials.slice(0, fakeNeeded).map(function (item) {
@@ -1018,16 +1171,17 @@ export function HomePage(props: HomePageProps) {
       <section className="relative z-10 bg-[#fffaf8] px-4 sm:px-10 lg:px-12">
         <div
           className="
-            mx-auto -mt-12 max-w-7xl
-            rounded-[1.5rem]
+            mx-auto -mt-10 max-w-7xl
+            rounded-[1.25rem]
             bg-white
-            p-5
+            p-4
             shadow-[0_20px_60px_-30px_rgba(62,37,48,0.35)]
             sm:-mt-20
+            sm:rounded-[1.5rem]
             sm:p-8
           "
         >
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-[#ecd8e1]">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-[#ecd8e1]">
             {featureStrip.map(function (feature, featureIndex) {
               return (
                 <Reveal
@@ -1038,11 +1192,11 @@ export function HomePage(props: HomePageProps) {
                     <span className="mt-1 h-2.5 w-2.5 flex-none rounded-full bg-[#dc2d83]" />
 
                     <div>
-                      <p className="font-serif text-lg text-[#3e2530]">
+                      <p className="font-serif text-base text-[#3e2530] sm:text-lg">
                         {feature.title}
                       </p>
 
-                      <p className="mt-1 text-sm leading-6 text-[#745f68]">
+                      <p className="mt-1 text-xs leading-5 text-[#745f68] sm:text-sm sm:leading-6">
                         {feature.copy}
                       </p>
                     </div>
@@ -1056,13 +1210,13 @@ export function HomePage(props: HomePageProps) {
 
       {/* ------------------------------------------------------------ stats */}
 
-      <div className="bg-[#fffaf8] pt-10 sm:pt-14">
+      <div className="bg-[#fffaf8] pt-8 sm:pt-14">
         <StatsBand />
       </div>
 
       {/* --------------------------------------------------------- categories */}
 
-      <section className="bg-[#fffaf8] px-5 py-14 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
+      <section className="bg-[#fffaf8] px-5 py-12 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Our collection"
@@ -1070,7 +1224,7 @@ export function HomePage(props: HomePageProps) {
             copy="Bundles, closures, frontals and everything you need for a flawless install."
           />
 
-          <div className="mt-9 grid grid-cols-2 gap-3 sm:mt-12 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-2 gap-2.5 sm:mt-12 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
             {categoryTiles.map(function (category, categoryIndex) {
               return (
                 <Reveal
@@ -1100,16 +1254,16 @@ export function HomePage(props: HomePageProps) {
                       <div className="absolute inset-0 bg-gradient-to-t from-[#29151f]/40 to-transparent opacity-0 transition group-hover:opacity-100" />
                     </div>
 
-                    <div className="p-3 sm:p-4">
-                      <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#3e2530] sm:text-[10px]">
+                    <div className="p-2.5 sm:p-4">
+                      <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#3e2530] sm:text-[10px]">
                         {category.label}
                       </p>
 
-                      <p className="mt-1 line-clamp-2 text-[10px] leading-4 text-[#745f68] sm:mt-2 sm:text-xs sm:leading-5">
+                      <p className="mt-1 line-clamp-2 text-[9px] leading-4 text-[#745f68] sm:mt-2 sm:text-xs sm:leading-5">
                         {category.copy}
                       </p>
 
-                      <span className="mt-2 inline-block text-[9px] font-bold uppercase tracking-[0.14em] text-[#dc2d83] sm:mt-3 sm:text-[10px]">
+                      <span className="mt-2 inline-block text-[8px] font-bold uppercase tracking-[0.12em] text-[#dc2d83] sm:mt-3 sm:text-[10px]">
                         Shop now
                       </span>
                     </div>
@@ -1119,10 +1273,10 @@ export function HomePage(props: HomePageProps) {
             })}
           </div>
 
-          <div className="mt-8 text-center sm:mt-10">
+          <div className="mt-7 text-center sm:mt-10">
             <a
               href="#/shop"
-              className="inline-flex rounded-full bg-[#dc2d83] px-7 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-white transition hover:-translate-y-0.5 hover:bg-[#b92068] sm:px-8 sm:py-3.5 sm:text-xs"
+              className="inline-flex rounded-full bg-[#dc2d83] px-6 py-3 text-[9px] font-bold uppercase tracking-[0.14em] text-white transition hover:-translate-y-0.5 hover:bg-[#b92068] sm:px-8 sm:py-3.5 sm:text-xs"
             >
               View all products
             </a>
@@ -1132,24 +1286,24 @@ export function HomePage(props: HomePageProps) {
 
       {/* ------------------------------------------------------ appointment */}
 
-      <section className="bg-[#fffaf8] px-5 pb-14 sm:px-10 lg:px-12 lg:pb-24">
+      <section className="bg-[#fffaf8] px-5 pb-12 sm:px-10 lg:px-12 lg:pb-24">
         <div className="mx-auto grid max-w-7xl overflow-hidden rounded-[1.5rem] bg-[#f7e4ec] lg:grid-cols-2">
-          <div className="flex items-center px-6 py-10 sm:px-12 sm:py-16">
+          <div className="flex items-center px-6 py-9 sm:px-12 sm:py-16">
             <div className="max-w-md">
-              <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#dc2d83]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#dc2d83] sm:text-[11px] sm:tracking-[0.28em]">
                 Your time, your beauty
               </p>
 
-              <h2 className="mt-4 font-serif text-3xl leading-tight text-[#3e2530] sm:text-[2.75rem]">
+              <h2 className="mt-3 font-serif text-2xl leading-tight text-[#3e2530] sm:mt-4 sm:text-[2.75rem]">
                 Book your luxury appointment
               </h2>
 
-              <p className="mt-5 text-sm leading-7 text-[#745f68] sm:text-base">
+              <p className="mt-4 text-sm leading-6 text-[#745f68] sm:mt-5 sm:text-base sm:leading-7">
                 Experience personalized care, flawless installs, and premium
                 service tailored just for you.
               </p>
 
-              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-3">
+              <div className="mt-5 flex flex-wrap gap-x-4 gap-y-3 sm:mt-6 sm:gap-x-5">
                 {[
                   'Expert stylists',
                   'Premium service',
@@ -1158,7 +1312,7 @@ export function HomePage(props: HomePageProps) {
                   return (
                     <span
                       key={item}
-                      className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#3e2530]"
+                      className="flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.08em] text-[#3e2530] sm:text-[10px] sm:tracking-[0.1em]"
                     >
                       <span className="h-1.5 w-1.5 rounded-full bg-[#dc2d83]" />
                       {item}
@@ -1169,14 +1323,14 @@ export function HomePage(props: HomePageProps) {
 
               <a
                 href="#/appointments"
-                className="mt-8 inline-flex rounded-full bg-[#dc2d83] px-8 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:-translate-y-0.5 hover:bg-[#b92068]"
+                className="mt-7 inline-flex rounded-full bg-[#dc2d83] px-7 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:-translate-y-0.5 hover:bg-[#b92068] sm:mt-8 sm:px-8 sm:py-3.5 sm:text-xs"
               >
                 Book appointment
               </a>
             </div>
           </div>
 
-          <div className="relative min-h-[280px] lg:min-h-[440px]">
+          <div className="relative min-h-[250px] lg:min-h-[440px]">
             <img
               src={
                 serviceCategories[0]
@@ -1196,15 +1350,16 @@ export function HomePage(props: HomePageProps) {
 
       {/* --------------------------------------------------------- products */}
 
-      <section className="bg-[#fffaf8] px-4 py-14 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
+      <section className="bg-[#fffaf8] px-4 py-12 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Popular picks"
             title="Client favourites"
           />
 
-          {/* TABS */}
-          <div className="mt-7 flex justify-center sm:mt-8">
+          {/* PRODUCT TABS */}
+
+          <div className="mt-6 flex justify-center sm:mt-8">
             <div className="inline-flex rounded-full border border-[#ecd8e1] bg-white p-1">
               {(
                 [
@@ -1223,14 +1378,17 @@ export function HomePage(props: HomePageProps) {
                     }}
                     className="
                       rounded-full
-                      px-3.5 py-2
-                      text-[9px]
+                      px-3
+                      py-1.5
+                      text-[8px]
                       font-bold
                       uppercase
-                      tracking-[0.12em]
+                      tracking-[0.1em]
                       transition
                       sm:px-5
+                      sm:py-2
                       sm:text-[10px]
+                      sm:tracking-[0.12em]
                     "
                     style={{
                       backgroundColor: active
@@ -1248,13 +1406,16 @@ export function HomePage(props: HomePageProps) {
             </div>
           </div>
 
-          {/* SMALLER PRODUCT GRID */}
+          {/* COMPACT PRODUCT GRID */}
+
           <div
             className="
-              mx-auto mt-8
-              grid max-w-5xl
+              mx-auto
+              mt-7
+              grid
+              max-w-4xl
               grid-cols-2
-              gap-3
+              gap-2.5
               sm:mt-10
               sm:grid-cols-2
               sm:gap-5
@@ -1282,11 +1443,15 @@ export function HomePage(props: HomePageProps) {
                     key={product.id}
                     delay={productIndex * 70}
                   >
-                    {/* 
-                      The max-w controls keep the cards from becoming
-                      huge while the grid remains responsive.
-                    */}
-                    <div className="mx-auto w-full max-w-[210px] sm:max-w-[280px] lg:max-w-[320px]">
+                    <div
+                      className="
+                        mx-auto
+                        w-full
+                        max-w-[150px]
+                        sm:max-w-[230px]
+                        lg:max-w-[300px]
+                      "
+                    >
                       <ProductCard
                         product={product}
                         onAdd={onAdd}
@@ -1302,22 +1467,22 @@ export function HomePage(props: HomePageProps) {
       {/* ---------------------------------------------------------- services */}
 
       <section className="grid bg-white lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="flex items-center px-5 py-14 sm:px-10 sm:py-20 lg:px-12 lg:py-24 xl:px-20">
+        <div className="flex items-center px-5 py-12 sm:px-10 sm:py-20 lg:px-12 lg:py-24 xl:px-20">
           <div className="max-w-xl">
-            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#dc2d83]">
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#dc2d83] sm:text-[11px] sm:tracking-[0.28em]">
               Kumasi salon
             </p>
 
-            <h2 className="mt-4 font-serif text-3xl leading-tight text-[#3e2530] sm:text-5xl">
+            <h2 className="mt-3 font-serif text-2xl leading-tight text-[#3e2530] sm:mt-4 sm:text-5xl">
               Careful beauty services with enough time for every client.
             </h2>
 
-            <p className="mt-6 text-sm leading-8 text-[#745f68] sm:text-base">
+            <p className="mt-5 text-sm leading-7 text-[#745f68] sm:mt-6 sm:text-base sm:leading-8">
               From braiding and makeup to nails and lashes, every appointment
               begins with the look you want and the details that matter to you.
             </p>
 
-            <div className="mt-7 grid grid-cols-2 gap-x-5 gap-y-4">
+            <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-4 sm:mt-7 sm:gap-x-5">
               {serviceCategories.map(function (category) {
                 return (
                   <a
@@ -1326,13 +1491,13 @@ export function HomePage(props: HomePageProps) {
                       '#/services?section=' +
                       category.name.toLowerCase()
                     }
-                    className="group border-t border-[#e2b8ca] pt-4"
+                    className="group border-t border-[#e2b8ca] pt-3 sm:pt-4"
                   >
-                    <p className="font-serif text-lg text-[#3e2530] transition group-hover:text-[#dc2d83]">
+                    <p className="font-serif text-base text-[#3e2530] transition group-hover:text-[#dc2d83] sm:text-lg">
                       {category.name}
                     </p>
 
-                    <p className="mt-1 text-[9px] uppercase tracking-[0.12em] text-[#8f707d]">
+                    <p className="mt-1 text-[8px] uppercase tracking-[0.1em] text-[#8f707d] sm:text-[9px] sm:tracking-[0.12em]">
                       Explore services
                     </p>
                   </a>
@@ -1342,14 +1507,14 @@ export function HomePage(props: HomePageProps) {
 
             <a
               href="#/services"
-              className="mt-8 inline-flex rounded-full bg-[#dc2d83] px-8 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:-translate-y-0.5 hover:bg-[#b92068]"
+              className="mt-7 inline-flex rounded-full bg-[#dc2d83] px-7 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:-translate-y-0.5 hover:bg-[#b92068] sm:mt-8 sm:px-8 sm:py-3.5 sm:text-xs"
             >
               Explore services
             </a>
           </div>
         </div>
 
-        <div className="grid min-h-[500px] grid-cols-2">
+        <div className="grid min-h-[420px] grid-cols-2 sm:min-h-[500px]">
           {serviceCategories.map(function (category) {
             return (
               <a
@@ -1358,7 +1523,7 @@ export function HomePage(props: HomePageProps) {
                   '#/services?section=' +
                   category.name.toLowerCase()
                 }
-                className="group relative min-h-[250px] overflow-hidden bg-[#4b2637]"
+                className="group relative min-h-[210px] overflow-hidden bg-[#4b2637] sm:min-h-[250px]"
               >
                 <img
                   src={category.imageUrl}
@@ -1368,7 +1533,7 @@ export function HomePage(props: HomePageProps) {
 
                 <div className="absolute inset-0 bg-gradient-to-t from-[#29151f]/75 via-transparent to-transparent" />
 
-                <p className="absolute inset-x-0 bottom-0 p-4 font-serif text-xl text-white sm:p-7 sm:text-2xl">
+                <p className="absolute inset-x-0 bottom-0 p-3 font-serif text-lg text-white sm:p-7 sm:text-2xl">
                   {category.name}
                 </p>
               </a>
@@ -1379,7 +1544,7 @@ export function HomePage(props: HomePageProps) {
 
       {/* ----------------------------------------------------- testimonials */}
 
-      <section className="bg-[#fffaf8] px-5 py-14 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
+      <section className="bg-[#fffaf8] px-5 py-12 sm:px-10 sm:py-20 lg:px-12 lg:py-24">
         <div className="mx-auto max-w-7xl">
           <SectionHeading
             eyebrow="Client love"
@@ -1388,7 +1553,7 @@ export function HomePage(props: HomePageProps) {
 
           <div
             key={slot}
-            className="mt-10 grid animate-[bbm-rise_600ms_ease_both] gap-5 md:grid-cols-3 lg:mt-12"
+            className="mt-8 grid animate-[bbm-rise_600ms_ease_both] gap-4 md:grid-cols-3 lg:mt-12"
           >
             {visibleTestimonials.map(function (item, itemIndex) {
               const avatar =
@@ -1402,7 +1567,7 @@ export function HomePage(props: HomePageProps) {
                   className="
                     rounded-[1.25rem]
                     bg-white
-                    p-6
+                    p-5
                     ring-1
                     ring-[#ecd8e1]
                     transition
@@ -1425,10 +1590,10 @@ export function HomePage(props: HomePageProps) {
                     <img
                       src={avatar}
                       alt=""
-                      className="h-10 w-10 rounded-full object-cover"
+                      className="h-9 w-9 rounded-full object-cover sm:h-10 sm:w-10"
                     />
 
-                    <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#3e2530]">
+                    <span className="text-[9px] font-bold uppercase tracking-[0.1em] text-[#3e2530] sm:text-[10px] sm:tracking-[0.12em]">
                       {item.name}
                     </span>
                   </figcaption>
@@ -1438,7 +1603,7 @@ export function HomePage(props: HomePageProps) {
           </div>
 
           {pages > 1 && (
-            <div className="mt-8 flex justify-center gap-2">
+            <div className="mt-7 flex justify-center gap-2">
               {Array.from({ length: pages }).map(function (
                 _unused,
                 pageIndex,
@@ -1471,30 +1636,30 @@ export function HomePage(props: HomePageProps) {
 
       {/* ---------------------------------------------------------- gift card */}
 
-      <section className="bg-white px-5 pb-14 sm:px-10 lg:px-12">
+      <section className="bg-white px-5 pb-12 sm:px-10 lg:px-12 lg:pb-20">
         <div
           className="
             mx-auto grid max-w-7xl
-            items-center gap-6
+            items-center gap-5
             overflow-hidden
             rounded-[1.5rem]
             border border-[#ecd8e1]
             bg-[#f7e4ec]
-            p-6
+            p-5
             sm:p-12
             lg:grid-cols-[1.2fr_0.8fr]
           "
         >
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#dc2d83]">
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#dc2d83] sm:text-[11px] sm:tracking-[0.28em]">
               Give the glow
             </p>
 
-            <h2 className="mt-3 font-serif text-3xl text-[#3e2530] sm:text-4xl">
+            <h2 className="mt-3 font-serif text-2xl text-[#3e2530] sm:text-4xl">
               Gift cards for every occasion
             </h2>
 
-            <p className="mt-4 max-w-lg text-sm leading-7 text-[#745f68]">
+            <p className="mt-3 max-w-lg text-sm leading-6 text-[#745f68] sm:mt-4 sm:leading-7">
               Treat someone to bundles, a braiding session or a full glam
               appointment. Delivered instantly, redeemable in salon or online.
             </p>
@@ -1502,7 +1667,7 @@ export function HomePage(props: HomePageProps) {
 
           <a
             href="#/gift-cards"
-            className="inline-flex w-fit rounded-full bg-[#3e2530] px-8 py-3.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:-translate-y-0.5 hover:bg-[#291620] lg:justify-self-end"
+            className="inline-flex w-fit rounded-full bg-[#3e2530] px-7 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:-translate-y-0.5 hover:bg-[#291620] sm:px-8 sm:py-3.5 sm:text-xs lg:justify-self-end"
           >
             Buy a gift card
           </a>
@@ -1515,33 +1680,33 @@ export function HomePage(props: HomePageProps) {
 
       {/* ------------------------------------------------------------ gallery */}
 
-      <section className="bg-[#f7e4ec] px-5 py-12 sm:px-10 sm:py-14 lg:px-12 lg:py-20">
+      <section className="bg-[#f7e4ec] px-5 py-10 sm:px-10 sm:py-14 lg:px-12 lg:py-20">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-[#dc2d83]">
+              <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#dc2d83] sm:text-[11px] sm:tracking-[0.28em]">
                 Follow our journey
               </p>
 
-              <h2 className="mt-2 font-serif text-3xl text-[#3e2530] sm:text-4xl">
+              <h2 className="mt-2 font-serif text-2xl text-[#3e2530] sm:text-4xl">
                 @berylsbeautymark
               </h2>
             </div>
 
             <a
               href="#/shop"
-              className="w-fit text-[10px] font-bold uppercase tracking-[0.16em] text-[#dc2d83]"
+              className="w-fit text-[9px] font-bold uppercase tracking-[0.14em] text-[#dc2d83] sm:text-[10px] sm:tracking-[0.16em]"
             >
               View our Instagram
             </a>
           </div>
 
-          <div className="mt-7 grid grid-cols-3 gap-2 sm:gap-4 lg:grid-cols-6">
+          <div className="mt-6 grid grid-cols-3 gap-1.5 sm:mt-7 sm:gap-4 lg:grid-cols-6">
             {galleryImages.map(function (image, imageIndex) {
               return (
                 <div
                   key={'gallery-' + imageIndex}
-                  className="group relative aspect-square overflow-hidden rounded-lg bg-[#f7e4ec]"
+                  className="group relative aspect-square overflow-hidden rounded-md bg-[#f7e4ec] sm:rounded-lg"
                 >
                   <img
                     src={image}
@@ -1550,7 +1715,7 @@ export function HomePage(props: HomePageProps) {
                   />
 
                   <div className="absolute inset-0 flex items-center justify-center bg-[#29151f]/45 opacity-0 transition group-hover:opacity-100">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-white">
+                    <span className="text-[9px] font-bold uppercase tracking-[0.14em] text-white">
                       View
                     </span>
                   </div>
@@ -1567,15 +1732,15 @@ export function HomePage(props: HomePageProps) {
 
       {/* ----------------------------------------------------------- founder */}
 
-      <section className="relative overflow-hidden bg-[#4b2637] px-5 py-14 text-center text-white sm:px-10 sm:py-20 lg:py-24">
+      <section className="relative overflow-hidden bg-[#4b2637] px-5 py-12 text-center text-white sm:px-10 sm:py-20 lg:py-24">
         <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-[#dc2d83]/25 blur-3xl" />
 
-        <blockquote className="mx-auto max-w-4xl font-serif text-3xl leading-snug sm:text-4xl lg:text-5xl">
+        <blockquote className="mx-auto max-w-4xl font-serif text-2xl leading-snug sm:text-4xl lg:text-5xl">
           Every appointment starts with listening to what you want and ends
           with a style that feels right for you.
         </blockquote>
 
-        <p className="mt-7 text-[11px] font-bold uppercase tracking-[0.28em] text-[#f2a7c9]">
+        <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.24em] text-[#f2a7c9] sm:mt-7 sm:text-[11px] sm:tracking-[0.28em]">
           Beryl Vance, Founder
         </p>
       </section>
