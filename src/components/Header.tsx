@@ -333,6 +333,75 @@ export function Header({
               )
             })}
           </div>
+
+
+          <div className="mt-3 border-t border-[#ecd7e0] pt-3">
+            {user ? (
+              <div className="grid gap-1">
+                <p className="px-3 pb-2 text-xs font-bold uppercase tracking-[0.1em] text-[#a08a94]">
+                  {user.name}
+                </p>
+                <a
+                  href="#/account"
+                  onClick={function () { setMenuOpen(false) }}
+                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
+                >
+                  <FiSettings aria-hidden="true" />
+                  Account settings
+                </a>
+                <a
+                  href="#/account?tab=bookings"
+                  onClick={function () { setMenuOpen(false) }}
+                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
+                >
+                  <FiCalendar aria-hidden="true" />
+                  My appointments
+                </a>
+                <a
+                  href="#/account?tab=orders"
+                  onClick={function () { setMenuOpen(false) }}
+                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
+                >
+                  <FiPackage aria-hidden="true" />
+                  My orders
+                </a>
+                {user.role === 'admin' && (
+                  <a
+                    href="#/dashboard"
+                    onClick={function () { setMenuOpen(false) }}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
+                  >
+                    <FiSettings aria-hidden="true" />
+                    Admin dashboard
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={function () {
+                    logout()
+                    setMenuOpen(false)
+                    window.location.hash = '#/'
+                  }}
+                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-[#a52261] hover:bg-[#f8e3ec]"
+                >
+                  <FiLogOut aria-hidden="true" />
+                  Sign out
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={function () {
+                  setMenuOpen(false)
+                  onOpenAccount()
+                }}
+                className="flex w-full items-center gap-3 rounded-xl bg-[#d92c83] px-3 py-3 text-sm font-bold text-white"
+              >
+                <FiUser aria-hidden="true" />
+                Sign in or create account
+              </button>
+            )}
+          </div>
         </nav>
       )}
 

@@ -25,7 +25,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
       <div
         className="
           relative
-          aspect-square
+          aspect-[4/3]
           overflow-hidden
           bg-[#f6edf0]
           sm:aspect-[4/5]
