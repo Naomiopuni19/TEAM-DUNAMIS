@@ -100,6 +100,17 @@ export type AdminSettings = {
   updatedAt?: string
 }
 
+export type ProductVariant = {
+  id: string
+  productId: string
+  label: string
+  price: number
+  stockQty: number
+  imageUrl?: string
+  sortOrder: number
+  isActive?: boolean
+}
+
 export type GiftCard = {
   id: string
   code: string
@@ -458,7 +469,7 @@ export const api = {
   },
   createOrder(
     token: string,
-    items: Array<{ productId: string; quantity: number }>,
+    items: Array<{ productId: string; quantity: number; variantId?: string }>,
     delivery: { name: string; phone: string; address: string; notes?: string; email?: string },
     giftCardCode?: string,
   ) {
@@ -517,6 +528,32 @@ export const api = {
       token,
       body: JSON.stringify({ status }),
     })
+  },
+  productVariants(productId: string) {
+    return request<ProductVariant[]>('/product-variants/' + productId)
+  },
+  adminProductVariants(token: string, productId: string) {
+    return request<ProductVariant[]>('/product-variants/' + productId + '/admin', { token })
+  },
+  createProductVariant(
+    token: string,
+    body: { productId: string; label: string; price: number; stockQty: number; imageUrl?: string; sortOrder?: number },
+  ) {
+    return request<{ variant: ProductVariant }>('/product-variants', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  updateProductVariant(token: string, id: string, body: Partial<ProductVariant>) {
+    return request<{ variant: ProductVariant }>('/product-variants/' + id, {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(body),
+    })
+  },
+  deleteProductVariant(token: string, id: string) {
+    return request<null>('/product-variants/' + id, { method: 'DELETE', token })
   },
   purchaseGiftCard(
     token: string,

@@ -74,15 +74,22 @@ export function CartDrawer({
     setBusy(true)
     setMessage('')
     try {
-      const quantities = new Map<string, number>()
-      items.forEach((item) =>
-        quantities.set(item.id, (quantities.get(item.id) ?? 0) + 1),
-      )
+      const quantities = new Map<string, { productId: string; variantId?: string; quantity: number }>()
+      items.forEach((item) => {
+        const key = item.id + '::' + (item.variantId || '')
+        const existing = quantities.get(key)
+        quantities.set(key, {
+          productId: item.id,
+          variantId: item.variantId,
+          quantity: (existing?.quantity ?? 0) + 1,
+        })
+      })
       const result = await api.createOrder(
         token,
-        [...quantities].map(([productId, quantity]) => ({
-          productId,
-          quantity,
+        [...quantities.values()].map((entry) => ({
+          productId: entry.productId,
+          quantity: entry.quantity,
+          variantId: entry.variantId,
         })),
         {
           name: name.trim(),
@@ -159,6 +166,11 @@ export function CartDrawer({
                   />
                   <div className="min-w-0 flex-1">
                     <p className="font-serif text-lg text-[#3e2530]">{item.name}</p>
+                    {item.variantLabel && (
+                      <p className="mt-0.5 text-xs font-semibold uppercase tracking-[0.08em] text-[#8f707d]">
+                        {item.variantLabel}
+                      </p>
+                    )}
                     <p className="mt-2 text-sm font-semibold text-[#b32269]">
                       GHC {item.price.toLocaleString()}
                     </p>

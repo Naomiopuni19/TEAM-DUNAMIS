@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { productImage, type Product } from '../data/catalog'
+import { api, type ProductVariant } from '../lib/api'
 
 type ProductCardProps = {
   product: Product
@@ -6,45 +8,240 @@ type ProductCardProps = {
 }
 
 export function ProductCard({ product, onAdd }: ProductCardProps) {
-  return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-xl bg-white ring-1 ring-[#ecd8e1] transition hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(62,37,48,0.4)]">
-      <div className="relative aspect-square overflow-hidden bg-[#f7e4ec]">
-        <img
-          src={productImage(product)}
-          alt={product.name}
-          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#29151f]/40 to-transparent opacity-0 transition group-hover:opacity-100" />
+  const [variants, setVariants] = useState<ProductVariant[]>([])
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
 
-        {!product.inStock && (
-          <span className="absolute left-3 top-3 rounded-full bg-[#fff9f7]/95 px-2.5 py-1 text-[8px] font-bold uppercase tracking-[0.12em] text-[#b32269]">
+  useEffect(function () {
+    let cancelled = false
+    api.productVariants(product.id).then(function (data) {
+      if (!cancelled) {
+        setVariants(data)
+        if (data.length > 0) setSelectedVariant(data[0])
+      }
+    })
+    return function () {
+      cancelled = true
+    }
+  }, [product.id])
+
+  const displayPrice = selectedVariant ? selectedVariant.price : product.price
+  const canAdd = variants.length === 0 ? product.inStock : Boolean(selectedVariant && selectedVariant.stockQty > 0)
+
+  function handleAdd() {
+    if (selectedVariant) {
+      onAdd({
+        ...product,
+        price: selectedVariant.price,
+        variantId: selectedVariant.id,
+        variantLabel: selectedVariant.label,
+      })
+      return
+    }
+    onAdd(product)
+  }
+
+  return (
+    <article
+      className="
+        group flex h-full flex-col
+        overflow-hidden
+        rounded-[1.25rem]
+        sm:rounded-[1.5rem]
+        border border-[#efd7e1]
+        bg-white
+        shadow-[0_10px_28px_rgba(87,43,61,0.06)]
+        transition duration-300
+        hover:-translate-y-1
+        hover:shadow-[0_18px_45px_rgba(87,43,61,0.12)]
+      "
+    >
+      {/* PRODUCT IMAGE */}
+      <div
+        className="
+          relative
+          aspect-square
+          overflow-hidden
+          bg-[#f6edf0]
+          sm:aspect-[4/5]
+        "
+      >
+        <img
+          src={selectedVariant && selectedVariant.imageUrl ? selectedVariant.imageUrl : productImage(product)}
+          alt={product.name}
+          className="
+            h-full
+            w-full
+            object-cover
+            transition
+            duration-500
+            group-hover:scale-[1.03]
+          "
+        />
+
+        {!canAdd && (
+          <span
+            className="
+              absolute
+              left-2.5
+              top-2.5
+              rounded-full
+              bg-[#fff9f7]/95
+              px-2.5
+              py-1
+              text-[8px]
+              font-bold
+              uppercase
+              tracking-[0.12em]
+              text-[#b32269]
+              sm:left-4
+              sm:top-4
+              sm:px-3
+              sm:py-1.5
+              sm:text-[10px]
+              sm:tracking-[0.16em]
+            "
+          >
             Out of stock
           </span>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
-        <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#dc2d83]">
+      {/* PRODUCT DETAILS */}
+      <div
+        className="
+          flex
+          flex-1
+          flex-col
+          p-3
+          sm:p-5
+          lg:p-6
+        "
+      >
+        <p
+          className="
+            text-[8px]
+            font-bold
+            uppercase
+            tracking-[0.14em]
+            text-[#d92c83]
+            sm:text-[10px]
+            sm:tracking-[0.18em]
+          "
+        >
           {product.category}
         </p>
-        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#3e2530]">
+
+        <h3
+          className="
+            mt-1.5
+            font-serif
+            text-base
+            leading-tight
+            text-[#3e2530]
+            sm:mt-2
+            sm:text-xl
+            lg:text-2xl
+          "
+        >
           {product.name}
-        </p>
-        <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#745f68]">
+        </h3>
+
+        <p
+          className="
+            mt-2
+            line-clamp-2
+            text-[10px]
+            leading-4
+            text-[#745f68]
+            sm:mt-3
+            sm:text-sm
+            sm:leading-6
+          "
+        >
           {product.description}
         </p>
 
-        <div className="mt-auto flex items-center justify-between pt-3">
-          <p className="text-sm font-bold text-[#3e2530]">
-            GH&#8373;{product.price.toLocaleString()}
+        {variants.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {variants.map(function (variant) {
+              const active = selectedVariant?.id === variant.id
+              return (
+                <button
+                  key={variant.id}
+                  type="button"
+                  disabled={variant.stockQty <= 0}
+                  onClick={function () { setSelectedVariant(variant) }}
+                  className={
+                    'rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.08em] transition disabled:cursor-not-allowed disabled:opacity-40 ' +
+                    (active
+                      ? 'border-[#dc2d83] bg-[#fbe0eb] text-[#a51e61]'
+                      : 'border-[#e4bdce] bg-white text-[#745f68]')
+                  }
+                >
+                  {variant.label}
+                </button>
+              )
+            })}
+          </div>
+        )}
+
+        <div
+          className="
+            mt-auto
+            flex
+            flex-col
+            items-start
+            gap-2
+            pt-4
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
+            sm:gap-4
+            sm:pt-6
+          "
+        >
+          <p
+            className="
+              font-serif
+              text-base
+              font-semibold
+              text-[#3e2530]
+              sm:text-xl
+            "
+          >
+            GH₵{displayPrice.toLocaleString()}
           </p>
+
           <button
             type="button"
-            onClick={() => onAdd(product)}
-            disabled={!product.inStock}
-            className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#dc2d83] transition hover:text-[#b92068] disabled:cursor-not-allowed disabled:text-[#c7aeb9]"
+            onClick={handleAdd}
+            disabled={!canAdd}
+            className="
+              w-full
+              rounded-full
+              bg-[#dc2d83]
+              px-3
+              py-2
+              text-[9px]
+              font-bold
+              uppercase
+              tracking-[0.1em]
+              text-white
+              transition
+              hover:bg-[#b92068]
+              focus-visible:outline-2
+              focus-visible:outline-offset-2
+              focus-visible:outline-[#dc2d83]
+              disabled:cursor-not-allowed
+              disabled:bg-[#c7aeb9]
+              sm:w-auto
+              sm:px-5
+              sm:py-2.5
+              sm:text-xs
+              sm:tracking-[0.12em]
+            "
           >
-            {product.inStock ? 'Add to bag' : 'Unavailable'}
+            {canAdd ? 'Add to bag' : 'Unavailable'}
           </button>
         </div>
       </div>

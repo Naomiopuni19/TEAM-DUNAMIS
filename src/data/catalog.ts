@@ -8,6 +8,8 @@ export type Product = {
   images: string[]
   image: string
   category: string
+  variantId?: string
+  variantLabel?: string
 }
 
 export type ServiceCategory = {
