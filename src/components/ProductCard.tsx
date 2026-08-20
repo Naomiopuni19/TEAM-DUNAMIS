@@ -8,7 +8,7 @@ type ProductCardProps = {
 export function ProductCard({ product, onAdd }: ProductCardProps) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-xl bg-white ring-1 ring-[#ecd8e1] transition hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(62,37,48,0.4)]">
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#f7e4ec]">
+      <div className="relative aspect-square overflow-hidden bg-[#f7e4ec]">
         <img
           src={productImage(product)}
           alt={product.name}
