@@ -5,6 +5,8 @@ import {
   listOrdersForUser,
   updateOrderStatus
 } from "../models/order.model.js";
+import { getOrderDetailsForEmail } from "../models/payment.model.js";
+import { sendOrderStatusUpdate } from "../utils/email.js";
 import { notFound } from "../utils/httpError.js";
 
 const orderSchema = z.object({
@@ -48,5 +50,9 @@ export async function updateStatus(req, res) {
   }).parse(req.body);
   const order = await updateOrderStatus(req.params.id, body.status);
   if (!order) throw notFound("Order not found");
+
+  const details = await getOrderDetailsForEmail(order.id);
+  if (details) sendOrderStatusUpdate(details.customerEmail, order, body.status);
+
   res.json({ order });
 }
