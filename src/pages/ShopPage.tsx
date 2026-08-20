@@ -90,9 +90,9 @@ export function ShopPage({ onAdd }: ShopPageProps) {
               </button>
             ))}
           </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {catalogLoading ? (
-              <p className="sm:col-span-2 lg:col-span-3">Loading products…</p>
+              <p className="col-span-2 sm:col-span-2 lg:col-span-3">Loading products...</p>
             ) : catalogError ? (
               <p className="sm:col-span-2 lg:col-span-3 text-[#8b435f]">
                 {catalogError}

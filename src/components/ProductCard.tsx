@@ -25,7 +25,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
       <div
         className="
           relative
-          aspect-[4/3]
+          aspect-square
           overflow-hidden
           bg-[#f6edf0]
           sm:aspect-[4/5]
@@ -151,7 +151,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
               sm:text-xl
             "
           >
-            GH₵{product.price.toLocaleString()}
+            GHâ‚µ{product.price.toLocaleString()}
           </p>
 
           <button
