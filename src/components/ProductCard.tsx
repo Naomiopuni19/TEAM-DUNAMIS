@@ -149,11 +149,13 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
         <p
           className="
             mt-2
+            hidden
             line-clamp-2
             text-[10px]
             leading-4
             text-[#745f68]
             sm:mt-3
+            sm:block
             sm:text-sm
             sm:leading-6
           "
@@ -209,7 +211,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
               sm:text-xl
             "
           >
-            GH₵{displayPrice.toLocaleString()}
+            GH&#8373;{displayPrice.toLocaleString()}
           </p>
 
           <button

@@ -56,7 +56,7 @@ export function Footer() {
           className="h-[18px] w-[18px]"
           aria-hidden="true"
         >
-          <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.05.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.05.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.27-.06-1.65-.07-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.05-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.05-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.78.3-1.44.71-2.1 1.37C1.38 2.66 1 3.31.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.78.71 1.44 1.37 2.1.66.66 1.32 1.07 2.1 1.37.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.78-.3 1.44-.71 2.1-1.37.66-.66 1.07-1.32 1.37-2.1.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91-.3-.78-.71-1.44-1.37-2.1C21.34 1.38 20.68 1 19.9.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z" />
+          <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.05.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.05.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.27-.06-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.05-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.05-.36 2.23-.41C8.33 2.17 8.74 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.78.3-1.44.71-2.1 1.37C1.38 2.66 1 3.31.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.78.71 1.44 1.37 2.1.66.66 1.32 1.07 2.1 1.37.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.78-.3 1.44-.71 2.1-1.37.66-.66 1.07-1.32 1.37-2.1.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91-.3-.78-.71-1.44-1.37-2.1C21.34 1.38 20.68 1 19.9.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.85-10.4a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z" />
         </svg>
       ),
     },
@@ -99,56 +99,67 @@ export function Footer() {
       <div className="pointer-events-none absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#f5b0d0]/10 blur-3xl" />
 
       <div className="relative">
+
         {/* =====================================================
             NEWSLETTER
         ====================================================== */}
-        <section className="border-b border-white/10 px-5 py-12 sm:px-8 sm:py-14 lg:px-12">
-          <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+        <section className="border-b border-white/10 px-5 py-10 sm:px-8 sm:py-14 lg:px-12">
+          <div className="mx-auto flex max-w-7xl flex-col gap-7 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+
+            {/* Newsletter text */}
             <div className="max-w-2xl">
-              <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#f5b0d0]">
+              <p className="text-[8px] font-bold uppercase tracking-[0.28em] text-[#f5b0d0] sm:text-[9px] sm:tracking-[0.3em]">
                 Stay in the Luxe Circle
               </p>
 
-              <h2 className="mt-3 font-serif text-[2rem] leading-tight sm:text-4xl">
+              <h2 className="mt-2 font-serif text-[1.65rem] leading-tight sm:mt-3 sm:text-4xl">
                 Beauty updates,
                 <span className="italic text-[#f5b0d0]">
-                  {' '}
-                  exclusive offers.
+                  {' '}exclusive offers.
                 </span>
               </h2>
 
-              <p className="mt-3 max-w-xl text-sm leading-7 text-white/55">
+              <p className="mt-2 max-w-lg text-[12px] leading-6 text-white/50 sm:mt-3 sm:text-sm sm:leading-7">
                 Be the first to know about new arrivals, beauty tips,
                 exclusive offers and available appointment dates.
               </p>
             </div>
 
+            {/* Newsletter form */}
             <form
               onSubmit={function (event) {
                 event.preventDefault()
               }}
               className="w-full max-w-xl"
             >
-              <label htmlFor="footer-newsletter-email" className="sr-only">
+              <label
+                htmlFor="footer-newsletter-email"
+                className="sr-only"
+              >
                 Email address
               </label>
 
-              <div className="flex w-full flex-col gap-3 sm:flex-row">
+              <div className="flex w-full items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] p-1.5 backdrop-blur-md transition focus-within:border-[#f5b0d0]/60 sm:rounded-full sm:p-1.5">
+
                 <input
                   id="footer-newsletter-email"
                   type="email"
                   required
-                  placeholder="Enter your email address"
-                  className="h-[60px] min-w-0 flex-1 rounded-2xl border border-white/10 bg-white/[0.08] px-5 text-sm text-white outline-none placeholder:text-white/35 backdrop-blur-md transition focus:border-[#f5b0d0] focus:bg-white/[0.12] sm:rounded-full sm:px-6"
+                  placeholder="Your email address"
+                  className="h-[44px] min-w-0 flex-1 bg-transparent px-3 text-[12px] text-white outline-none placeholder:text-white/35 sm:h-[50px] sm:px-5 sm:text-sm"
                 />
 
                 <button
                   type="submit"
-                  className="h-[60px] w-full rounded-2xl bg-[#dc2d83] px-8 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#c32672] hover:shadow-[0_15px_40px_-15px_rgba(220,45,131,0.8)] sm:w-auto sm:min-w-[135px] sm:rounded-full"
+                  className="h-[44px] shrink-0 rounded-xl bg-[#dc2d83] px-4 text-[9px] font-bold uppercase tracking-[0.12em] text-white transition duration-300 hover:bg-[#c32672] hover:shadow-[0_10px_30px_-12px_rgba(220,45,131,0.8)] sm:h-[50px] sm:rounded-full sm:px-7 sm:text-[10px] sm:tracking-[0.18em]"
                 >
-                  Subscribe
+                  Join
                 </button>
               </div>
+
+              <p className="mt-2 px-1 text-[9px] text-white/30">
+                No spam. Just beautiful things. ♡
+              </p>
             </form>
           </div>
         </section>
@@ -156,7 +167,6 @@ export function Footer() {
         {/* =====================================================
             MAIN FOOTER
         ====================================================== */}
-
         <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-12 lg:py-16">
 
           {/* BRAND */}
@@ -167,7 +177,7 @@ export function Footer() {
               </div>
 
               <p className="mt-3 text-[7px] font-bold uppercase tracking-[0.3em] text-[#f5b0d0]">
-                Hair &bull; Beauty &bull; Luxury
+                Hair • Beauty • Luxury
               </p>
             </a>
 
@@ -200,7 +210,6 @@ export function Footer() {
               SHOP / SERVICES / INFORMATION
               SIDE BY SIDE ON MOBILE
           ====================================================== */}
-
           <div className="grid grid-cols-3 gap-3 pt-10 sm:gap-8 md:grid-cols-3 lg:grid-cols-3">
 
             {/* SHOP */}
@@ -214,45 +223,27 @@ export function Footer() {
               </div>
 
               <div className="mt-5 grid gap-3 text-[11px] leading-5 text-white/55 sm:text-sm">
-                <a
-                  href="#/shop"
-                  className="transition hover:text-white"
-                >
+                <a href="#/shop" className="transition hover:text-white">
                   New Arrivals
                 </a>
 
-                <a
-                  href="#/shop"
-                  className="transition hover:text-white"
-                >
+                <a href="#/shop" className="transition hover:text-white">
                   Wigs
                 </a>
 
-                <a
-                  href="#/shop"
-                  className="transition hover:text-white"
-                >
+                <a href="#/shop" className="transition hover:text-white">
                   Bundles
                 </a>
 
-                <a
-                  href="#/shop"
-                  className="transition hover:text-white"
-                >
+                <a href="#/shop" className="transition hover:text-white">
                   Closures & Frontals
                 </a>
 
-                <a
-                  href="#/shop"
-                  className="transition hover:text-white"
-                >
+                <a href="#/shop" className="transition hover:text-white">
                   Hair Care
                 </a>
 
-                <a
-                  href="#/shop"
-                  className="transition hover:text-white"
-                >
+                <a href="#/shop" className="transition hover:text-white">
                   Best Sellers
                 </a>
               </div>
@@ -269,38 +260,23 @@ export function Footer() {
               </div>
 
               <div className="mt-5 grid gap-3 text-[11px] leading-5 text-white/55 sm:text-sm">
-                <a
-                  href="#/services"
-                  className="transition hover:text-white"
-                >
+                <a href="#/services" className="transition hover:text-white">
                   Hair Styling
                 </a>
 
-                <a
-                  href="#/services"
-                  className="transition hover:text-white"
-                >
+                <a href="#/services" className="transition hover:text-white">
                   Braiding
                 </a>
 
-                <a
-                  href="#/services"
-                  className="transition hover:text-white"
-                >
+                <a href="#/services" className="transition hover:text-white">
                   Makeup
                 </a>
 
-                <a
-                  href="#/services"
-                  className="transition hover:text-white"
-                >
+                <a href="#/services" className="transition hover:text-white">
                   Lashes
                 </a>
 
-                <a
-                  href="#/services"
-                  className="transition hover:text-white"
-                >
+                <a href="#/services" className="transition hover:text-white">
                   Nails
                 </a>
 
@@ -308,7 +284,7 @@ export function Footer() {
                   href="#/appointments"
                   className="font-semibold text-[#f5b0d0] transition hover:text-white"
                 >
-                  Book Now &#8594;
+                  Book Now →
                 </a>
               </div>
             </div>
@@ -324,45 +300,27 @@ export function Footer() {
               </div>
 
               <div className="mt-5 grid gap-3 text-[11px] leading-5 text-white/55 sm:text-sm">
-                <a
-                  href="#/about"
-                  className="transition hover:text-white"
-                >
+                <a href="#/about" className="transition hover:text-white">
                   About Us
                 </a>
 
-                <a
-                  href="#/reviews"
-                  className="transition hover:text-white"
-                >
+                <a href="#/reviews" className="transition hover:text-white">
                   Reviews
                 </a>
 
-                <a
-                  href="#/faq"
-                  className="transition hover:text-white"
-                >
+                <a href="#/faq" className="transition hover:text-white">
                   FAQs
                 </a>
 
-                <a
-                  href="#/delivery"
-                  className="transition hover:text-white"
-                >
+                <a href="#/delivery" className="transition hover:text-white">
                   Delivery
                 </a>
 
-                <a
-                  href="#/privacy"
-                  className="transition hover:text-white"
-                >
+                <a href="#/privacy" className="transition hover:text-white">
                   Privacy Policy
                 </a>
 
-                <a
-                  href="#/terms"
-                  className="transition hover:text-white"
-                >
+                <a href="#/terms" className="transition hover:text-white">
                   Terms
                 </a>
 
@@ -370,7 +328,7 @@ export function Footer() {
                   href="#/staff-login"
                   className="font-semibold text-[#f5b0d0] transition hover:text-white"
                 >
-                  Staff Portal &#8594;
+                  Staff Portal →
                 </a>
               </div>
             </div>
@@ -380,7 +338,6 @@ export function Footer() {
         {/* =====================================================
             CONTACT INFORMATION
         ====================================================== */}
-
         <div className="border-y border-white/10">
           <div className="mx-auto grid max-w-7xl grid-cols-1 gap-3 px-5 py-6 sm:px-8 md:grid-cols-3 lg:px-12">
 
@@ -391,6 +348,7 @@ export function Footer() {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   className="h-4 w-4"
+                  aria-hidden="true"
                 >
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" />
                 </svg>
@@ -421,6 +379,7 @@ export function Footer() {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   className="h-4 w-4"
+                  aria-hidden="true"
                 >
                   <path d="M6.62 10.79a15.46 15.46 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                 </svg>
@@ -447,6 +406,7 @@ export function Footer() {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   className="h-4 w-4"
+                  aria-hidden="true"
                 >
                   <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
                 </svg>
@@ -457,7 +417,7 @@ export function Footer() {
                   Email us
                 </p>
 
-                <p className="mt-1 text-[12px] leading-5 text-white/60">
+                <p className="mt-1 break-all text-[12px] leading-5 text-white/60">
                   bbmark.abcp@gmail.com
                 </p>
               </div>
@@ -468,10 +428,9 @@ export function Footer() {
         {/* =====================================================
             BOTTOM BAR
         ====================================================== */}
-
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-6 text-center sm:px-8 md:flex-row md:items-center md:justify-between md:text-left lg:px-12">
           <p className="text-[10px] leading-5 text-white/35">
-            ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© 2026 Beryl's Beauty Mark. All rights reserved.
+            © 2026 Beryl's Beauty Mark. All rights reserved.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] text-white/35 md:justify-end">
@@ -497,7 +456,7 @@ export function Footer() {
               href="#"
               className="transition hover:text-[#f5b0d0]"
             >
-              Back to top &#8593;
+              Back to top ↑
             </a>
           </div>
         </div>
