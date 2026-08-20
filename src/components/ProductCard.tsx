@@ -7,181 +7,42 @@ type ProductCardProps = {
 
 export function ProductCard({ product, onAdd }: ProductCardProps) {
   return (
-    <article
-      className="
-        group flex h-full flex-col
-        overflow-hidden
-        rounded-[1.25rem]
-        sm:rounded-[1.5rem]
-        border border-[#efd7e1]
-        bg-white
-        shadow-[0_10px_28px_rgba(87,43,61,0.06)]
-        transition duration-300
-        hover:-translate-y-1
-        hover:shadow-[0_18px_45px_rgba(87,43,61,0.12)]
-      "
-    >
-      {/* PRODUCT IMAGE */}
-      <div
-        className="
-          relative
-          aspect-square
-          overflow-hidden
-          bg-[#f6edf0]
-          sm:aspect-[4/5]
-        "
-      >
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl bg-white ring-1 ring-[#ecd8e1] transition hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_rgba(62,37,48,0.4)]">
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#f7e4ec]">
         <img
           src={productImage(product)}
           alt={product.name}
-          className="
-            h-full
-            w-full
-            object-cover
-            transition
-            duration-500
-            group-hover:scale-[1.03]
-          "
+          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#29151f]/40 to-transparent opacity-0 transition group-hover:opacity-100" />
 
         {!product.inStock && (
-          <span
-            className="
-              absolute
-              left-2.5
-              top-2.5
-              rounded-full
-              bg-[#fff9f7]/95
-              px-2.5
-              py-1
-              text-[8px]
-              font-bold
-              uppercase
-              tracking-[0.12em]
-              text-[#b32269]
-              sm:left-4
-              sm:top-4
-              sm:px-3
-              sm:py-1.5
-              sm:text-[10px]
-              sm:tracking-[0.16em]
-            "
-          >
+          <span className="absolute left-3 top-3 rounded-full bg-[#fff9f7]/95 px-2.5 py-1 text-[8px] font-bold uppercase tracking-[0.12em] text-[#b32269]">
             Out of stock
           </span>
         )}
       </div>
 
-      {/* PRODUCT DETAILS */}
-      <div
-        className="
-          flex
-          flex-1
-          flex-col
-          p-3
-          sm:p-5
-          lg:p-6
-        "
-      >
-        <p
-          className="
-            text-[8px]
-            font-bold
-            uppercase
-            tracking-[0.14em]
-            text-[#d92c83]
-            sm:text-[10px]
-            sm:tracking-[0.18em]
-          "
-        >
+      <div className="flex flex-1 flex-col p-4">
+        <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#dc2d83]">
           {product.category}
         </p>
-
-        <h3
-          className="
-            mt-1.5
-            font-serif
-            text-base
-            leading-tight
-            text-[#3e2530]
-            sm:mt-2
-            sm:text-xl
-            lg:text-2xl
-          "
-        >
+        <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#3e2530]">
           {product.name}
-        </h3>
-
-        <p
-          className="
-            mt-2
-            line-clamp-2
-            text-[10px]
-            leading-4
-            text-[#745f68]
-            sm:mt-3
-            sm:text-sm
-            sm:leading-6
-          "
-        >
+        </p>
+        <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#745f68]">
           {product.description}
         </p>
 
-        <div
-          className="
-            mt-auto
-            flex
-            flex-col
-            items-start
-            gap-2
-            pt-4
-            sm:flex-row
-            sm:items-center
-            sm:justify-between
-            sm:gap-4
-            sm:pt-6
-          "
-        >
-          <p
-            className="
-              font-serif
-              text-base
-              font-semibold
-              text-[#3e2530]
-              sm:text-xl
-            "
-          >
-            GHâ‚µ{product.price.toLocaleString()}
+        <div className="mt-auto flex items-center justify-between pt-3">
+          <p className="text-sm font-bold text-[#3e2530]">
+            GH&#8373;{product.price.toLocaleString()}
           </p>
-
           <button
             type="button"
             onClick={() => onAdd(product)}
             disabled={!product.inStock}
-            className="
-              w-full
-              rounded-full
-              bg-[#dc2d83]
-              px-3
-              py-2
-              text-[9px]
-              font-bold
-              uppercase
-              tracking-[0.1em]
-              text-white
-              transition
-              hover:bg-[#b92068]
-              focus-visible:outline-2
-              focus-visible:outline-offset-2
-              focus-visible:outline-[#dc2d83]
-              disabled:cursor-not-allowed
-              disabled:bg-[#c7aeb9]
-              sm:w-auto
-              sm:px-5
-              sm:py-2.5
-              sm:text-xs
-              sm:tracking-[0.12em]
-            "
+            className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#dc2d83] transition hover:text-[#b92068] disabled:cursor-not-allowed disabled:text-[#c7aeb9]"
           >
             {product.inStock ? 'Add to bag' : 'Unavailable'}
           </button>
