@@ -97,7 +97,7 @@ function App() {
       page = <StaffLoginPage />
       break
     case 'account':
-      page = <AccountPage onRequireAuth={() => setAuthOpen(true)} />
+      page = <AccountPage onRequireAuth={() => setAuthOpen(true)} onAdd={addToCart} />
       break
     case 'payment-complete':
       page = <PaymentCompletePage />

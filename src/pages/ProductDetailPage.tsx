@@ -8,7 +8,11 @@ type ProductDetailPageProps = {
 }
 
 export function ProductDetailPage({ onAdd }: ProductDetailPageProps) {
-  const { products, catalogLoading } = useAppData()
+  const wishlist = useAppData()
+
+  const products = wishlist.products
+  const catalogLoading = wishlist.catalogLoading
+  const isWishlisted = productId2 => wishlist.wishlistIds.has(productId2)
   const productId = new URLSearchParams(window.location.hash.split('?')[1]).get('id')
   const product = products.find(function (p) { return p.id === productId })
 
@@ -130,7 +134,7 @@ export function ProductDetailPage({ onAdd }: ProductDetailPageProps) {
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#d92c83]">{product.category}</p>
             <h1 className="mt-3 font-serif text-4xl text-[#3e2530]">{product.name}</h1>
             <p className="mt-5 font-serif text-3xl font-semibold text-[#3e2530]">
-              GH₵{displayPrice.toLocaleString()}
+              GHâ‚µ{displayPrice.toLocaleString()}
             </p>
             <p className="mt-5 text-sm leading-7 text-[#745f68]">{product.description}</p>
 
@@ -219,14 +223,26 @@ export function ProductDetailPage({ onAdd }: ProductDetailPageProps) {
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={handleAdd}
-              disabled={!canAdd}
-              className="mt-7 w-full rounded-full bg-[#dc2d83] px-6 py-4 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#b92068] disabled:cursor-not-allowed disabled:bg-[#c7aeb9] sm:w-auto sm:px-10"
-            >
-              {!canAdd ? 'Unavailable' : added ? 'Added to bag' : 'Add to bag'}
-            </button>
+            <div className="mt-7 flex gap-3">
+              <button
+                type="button"
+                onClick={handleAdd}
+                disabled={!canAdd}
+                className="flex-1 rounded-full bg-[#dc2d83] px-6 py-4 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#b92068] disabled:cursor-not-allowed disabled:bg-[#c7aeb9] sm:flex-none sm:px-10"
+              >
+                {!canAdd ? 'Unavailable' : added ? 'Added to bag' : 'Add to bag'}
+              </button>
+              <button
+                type="button"
+                onClick={function () { wishlist.toggleWishlist(product.id).catch(function () {}) }}
+                className="flex h-14 w-14 items-center justify-center rounded-full border border-[#e4bdce] text-xl transition hover:border-[#dc2d83]"
+                aria-label={isWishlisted(product.id) ? 'Remove from wishlist' : 'Save to wishlist'}
+              >
+                <span className={isWishlisted(product.id) ? 'text-[#dc2d83]' : 'text-[#c7aeb9]'}>
+                  {isWishlisted(product.id) ? '\u2665' : '\u2661'}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

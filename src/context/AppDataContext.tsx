@@ -29,6 +29,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
   )
   const [user, setUser] = useState<User | null>(storedUser)
   const [authLoading, setAuthLoading] = useState(() => Boolean(token))
+  const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set())
 
   async function refreshCatalog() {
     setCatalogLoading(true)
@@ -84,6 +85,33 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       .finally(() => setAuthLoading(false))
   }, [token])
 
+  useEffect(() => {
+    if (!token) {
+      setWishlistIds(new Set())
+      return
+    }
+    api
+      .wishlistIds(token)
+      .then((ids) => setWishlistIds(new Set(ids)))
+      .catch(() => setWishlistIds(new Set()))
+  }, [token])
+
+  async function toggleWishlist(productId: string) {
+    if (!token) throw new Error('Sign in to save items to your wishlist.')
+    const isSaved = wishlistIds.has(productId)
+    if (isSaved) {
+      await api.removeFromWishlist(token, productId)
+      setWishlistIds((current) => {
+        const next = new Set(current)
+        next.delete(productId)
+        return next
+      })
+    } else {
+      await api.addToWishlist(token, productId)
+      setWishlistIds((current) => new Set(current).add(productId))
+    }
+  }
+
   function saveSession(nextUser: User, nextToken: string) {
     sessionStorage.setItem(tokenStorageKey, nextToken)
     sessionStorage.setItem(userStorageKey, JSON.stringify(nextUser))
@@ -138,6 +166,8 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     user,
     token,
     authLoading,
+    wishlistIds,
+    toggleWishlist,
     login,
     register,
     updateProfile,

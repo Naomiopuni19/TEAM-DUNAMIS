@@ -100,6 +100,17 @@ export type AdminSettings = {
   updatedAt?: string
 }
 
+export type WishlistItem = {
+  id: string
+  name: string
+  description: string
+  price: number
+  stockQty: number
+  category: string
+  images: string[]
+  addedAt: string
+}
+
 export type ProductVariant = {
   id: string
   productId: string
@@ -541,6 +552,22 @@ export const api = {
       token,
       body: JSON.stringify({ status }),
     })
+  },
+  wishlist(token: string) {
+    return request<WishlistItem[]>('/wishlist', { token })
+  },
+  wishlistIds(token: string) {
+    return request<string[]>('/wishlist/ids', { token })
+  },
+  addToWishlist(token: string, productId: string) {
+    return request<{ ok: boolean }>('/wishlist', {
+      method: 'POST',
+      token,
+      body: JSON.stringify({ productId }),
+    })
+  },
+  removeFromWishlist(token: string, productId: string) {
+    return request<null>('/wishlist/' + productId, { method: 'DELETE', token })
   },
   productVariants(productId: string) {
     return request<ProductVariant[]>('/product-variants/' + productId)

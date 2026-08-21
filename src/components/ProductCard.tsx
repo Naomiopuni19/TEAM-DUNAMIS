@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { productImage, type Product } from '../data/catalog'
 import { api, type ProductVariant } from '../lib/api'
+import { useAppData } from '../context/appData'
 
 type ProductCardProps = {
   product: Product
@@ -8,6 +9,22 @@ type ProductCardProps = {
 }
 
 export function ProductCard({ product, onAdd }: ProductCardProps) {
+  const { wishlistIds, toggleWishlist } = useAppData()
+  const isWishlisted = wishlistIds.has(product.id)
+  const [wishlistBusy, setWishlistBusy] = useState(false)
+
+  async function handleWishlistToggle(event) {
+    event.preventDefault()
+    setWishlistBusy(true)
+    try {
+      await toggleWishlist(product.id)
+    } catch {
+      // silently ignore, most likely not signed in
+    } finally {
+      setWishlistBusy(false)
+    }
+  }
+
   const [variants, setVariants] = useState<ProductVariant[]>([])
   const [selectedOption1, setSelectedOption1] = useState<string | null>(null)
   const [selectedOption2, setSelectedOption2] = useState<string | null>(null)
@@ -154,6 +171,18 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
             Out of stock
           </span>
         )}
+
+        <button
+          type="button"
+          onClick={handleWishlistToggle}
+          disabled={wishlistBusy}
+          aria-label={isWishlisted ? 'Remove from wishlist' : 'Save to wishlist'}
+          className="absolute right-2.5 top-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-lg shadow-sm transition hover:scale-105 sm:right-4 sm:top-4"
+        >
+          <span className={isWishlisted ? 'text-[#dc2d83]' : 'text-[#c7aeb9]'}>
+            {isWishlisted ? '\u2665' : '\u2661'}
+          </span>
+        </button>
       </div>
 
       {/* PRODUCT DETAILS */}
@@ -321,7 +350,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
               sm:text-xl
             "
           >
-            GHâ‚µ{displayPrice.toLocaleString()}
+            GHÃ¢â€šÂµ{displayPrice.toLocaleString()}
           </p>
 
           <button

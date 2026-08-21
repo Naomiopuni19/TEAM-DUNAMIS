@@ -6,21 +6,26 @@ import {
   type CustomerOrder,
   type ReviewableBooking,
   type ReviewableOrder,
+  type WishlistItem,
 } from '../lib/api'
+import { productImage } from '../data/catalog'
 import { ReviewMediaField } from '../components/ReviewMediaField'
 
 type AccountPageProps = {
   onRequireAuth: () => void
+  onAdd: (product: any) => void
 }
 
 const tabs = [
   ['profile', 'Profile'],
   ['bookings', 'Appointments'],
   ['orders', 'Orders'],
+  ['wishlist', 'Wishlist'],
   ['security', 'Security'],
 ]
 
 export function AccountPage(props) {
+  const onAdd = props.onAdd
   const onRequireAuth = props.onRequireAuth
   const appData = useAppData()
   const authLoading = appData.authLoading
@@ -38,6 +43,8 @@ export function AccountPage(props) {
     }
   }
 
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([])
+  const [wishlistLoading, setWishlistLoading] = useState(false)
   const [bookings, setBookings] = useState<CustomerBooking[]>([])
   const [orders, setOrders] = useState<CustomerOrder[]>([])
   const [reviewableBookings, setReviewableBookings] = useState<ReviewableBooking[]>([])
@@ -78,6 +85,23 @@ export function AccountPage(props) {
   useEffect(function () {
     loadRecords()
   }, [token])
+
+  useEffect(function () {
+    if (!token || activeTab !== 'wishlist') return
+    setWishlistLoading(true)
+    api.wishlist(token)
+      .then(setWishlistItems)
+      .catch(function () {})
+      .finally(function () { setWishlistLoading(false) })
+  }, [token, activeTab])
+
+  async function removeWishlistItem(productId) {
+    if (!token) return
+    try {
+      await api.removeFromWishlist(token, productId)
+      setWishlistItems(function (items) { return items.filter(function (item) { return item.id !== productId }) })
+    } catch {}
+  }
 
   const [payingId, setPayingId] = useState('')
   const [payMessage, setPayMessage] = useState('')
@@ -398,6 +422,49 @@ export function AccountPage(props) {
                           </span>
                         </div>
                         <p className="mt-3 text-sm text-[#745f68]">{itemsText}</p>
+                      </article>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'wishlist' && (
+              <div>
+                <h2 className="font-serif text-3xl text-[#3e2530]">My wishlist</h2>
+                <div className="mt-7 grid gap-4 sm:grid-cols-2">
+                  {wishlistLoading && <p>Loading your wishlist...</p>}
+                  {!wishlistLoading && wishlistItems.length === 0 && (
+                    <p className="text-sm text-[#745f68] sm:col-span-2">
+                      Nothing saved yet, tap the heart on any product to save it here.
+                    </p>
+                  )}
+                  {!wishlistLoading && wishlistItems.map(function (item) {
+                    return (
+                      <article key={item.id} className="flex gap-4 rounded-2xl border border-[#eadbe1] p-4">
+                        <img src={productImage(item)} alt="" className="h-20 w-20 rounded-xl object-cover" />
+                        <div className="min-w-0 flex-1">
+                          <a href={'#/product?id=' + item.id} className="font-serif text-lg text-[#3e2530] hover:text-[#dc2d83]">
+                            {item.name}
+                          </a>
+                          <p className="mt-1 text-sm font-semibold text-[#b32269]">GHC {item.price.toLocaleString()}</p>
+                          <div className="mt-3 flex flex-wrap gap-3">
+                            <button
+                              type="button"
+                              onClick={function () { onAdd(item) }}
+                              className="rounded-full bg-[#dc2d83] px-4 py-2 text-xs font-bold uppercase text-white"
+                            >
+                              Add to bag
+                            </button>
+                            <button
+                              type="button"
+                              onClick={function () { removeWishlistItem(item.id) }}
+                              className="text-xs font-bold text-red-600"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
                       </article>
                     )
                   })}
