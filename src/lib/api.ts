@@ -109,6 +109,10 @@ export type ProductVariant = {
   imageUrl?: string
   sortOrder: number
   isActive?: boolean
+  option1Name?: string
+  option1Value?: string
+  option2Name?: string
+  option2Value?: string
 }
 
 export type GiftCard = {
@@ -235,6 +239,12 @@ export type Review = {
 export type ReviewableBooking = {
   bookingId: string
   serviceName: string
+  date: string
+}
+
+export type ReviewableOrder = {
+  orderId: string
+  productNames: string
   date: string
 }
 
@@ -365,12 +375,15 @@ export const api = {
   adminReviews(token: string) {
     return request<Review[]>('/reviews/admin', { token })
   },
+  myReviewable(token: string) {
+    return request<{ bookings: ReviewableBooking[]; orders: ReviewableOrder[] }>('/reviews/mine', { token })
+  },
   myReviewableBookings(token: string) {
     return request<ReviewableBooking[]>('/reviews/mine', { token })
   },
   createReview(
     token: string,
-    body: { bookingId: string; rating: number; comment?: string; mediaUrl?: string; mediaType?: 'photo' | 'video' },
+    body: { bookingId?: string; orderId?: string; rating: number; comment?: string; mediaUrl?: string; mediaType?: 'photo' | 'video' },
   ) {
     return request<{ review: Review }>('/reviews', {
       method: 'POST',
@@ -537,7 +550,18 @@ export const api = {
   },
   createProductVariant(
     token: string,
-    body: { productId: string; label: string; price: number; stockQty: number; imageUrl?: string; sortOrder?: number },
+    body: {
+      productId: string
+      label?: string
+      price: number
+      stockQty: number
+      imageUrl?: string
+      sortOrder?: number
+      option1Name?: string
+      option1Value?: string
+      option2Name?: string
+      option2Value?: string
+    },
   ) {
     return request<{ variant: ProductVariant }>('/product-variants', {
       method: 'POST',

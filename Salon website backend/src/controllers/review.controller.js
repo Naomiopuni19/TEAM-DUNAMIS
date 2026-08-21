@@ -4,12 +4,14 @@ import {
   listApprovedReviews,
   listAllReviews,
   listMyReviewableBookings,
+  listMyReviewableOrders,
   updateReviewStatus
 } from "../models/review.model.js";
 import { notFound } from "../utils/httpError.js";
 
 const createSchema = z.object({
-  bookingId: z.string().uuid(),
+  bookingId: z.string().uuid().optional(),
+  orderId: z.string().uuid().optional(),
   rating: z.number().int().min(1).max(5),
   comment: z.string().optional(),
   mediaUrl: z.string().optional(),
@@ -25,7 +27,9 @@ export async function adminIndex(_req, res) {
 }
 
 export async function mine(req, res) {
-  res.json(await listMyReviewableBookings(req.user.id));
+  const bookings = await listMyReviewableBookings(req.user.id);
+  const orders = await listMyReviewableOrders(req.user.id);
+  res.json({ bookings, orders });
 }
 
 export async function create(req, res) {

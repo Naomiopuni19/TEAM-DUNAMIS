@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { productImage, type Product } from '../data/catalog'
 import { api, type ProductVariant } from '../lib/api'
 
@@ -9,6 +9,8 @@ type ProductCardProps = {
 
 export function ProductCard({ product, onAdd }: ProductCardProps) {
   const [variants, setVariants] = useState<ProductVariant[]>([])
+  const [selectedOption1, setSelectedOption1] = useState<string | null>(null)
+  const [selectedOption2, setSelectedOption2] = useState<string | null>(null)
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null)
 
   useEffect(function () {
@@ -16,13 +18,61 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
     api.productVariants(product.id).then(function (data) {
       if (!cancelled) {
         setVariants(data)
-        if (data.length > 0) setSelectedVariant(data[0])
+        if (data.length > 0) {
+          const first = data[0]
+          setSelectedVariant(first)
+          setSelectedOption1(first.option1Value || null)
+          setSelectedOption2(first.option2Value || null)
+        }
       }
     })
     return function () {
       cancelled = true
     }
   }, [product.id])
+
+  const isStructured = variants.some(function (v) { return v.option1Name })
+
+  const option1Name = isStructured ? variants.find(function (v) { return v.option1Name })?.option1Name : null
+  const option2Name = isStructured ? variants.find(function (v) { return v.option2Name })?.option2Name : null
+
+  const option1Values = useMemo(function () {
+    if (!isStructured) return []
+    const seen = new Set<string>()
+    const values: string[] = []
+    variants.forEach(function (v) {
+      if (v.option1Value && !seen.has(v.option1Value)) {
+        seen.add(v.option1Value)
+        values.push(v.option1Value)
+      }
+    })
+    return values
+  }, [variants, isStructured])
+
+  const option2Values = useMemo(function () {
+    if (!isStructured || !option2Name) return []
+    const seen = new Set<string>()
+    const values: string[] = []
+    variants
+      .filter(function (v) { return !selectedOption1 || v.option1Value === selectedOption1 })
+      .forEach(function (v) {
+        if (v.option2Value && !seen.has(v.option2Value)) {
+          seen.add(v.option2Value)
+          values.push(v.option2Value)
+        }
+      })
+    return values
+  }, [variants, isStructured, option2Name, selectedOption1])
+
+  useEffect(function () {
+    if (!isStructured) return
+    const match = variants.find(function (v) {
+      const matchesOption1 = !selectedOption1 || v.option1Value === selectedOption1
+      const matchesOption2 = !option2Name || !selectedOption2 || v.option2Value === selectedOption2
+      return matchesOption1 && matchesOption2
+    })
+    setSelectedVariant(match || null)
+  }, [selectedOption1, selectedOption2, variants, isStructured, option2Name])
 
   const displayPrice = selectedVariant ? selectedVariant.price : product.price
   const canAdd = variants.length === 0 ? product.inStock : Boolean(selectedVariant && selectedVariant.stockQty > 0)
@@ -131,31 +181,33 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
           {product.category}
         </p>
 
-        <h3
-          className="
-            mt-1.5
-            font-serif
-            text-base
-            leading-tight
-            text-[#3e2530]
-            sm:mt-2
-            sm:text-xl
-            lg:text-2xl
-          "
-        >
-          {product.name}
-        </h3>
+        <a href={'#/product?id=' + product.id}>
+          <h3
+            className="
+              mt-1.5
+              font-serif
+              text-base
+              leading-tight
+              text-[#3e2530]
+              transition
+              hover:text-[#dc2d83]
+              sm:mt-2
+              sm:text-xl
+              lg:text-2xl
+            "
+          >
+            {product.name}
+          </h3>
+        </a>
 
         <p
           className="
             mt-2
-            hidden
             line-clamp-2
             text-[10px]
             leading-4
             text-[#745f68]
             sm:mt-3
-            sm:block
             sm:text-sm
             sm:leading-6
           "
@@ -163,28 +215,86 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
           {product.description}
         </p>
 
-        {variants.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {variants.map(function (variant) {
-              const active = selectedVariant?.id === variant.id
-              return (
-                <button
-                  key={variant.id}
-                  type="button"
-                  disabled={variant.stockQty <= 0}
-                  onClick={function () { setSelectedVariant(variant) }}
-                  className={
-                    'rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.08em] transition disabled:cursor-not-allowed disabled:opacity-40 ' +
-                    (active
-                      ? 'border-[#dc2d83] bg-[#fbe0eb] text-[#a51e61]'
-                      : 'border-[#e4bdce] bg-white text-[#745f68]')
-                  }
-                >
-                  {variant.label}
-                </button>
-              )
-            })}
-          </div>
+        {isStructured ? (
+          <>
+            {option1Values.length > 0 && (
+              <div className="mt-3">
+                <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-[#a08a94]">{option1Name}</p>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {option1Values.map(function (value) {
+                    const active = selectedOption1 === value
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={function () {
+                          setSelectedOption1(value)
+                          setSelectedOption2(null)
+                        }}
+                        className={
+                          'rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.08em] transition ' +
+                          (active
+                            ? 'border-[#dc2d83] bg-[#fbe0eb] text-[#a51e61]'
+                            : 'border-[#e4bdce] bg-white text-[#745f68]')
+                        }
+                      >
+                        {value}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+            {option2Values.length > 0 && (
+              <div className="mt-2.5">
+                <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-[#a08a94]">{option2Name}</p>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {option2Values.map(function (value) {
+                    const active = selectedOption2 === value
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={function () { setSelectedOption2(value) }}
+                        className={
+                          'rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.08em] transition ' +
+                          (active
+                            ? 'border-[#dc2d83] bg-[#fbe0eb] text-[#a51e61]'
+                            : 'border-[#e4bdce] bg-white text-[#745f68]')
+                        }
+                      >
+                        {value}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          variants.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {variants.map(function (variant) {
+                const active = selectedVariant?.id === variant.id
+                return (
+                  <button
+                    key={variant.id}
+                    type="button"
+                    disabled={variant.stockQty <= 0}
+                    onClick={function () { setSelectedVariant(variant) }}
+                    className={
+                      'rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.08em] transition disabled:cursor-not-allowed disabled:opacity-40 ' +
+                      (active
+                        ? 'border-[#dc2d83] bg-[#fbe0eb] text-[#a51e61]'
+                        : 'border-[#e4bdce] bg-white text-[#745f68]')
+                    }
+                  >
+                    {variant.label}
+                  </button>
+                )
+              })}
+            </div>
+          )
         )}
 
         <div
@@ -211,7 +321,7 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
               sm:text-xl
             "
           >
-            GH&#8373;{displayPrice.toLocaleString()}
+            GHâ‚µ{displayPrice.toLocaleString()}
           </p>
 
           <button

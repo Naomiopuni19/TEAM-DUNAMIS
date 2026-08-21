@@ -6,7 +6,9 @@ import {
   updateOrderStatus
 } from "../models/order.model.js";
 import { getOrderDetailsForEmail } from "../models/payment.model.js";
-import { sendOrderStatusUpdate } from "../utils/email.js";
+import { getSettings } from "../models/admin.model.js";
+import { query } from "../config/db.js";
+import { sendLowStockAlert, sendOrderStatusUpdate } from "../utils/email.js";
 import { notFound } from "../utils/httpError.js";
 
 const orderSchema = z.object({
@@ -32,7 +34,37 @@ const orderSchema = z.object({
 export async function create(req, res) {
   const body = orderSchema.parse(req.body);
   const result = await createOrder(req.user.id, body.items, body.delivery, body.giftCardCode);
+
+  checkLowStock(result.items).catch(() => {});
+
   res.status(201).json(result);
+}
+
+async function checkLowStock(items) {
+  const settings = await getSettings();
+  if (!settings?.notifications?.lowStock) return;
+
+  for (const item of items) {
+    if (item.variantId) {
+      const result = await query(
+        "select label, stock_qty from product_variants where id = $1",
+        [item.variantId]
+      );
+      const variant = result.rows[0];
+      if (variant && variant.stock_qty <= 5) {
+        sendLowStockAlert(variant.label, variant.stock_qty);
+      }
+    } else {
+      const result = await query(
+        "select name, stock_qty from products where id = $1",
+        [item.productId]
+      );
+      const product = result.rows[0];
+      if (product && product.stock_qty <= 5) {
+        sendLowStockAlert(product.name, product.stock_qty);
+      }
+    }
+  }
 }
 
 export async function mine(req, res) {

@@ -166,6 +166,19 @@ export function sendGiftCardEmail(giftCard) {
   });
 }
 
+export function sendLowStockAlert(itemName, remaining) {
+  if (!env.adminEmail) return;
+  return sendEmail({
+    to: env.adminEmail,
+    subject: "Low stock warning: " + itemName,
+    html: `
+      <h2>Running low on stock</h2>
+      <p><strong>${itemName}</strong> now has only <strong>${remaining}</strong> left.</p>
+      <p>Consider restocking soon.</p>
+    `,
+  });
+}
+
 export function sendBookingReminder(booking) {
   if (!booking.customerEmail) return;
   return sendEmail({

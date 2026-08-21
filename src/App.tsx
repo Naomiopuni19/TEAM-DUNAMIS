@@ -14,6 +14,7 @@ import { HomePage } from './pages/HomePage'
 import { FaqPage } from './pages/FaqPage'
 import { GiftCardPage } from './pages/GiftCardPage'
 import { PaymentCompletePage } from './pages/PaymentCompletePage'
+import { ProductDetailPage } from './pages/ProductDetailPage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { ServicesPage } from './pages/ServicesPage'
 import { ShopPage } from './pages/ShopPage'
@@ -60,6 +61,9 @@ function App() {
       break
     case 'shop':
       page = <ShopPage onAdd={addToCart} />
+      break
+    case 'product':
+      page = <ProductDetailPage onAdd={addToCart} />
       break
     case 'appointments':
       page = <BookingPage onRequireAuth={() => setAuthOpen(true)} onAdd={addToCart} />

@@ -591,7 +591,7 @@ function HeroBanner() {
             <Stars className="flex gap-0.5 text-[10px] text-[#f5c56e] sm:text-sm" />
 
             <span className="text-[9px] font-semibold text-white drop-shadow sm:text-sm">
-              4.9 · 2,400+
+              4.9 Â· 2,400+
             </span>
           </div>
         </div>
@@ -1442,10 +1442,12 @@ export function HomePage(props: HomePageProps) {
                   <Reveal
                     key={product.id}
                     delay={productIndex * 70}
+                    className="h-full"
                   >
                     <div
                       className="
                         mx-auto
+                        h-full
                         w-full
                         max-w-[150px]
                         sm:max-w-[230px]

@@ -10,11 +10,15 @@ import { notFound } from "../utils/httpError.js";
 
 const createSchema = z.object({
   productId: z.string().uuid(),
-  label: z.string().min(1),
+  label: z.string().min(1).optional(),
   price: z.number().nonnegative(),
   stockQty: z.number().int().nonnegative(),
   imageUrl: z.string().optional(),
-  sortOrder: z.number().int().optional()
+  sortOrder: z.number().int().optional(),
+  option1Name: z.string().optional(),
+  option1Value: z.string().optional(),
+  option2Name: z.string().optional(),
+  option2Value: z.string().optional()
 });
 
 const updateSchema = z.object({
@@ -23,7 +27,11 @@ const updateSchema = z.object({
   stockQty: z.number().int().nonnegative().optional(),
   imageUrl: z.string().optional(),
   sortOrder: z.number().int().optional(),
-  isActive: z.boolean().optional()
+  isActive: z.boolean().optional(),
+  option1Name: z.string().optional(),
+  option1Value: z.string().optional(),
+  option2Name: z.string().optional(),
+  option2Value: z.string().optional()
 });
 
 export async function index(req, res) {

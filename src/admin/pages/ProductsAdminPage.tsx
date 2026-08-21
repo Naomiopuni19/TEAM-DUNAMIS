@@ -57,7 +57,10 @@ export function ProductsAdminPage() {
 
   function updateVariantForm(productId: string, field: string, value: string) {
     setVariantForms((current) => {
-      const existing = current[productId] || { label: '', price: '', stockQty: '', imageUrl: '' }
+      const existing = current[productId] || {
+        label: '', price: '', stockQty: '', imageUrl: '',
+        option1Name: '', option1Value: '', option2Name: '', option2Value: '',
+      }
       return { ...current, [productId]: { ...existing, [field]: value } }
     })
   }
@@ -65,18 +68,22 @@ export function ProductsAdminPage() {
   async function addVariant(productId: string) {
     if (!token) return
     const draft = variantForms[productId]
-    if (!draft || !draft.label || !draft.price || draft.stockQty === '' || draft.stockQty === undefined) {
-      setMessage('Fill in a label, price and stock quantity before adding a variant.')
+    if (!draft || (!draft.label && !draft.option1Value) || !draft.price || draft.stockQty === '' || draft.stockQty === undefined) {
+      setMessage('Fill in a price, stock quantity, and either a label or at least one option before adding a variant.')
       return
     }
     try {
       await api.createProductVariant(token, {
         productId,
-        label: draft.label,
+        label: draft.label || undefined,
         price: Number(draft.price),
         stockQty: Number(draft.stockQty),
         imageUrl: draft.imageUrl || undefined,
         sortOrder: 0,
+        option1Name: draft.option1Name || undefined,
+        option1Value: draft.option1Value || undefined,
+        option2Name: draft.option2Name || undefined,
+        option2Value: draft.option2Value || undefined,
       })
       setVariantForms((current) => {
         const next = { ...current }
@@ -152,18 +159,56 @@ export function ProductsAdminPage() {
                         <div key={variant.id} className="flex items-center justify-between gap-3 border-b border-[#f0dfe6] py-2 text-sm last:border-0">
                           <span className="flex items-center gap-3">
                             {variant.imageUrl && <img src={variant.imageUrl} alt="" className="h-10 w-10 rounded-lg object-cover" />}
-                            {variant.label}: GHC {variant.price}, {variant.stockQty} in stock
+                            {variant.label}
+                            {variant.option1Name && <span className="text-xs text-[#a08a94]"> ({variant.option1Name}: {variant.option1Value}{variant.option2Name ? ', ' + variant.option2Name + ': ' + variant.option2Value : ''})</span>}
+                            : GHC {variant.price}, {variant.stockQty} in stock
                           </span>
                           <button onClick={() => removeVariant(product.id, variant.id)} className="text-xs font-bold text-red-600">
                             Remove
                           </button>
                         </div>
                       ))}
+                      <div className="mt-3 rounded-xl bg-white p-3">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#a08a94]">
+                          First choice, e.g. Scent, optional
+                        </p>
+                        <div className="mt-1.5 grid gap-2 sm:grid-cols-2">
+                          <input
+                            value={draft.option1Name}
+                            onChange={(e) => updateVariantForm(product.id, 'option1Name', e.target.value)}
+                            placeholder="Choice name, e.g. Scent"
+                            className={fieldClass}
+                          />
+                          <input
+                            value={draft.option1Value}
+                            onChange={(e) => updateVariantForm(product.id, 'option1Value', e.target.value)}
+                            placeholder="Value, e.g. Vanilla"
+                            className={fieldClass}
+                          />
+                        </div>
+                        <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.1em] text-[#a08a94]">
+                          Second choice, e.g. Size, optional
+                        </p>
+                        <div className="mt-1.5 grid gap-2 sm:grid-cols-2">
+                          <input
+                            value={draft.option2Name}
+                            onChange={(e) => updateVariantForm(product.id, 'option2Name', e.target.value)}
+                            placeholder="Choice name, e.g. Size"
+                            className={fieldClass}
+                          />
+                          <input
+                            value={draft.option2Value}
+                            onChange={(e) => updateVariantForm(product.id, 'option2Value', e.target.value)}
+                            placeholder="Value, e.g. 50ml"
+                            className={fieldClass}
+                          />
+                        </div>
+                      </div>
                       <div className="mt-3 grid gap-2 sm:grid-cols-4">
                         <input
                           value={draft.label}
                           onChange={(e) => updateVariantForm(product.id, 'label', e.target.value)}
-                          placeholder="e.g. Black, 20 inch"
+                          placeholder="Label, only if not using choices above"
                           className={fieldClass}
                         />
                         <input

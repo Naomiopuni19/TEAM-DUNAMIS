@@ -5,6 +5,7 @@ import {
   type CustomerBooking,
   type CustomerOrder,
   type ReviewableBooking,
+  type ReviewableOrder,
 } from '../lib/api'
 import { ReviewMediaField } from '../components/ReviewMediaField'
 
@@ -39,13 +40,16 @@ export function AccountPage(props) {
 
   const [bookings, setBookings] = useState<CustomerBooking[]>([])
   const [orders, setOrders] = useState<CustomerOrder[]>([])
-  const [reviewable, setReviewable] = useState<ReviewableBooking[]>([])
+  const [reviewableBookings, setReviewableBookings] = useState<ReviewableBooking[]>([])
+  const [reviewableOrders, setReviewableOrders] = useState<ReviewableOrder[]>([])
   const [recordsLoading, setRecordsLoading] = useState(Boolean(token))
   const [recordsError, setRecordsError] = useState('')
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
 
   const [reviewingId, setReviewingId] = useState('')
+  const [reviewingType, setReviewingType] = useState<'booking' | 'order'>('booking')
+  const [reviewingLabel, setReviewingLabel] = useState('')
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState('')
   const [mediaUrl, setMediaUrl] = useState('')
@@ -56,11 +60,12 @@ export function AccountPage(props) {
   function loadRecords() {
     if (!token) return
     setRecordsLoading(true)
-    Promise.all([api.myBookings(token), api.myOrders(token), api.myReviewableBookings(token)])
+    Promise.all([api.myBookings(token), api.myOrders(token), api.myReviewable(token)])
       .then(function (results) {
         setBookings(results[0])
         setOrders(results[1])
-        setReviewable(results[2])
+        setReviewableBookings(results[2].bookings)
+        setReviewableOrders(results[2].orders)
       })
       .catch(function (err) {
         setRecordsError(err instanceof Error ? err.message : 'Unable to load your account.')
@@ -94,8 +99,10 @@ export function AccountPage(props) {
     }
   }
 
-  function openReview(bookingId) {
-    setReviewingId(bookingId)
+  function openReview(id, type, label) {
+    setReviewingId(id)
+    setReviewingType(type)
+    setReviewingLabel(label)
     setRating(5)
     setComment('')
     setMediaUrl('')
@@ -109,7 +116,8 @@ export function AccountPage(props) {
     setReviewMessage('')
     try {
       await api.createReview(token, {
-        bookingId: reviewingId,
+        bookingId: reviewingType === 'booking' ? reviewingId : undefined,
+        orderId: reviewingType === 'order' ? reviewingId : undefined,
         rating: rating,
         comment: comment.trim() || undefined,
         mediaUrl: mediaUrl || undefined,
@@ -160,6 +168,47 @@ export function AccountPage(props) {
     } finally {
       setBusy(false)
     }
+  }
+
+  function ReviewForm() {
+    return (
+      <div className="mt-5 rounded-2xl border border-[#ead4de] bg-white p-5">
+        <p className="font-serif text-xl text-[#3e2530]">Share your experience with {reviewingLabel}</p>
+        <div className="mt-4 flex gap-1">
+          {[1, 2, 3, 4, 5].map(function (n) {
+            const starClass = n <= rating ? 'text-[#dc2d83]' : 'text-[#e6d3da]'
+            return (
+              <button key={n} type="button" onClick={function () { setRating(n) }} className={starClass}>
+                star
+              </button>
+            )
+          })}
+        </div>
+        <textarea
+          value={comment}
+          onChange={function (e) { setComment(e.target.value) }}
+          placeholder="Tell us how it went"
+          className="mt-4 h-24 w-full rounded-xl border border-[#dfbdcb] p-3 text-sm outline-none focus:border-[#dc2d83]"
+        />
+        <div className="mt-4">
+          <ReviewMediaField
+            onChange={function (url, type) {
+              setMediaUrl(url)
+              setMediaType(type)
+            }}
+          />
+        </div>
+        {reviewMessage && <p className="mt-3 text-xs text-[#b32269]">{reviewMessage}</p>}
+        <div className="mt-5 flex gap-3">
+          <button type="button" onClick={function () { submitReview() }} disabled={reviewSubmitting} className="rounded-full bg-[#dc2d83] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50">
+            {reviewSubmitting ? 'Submitting...' : 'Submit review'}
+          </button>
+          <button type="button" onClick={function () { setReviewingId('') }} className="text-sm text-[#745f68]">
+            Cancel
+          </button>
+        </div>
+      </div>
+    )
   }
 
   if (authLoading) {
@@ -237,15 +286,15 @@ export function AccountPage(props) {
               <div>
                 <h2 className="font-serif text-3xl text-[#3e2530]">My appointments</h2>
 
-                {reviewable.length > 0 && (
+                {reviewableBookings.length > 0 && (
                   <div className="mt-7 rounded-2xl border border-dashed border-[#dc2d83] bg-[#fff7fa] p-5">
                     <p className="text-sm font-semibold text-[#3e2530]">
-                      You have {reviewable.length} completed appointment(s) you can review
+                      You have {reviewableBookings.length} completed appointment(s) you can review
                     </p>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {reviewable.map(function (item) {
+                      {reviewableBookings.map(function (item) {
                         return (
-                          <button key={item.bookingId} type="button" onClick={function () { openReview(item.bookingId) }} className="rounded-full bg-[#dc2d83] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-white">
+                          <button key={item.bookingId} type="button" onClick={function () { openReview(item.bookingId, 'booking', item.serviceName) }} className="rounded-full bg-[#dc2d83] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-white">
                             Review {item.serviceName}
                           </button>
                         )
@@ -254,44 +303,7 @@ export function AccountPage(props) {
                   </div>
                 )}
 
-                {reviewingId && (
-                  <div className="mt-5 rounded-2xl border border-[#ead4de] bg-white p-5">
-                    <p className="font-serif text-xl text-[#3e2530]">Share your experience</p>
-                    <div className="mt-4 flex gap-1">
-                      {[1, 2, 3, 4, 5].map(function (n) {
-                        const starClass = n <= rating ? 'text-[#dc2d83]' : 'text-[#e6d3da]'
-                        return (
-                          <button key={n} type="button" onClick={function () { setRating(n) }} className={starClass}>
-                            star
-                          </button>
-                        )
-                      })}
-                    </div>
-                    <textarea
-                      value={comment}
-                      onChange={function (e) { setComment(e.target.value) }}
-                      placeholder="Tell us how it went"
-                      className="mt-4 h-24 w-full rounded-xl border border-[#dfbdcb] p-3 text-sm outline-none focus:border-[#dc2d83]"
-                    />
-                    <div className="mt-4">
-                      <ReviewMediaField
-                        onChange={function (url, type) {
-                          setMediaUrl(url)
-                          setMediaType(type)
-                        }}
-                      />
-                    </div>
-                    {reviewMessage && <p className="mt-3 text-xs text-[#b32269]">{reviewMessage}</p>}
-                    <div className="mt-5 flex gap-3">
-                      <button type="button" onClick={function () { submitReview() }} disabled={reviewSubmitting} className="rounded-full bg-[#dc2d83] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50">
-                        {reviewSubmitting ? 'Submitting...' : 'Submit review'}
-                      </button>
-                      <button type="button" onClick={function () { setReviewingId('') }} className="text-sm text-[#745f68]">
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
+                {reviewingId && reviewingType === 'booking' && <ReviewForm />}
 
                 <div className="mt-7 space-y-4">
                   {recordsLoading && <p>Loading appointments...</p>}
@@ -343,6 +355,26 @@ export function AccountPage(props) {
             {activeTab === 'orders' && (
               <div>
                 <h2 className="font-serif text-3xl text-[#3e2530]">My orders</h2>
+
+                {reviewableOrders.length > 0 && (
+                  <div className="mt-7 rounded-2xl border border-dashed border-[#dc2d83] bg-[#fff7fa] p-5">
+                    <p className="text-sm font-semibold text-[#3e2530]">
+                      You have {reviewableOrders.length} delivered order(s) you can review
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {reviewableOrders.map(function (item) {
+                        return (
+                          <button key={item.orderId} type="button" onClick={function () { openReview(item.orderId, 'order', item.productNames) }} className="rounded-full bg-[#dc2d83] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-white">
+                            Review {item.productNames}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {reviewingId && reviewingType === 'order' && <ReviewForm />}
+
                 <div className="mt-7 space-y-4">
                   {recordsLoading && <p>Loading orders...</p>}
                   {!recordsLoading && orders.length === 0 && <p className="text-sm text-[#745f68]">You have no orders yet.</p>}
