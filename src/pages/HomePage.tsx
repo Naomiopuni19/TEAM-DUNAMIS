@@ -76,8 +76,8 @@ const faqs = [
     a: 'Yes. Every bundle, closure and frontal we sell is virgin human hair that can be bleached, coloured and heat styled.',
   },
   {
-    q: 'Do you ship outside Ghana?',
-    a: 'We ship worldwide. Delivery within Kumasi and Accra is 1 to 3 days, international orders arrive in 5 to 10 working days.',
+    q: 'Where do you deliver?',
+    a: 'We deliver nationwide across Ghana. Orders within Kumasi and Accra arrive in 1 to 3 days, and other regions typically take 3 to 5 working days.',
   },
   {
     q: 'Can I bring my own hair to an appointment?',
