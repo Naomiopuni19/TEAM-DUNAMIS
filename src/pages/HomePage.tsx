@@ -1440,7 +1440,7 @@ export function HomePage(props: HomePageProps) {
               grid-cols-2
               gap-2.5
               sm:mt-10
-              sm:grid-cols-2
+              sm:grid-cols-3
               sm:gap-5
               lg:grid-cols-3
               lg:gap-6
