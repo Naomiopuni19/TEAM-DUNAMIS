@@ -122,7 +122,7 @@ export function StaffLoginPage() {
               disabled={busy}
               className="min-h-14 w-full rounded-full bg-[#d92c83] px-6 py-3 text-xs font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#b92068] disabled:opacity-60"
             >
-              {busy ? 'Signing inÃ¢â‚¬Â¦' : 'Sign in securely'}
+              {busy ? 'Signing in...' : 'Sign in securely'}
             </button>
           </form>
 

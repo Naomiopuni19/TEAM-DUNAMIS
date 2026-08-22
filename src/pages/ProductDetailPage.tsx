@@ -134,7 +134,7 @@ export function ProductDetailPage({ onAdd }: ProductDetailPageProps) {
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#d92c83]">{product.category}</p>
             <h1 className="mt-3 font-serif text-4xl text-[#3e2530]">{product.name}</h1>
             <p className="mt-5 font-serif text-3xl font-semibold text-[#3e2530]">
-              GHâ‚µ{displayPrice.toLocaleString()}
+              GH&#8373;{displayPrice.toLocaleString()}
             </p>
             <p className="mt-5 text-sm leading-7 text-[#745f68]">{product.description}</p>
 

@@ -32,7 +32,7 @@ const featureStrip = [
     copy: 'Book your appointment online in minutes.',
   },
   {
-    title: 'Worldwide Shipping',
+    title: 'Nationwide Shipping',
     copy: 'Fast, secure delivery to your door.',
   },
   {
@@ -1472,7 +1472,7 @@ export function HomePage(props: HomePageProps) {
                         mx-auto
                         h-full
                         w-full
-                        max-w-[150px]
+                        max-w-none
                         sm:max-w-[230px]
                         lg:max-w-[300px]
                       "

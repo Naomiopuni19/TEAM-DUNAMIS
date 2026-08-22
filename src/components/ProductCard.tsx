@@ -406,31 +406,7 @@ export function ProductCard({
 
   return (
     <article
-      className="
-        group
-        flex
-        h-full
-        min-w-0
-        flex-col
-        overflow-hidden
-
-        rounded-[18px]
-
-        border
-        border-[#ead7df]
-
-        bg-white
-
-        shadow-[0_7px_28px_rgba(75,35,52,0.055)]
-
-        transition-all
-        duration-500
-
-        sm:rounded-[22px]
-
-        lg:hover:-translate-y-1
-        lg:hover:shadow-[0_20px_50px_rgba(75,35,52,0.11)]
-      "
+      className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_6px_24px_rgba(87,43,61,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_14px_40px_rgba(87,43,61,0.14)]"
     >
 
       {/* ==================================================
@@ -603,9 +579,7 @@ export function ProductCard({
               }
             `}
           >
-            {isWishlisted
-              ? '♥'
-              : '♡'}
+            {isWishlisted ? '\u2665' : '\u2661'}
           </span>
         </button>
       </div>
@@ -656,27 +630,7 @@ export function ProductCard({
           "
         >
           <h3
-            className="
-              mt-1
-
-              line-clamp-2
-
-              font-serif
-
-              text-[15px]
-              leading-[1.12]
-
-              text-[#3e2530]
-
-              transition-colors
-
-              sm:mt-2
-              sm:text-[21px]
-
-              lg:text-[25px]
-
-              lg:hover:text-[#d92c83]
-            "
+            className="mt-1 line-clamp-2 font-serif text-[15px] leading-snug text-[#3e2530] transition hover:text-[#dc2d83] sm:text-lg"
           >
             {product.name}
           </h3>
@@ -727,20 +681,9 @@ export function ProductCard({
 
             {option1Values.length >
               0 && (
-              <div className="min-w-0">
+              <div className="mt-auto flex items-center justify-between gap-2 pt-3">
                 <p
-                  className="
-                    mb-1.5
-
-                    text-[6px]
-                    font-bold
-                    uppercase
-                    tracking-[0.12em]
-
-                    text-[#a08a94]
-
-                    sm:text-[8px]
-                  "
+                  className="font-serif text-[15px] font-semibold text-[#3e2530] sm:text-lg"
                 >
                   {option1Name}
                 </p>
@@ -791,20 +734,9 @@ export function ProductCard({
 
             {option2Values.length >
               0 && (
-              <div className="min-w-0">
+              <div className="mt-auto flex items-center justify-between gap-2 pt-3">
                 <p
-                  className="
-                    mb-1.5
-
-                    text-[6px]
-                    font-bold
-                    uppercase
-                    tracking-[0.12em]
-
-                    text-[#a08a94]
-
-                    sm:text-[8px]
-                  "
+                  className="font-serif text-[15px] font-semibold text-[#3e2530] sm:text-lg"
                 >
                   {option2Name}
                 </p>
@@ -933,7 +865,7 @@ export function ProductCard({
               lg:text-[22px]
             "
           >
-            GH₵
+            GH&#8373;
             {displayPrice.toLocaleString()}
           </p>
 
