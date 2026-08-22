@@ -1247,7 +1247,7 @@ export function HomePage(props: HomePageProps) {
             copy="Bundles, closures, frontals and everything you need for a flawless install."
           />
 
-          <div className="mt-8 grid grid-cols-2 gap-2.5 sm:mt-12 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+          <div className="mt-8 grid grid-cols-2 gap-2.5 sm:mt-12 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
             {categoryTiles.map(function (category, categoryIndex) {
               return (
                 <Reveal
@@ -1441,7 +1441,7 @@ export function HomePage(props: HomePageProps) {
               gap-2.5
               sm:mt-10
               sm:grid-cols-3
-              sm:gap-5
+              sm:gap-3
               lg:grid-cols-3
               lg:gap-6
             "
@@ -1472,9 +1472,6 @@ export function HomePage(props: HomePageProps) {
                         mx-auto
                         h-full
                         w-full
-                        max-w-none
-                        sm:max-w-[230px]
-                        lg:max-w-[300px]
                       "
                     >
                       <ProductCard
