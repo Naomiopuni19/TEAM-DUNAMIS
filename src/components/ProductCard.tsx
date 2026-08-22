@@ -681,7 +681,7 @@ export function ProductCard({
 
             {option1Values.length >
               0 && (
-              <div className="mt-auto flex items-center justify-between gap-2 pt-3">
+              <div className="mt-3">
                 <p
                   className="font-serif text-[15px] font-semibold text-[#3e2530] sm:text-lg"
                 >
@@ -734,7 +734,7 @@ export function ProductCard({
 
             {option2Values.length >
               0 && (
-              <div className="mt-auto flex items-center justify-between gap-2 pt-3">
+              <div className="mt-3">
                 <p
                   className="font-serif text-[15px] font-semibold text-[#3e2530] sm:text-lg"
                 >
@@ -830,21 +830,7 @@ export function ProductCard({
             PRICE + ADD TO BAG
             ================================================= */}
 
-        <div
-          className="
-            mt-auto
-
-            flex
-            items-center
-            justify-between
-
-            gap-2
-
-            pt-5
-
-            sm:gap-3
-            sm:pt-6
-          "
+        <div className="mt-3 flex items-center justify-between gap-2 sm:gap-3"
         >
           {/* PRICE */}
 
@@ -875,45 +861,7 @@ export function ProductCard({
             type="button"
             onClick={handleAdd}
             disabled={!canAdd}
-            className="
-              min-w-0
-              shrink
-
-              rounded-full
-
-              bg-[#d92c83]
-
-              px-2.5
-              py-2
-
-              text-[6.5px]
-              font-bold
-              uppercase
-              tracking-[0.10em]
-
-              text-white
-
-              shadow-[0_5px_14px_rgba(217,44,131,0.12)]
-
-              transition-all
-              duration-200
-
-              active:scale-[0.96]
-
-              disabled:cursor-not-allowed
-              disabled:bg-[#c7aeb9]
-              disabled:shadow-none
-
-              sm:px-5
-              sm:py-3
-              sm:text-[8px]
-
-              lg:px-6
-              lg:text-[9px]
-
-              lg:hover:bg-[#b92068]
-              lg:hover:shadow-[0_7px_18px_rgba(217,44,131,0.20)]
-            "
+            className="shrink-0 whitespace-nowrap rounded-full bg-[#dc2d83] px-4 py-2 text-[9px] font-bold uppercase tracking-[0.08em] text-white transition hover:bg-[#b92068] disabled:cursor-not-allowed disabled:bg-[#c7aeb9] sm:px-5 sm:py-2.5 sm:text-[10px]"
           >
             {canAdd
               ? 'Add to bag'
