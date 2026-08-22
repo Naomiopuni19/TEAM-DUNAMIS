@@ -23,7 +23,7 @@ type ProductCardProps = {
 }
 
 /* =========================================================
-   LUXURY OPTION CHIPS
+   OPTION CHIP STYLES
    ========================================================= */
 
 const chipBase = `
@@ -79,13 +79,36 @@ export function ProductCard({
     toggleWishlist,
   } = useAppData()
 
-  const isWishlisted =
-    wishlistIds.has(product.id)
+  /* =======================================================
+     WISHLIST STATE
+     ======================================================= */
+
+  const [
+    isWishlisted,
+    setIsWishlisted,
+  ] = useState(() =>
+    wishlistIds.has(product.id),
+  )
 
   const [
     wishlistBusy,
     setWishlistBusy,
   ] = useState(false)
+
+  /* Keep local state synchronized with
+     the global wishlist state. */
+  useEffect(() => {
+    setIsWishlisted(
+      wishlistIds.has(product.id),
+    )
+  }, [
+    wishlistIds,
+    product.id,
+  ])
+
+  /* =======================================================
+     VARIANT STATE
+     ======================================================= */
 
   const [
     variants,
@@ -117,19 +140,38 @@ export function ProductCard({
     event.preventDefault()
     event.stopPropagation()
 
+    if (wishlistBusy) return
+
+    const previousState =
+      isWishlisted
+
+    const nextState =
+      !previousState
+
+    /*
+     * Optimistic UI:
+     * Change the heart immediately.
+     */
+    setIsWishlisted(nextState)
     setWishlistBusy(true)
 
     try {
       await toggleWishlist(product.id)
     } catch {
-      // Wishlist errors are intentionally ignored.
+      /*
+       * If the API fails, restore
+       * the previous heart state.
+       */
+      setIsWishlisted(
+        previousState,
+      )
     } finally {
       setWishlistBusy(false)
     }
   }
 
   /* =======================================================
-     LOAD PRODUCT VARIANTS
+     LOAD VARIANTS
      ======================================================= */
 
   useEffect(() => {
@@ -138,7 +180,9 @@ export function ProductCard({
     async function loadVariants() {
       try {
         const data =
-          await api.productVariants(product.id)
+          await api.productVariants(
+            product.id,
+          )
 
         if (cancelled) return
 
@@ -168,6 +212,7 @@ export function ProductCard({
       } catch {
         if (!cancelled) {
           setVariants([])
+          setSelectedVariant(null)
         }
       }
     }
@@ -180,7 +225,7 @@ export function ProductCard({
   }, [product.id])
 
   /* =======================================================
-     DETERMINE PRODUCT STRUCTURE
+     OPTION STRUCTURE
      ======================================================= */
 
   const isStructured =
@@ -275,7 +320,7 @@ export function ProductCard({
     ])
 
   /* =======================================================
-     FIND MATCHING VARIANT
+     FIND SELECTED VARIANT
      ======================================================= */
 
   useEffect(() => {
@@ -403,9 +448,6 @@ export function ProductCard({
           sm:aspect-[4/5]
         "
       >
-
-        {/* Image */}
-
         <a
           href={`#/product?id=${product.id}`}
           className="
@@ -437,7 +479,7 @@ export function ProductCard({
           />
         </a>
 
-        {/* Very subtle image overlay */}
+        {/* Subtle image fade */}
 
         <div
           className="
@@ -505,12 +547,13 @@ export function ProductCard({
           aria-label={
             isWishlisted
               ? 'Remove from wishlist'
-              : 'Save to wishlist'
+              : 'Add to wishlist'
           }
           className="
             absolute
             right-2.5
             top-2.5
+            z-10
 
             flex
             h-9
@@ -522,14 +565,15 @@ export function ProductCard({
 
             bg-white/95
 
-            shadow-[0_5px_18px_rgba(60,30,40,0.10)]
+            shadow-[0_5px_18px_rgba(60,30,40,0.12)]
 
             transition-all
-            duration-200
+            duration-300
 
             active:scale-90
 
-            disabled:opacity-60
+            disabled:cursor-wait
+            disabled:opacity-80
 
             sm:right-4
             sm:top-4
@@ -541,20 +585,27 @@ export function ProductCard({
         >
           <span
             className={`
+              flex
+              items-center
+              justify-center
+
               font-sans
-              text-[18px]
+              text-[20px]
               leading-none
+
+              transition-all
+              duration-300
 
               ${
                 isWishlisted
-                  ? 'text-[#d92c83]'
-                  : 'text-[#c8b0ba]'
+                  ? 'scale-110 text-[#dc2d83]'
+                  : 'scale-100 text-[#c8b0ba]'
               }
             `}
           >
             {isWishlisted
-              ? '\u2665'
-              : '\u2661'}
+              ? '♥'
+              : '♡'}
           </span>
         </button>
       </div>
@@ -578,9 +629,7 @@ export function ProductCard({
         "
       >
 
-        {/* =================================================
-            CATEGORY
-            ================================================= */}
+        {/* CATEGORY */}
 
         <p
           className="
@@ -597,9 +646,7 @@ export function ProductCard({
           {product.category}
         </p>
 
-        {/* =================================================
-            PRODUCT NAME
-            ================================================= */}
+        {/* PRODUCT NAME */}
 
         <a
           href={`#/product?id=${product.id}`}
@@ -635,12 +682,7 @@ export function ProductCard({
           </h3>
         </a>
 
-        {/* =================================================
-            DESCRIPTION
-
-            Kept intentionally tiny on mobile so the
-            photography and product name stay dominant.
-            ================================================= */}
+        {/* DESCRIPTION */}
 
         <p
           className="
@@ -667,7 +709,7 @@ export function ProductCard({
         </p>
 
         {/* =================================================
-            PRODUCT OPTIONS
+            OPTIONS
             ================================================= */}
 
         {isStructured ? (
@@ -685,11 +727,7 @@ export function ProductCard({
 
             {option1Values.length >
               0 && (
-              <div
-                className="
-                  min-w-0
-                "
-              >
+              <div className="min-w-0">
                 <p
                   className="
                     mb-1.5
@@ -730,7 +768,6 @@ export function ProductCard({
                           setSelectedOption1(
                             value,
                           )
-
                           setSelectedOption2(
                             null,
                           )
@@ -754,11 +791,7 @@ export function ProductCard({
 
             {option2Values.length >
               0 && (
-              <div
-                className="
-                  min-w-0
-                "
-              >
+              <div className="min-w-0">
                 <p
                   className="
                     mb-1.5
@@ -863,9 +896,6 @@ export function ProductCard({
 
         {/* =================================================
             PRICE + ADD TO BAG
-
-            mt-auto keeps this anchored to the bottom,
-            giving every card a polished equal finish.
             ================================================= */}
 
         <div
@@ -884,7 +914,6 @@ export function ProductCard({
             sm:pt-6
           "
         >
-
           {/* PRICE */}
 
           <p

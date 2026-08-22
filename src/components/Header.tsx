@@ -97,7 +97,12 @@ export function Header({
     }
   }, [isHome, menuOpen])
 
-  const blendsWithHero = isHome && overHero && !menuOpen
+  const blendsWithHero = isHome && overHero && !menuOpen && !searchOpen
+
+  const iconClass = blendsWithHero
+    ? 'border-white/50 text-white hover:border-white hover:bg-white/15'
+    : 'border-[#e4bdce] text-[#604c55] hover:border-[#d92c83] hover:bg-[#f8e3ec] hover:text-[#d92c83]'
+
   const normalizedQuery = searchQuery.trim().toLowerCase()
   const searchItems = [
     ...products.map((product) => ({
@@ -142,43 +147,61 @@ export function Header({
           Premium Virgin Hair &bull; Nationwide Delivery &bull; Book Your Appointment Today
         </div>
       )}
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-5 px-5 sm:h-24 sm:px-8 lg:px-12">
+
+      <div className="mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-5 sm:h-24 sm:px-8 lg:px-12">
+        {/* LEFT: menu toggle */}
+        <div className="flex items-center justify-start">
+          <button
+            type="button"
+            onClick={() => {
+              setMenuOpen((open) => !open)
+              setSearchOpen(false)
+            }}
+            aria-expanded={menuOpen}
+            aria-label="Toggle menu"
+            className={`flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full transition ${
+              blendsWithHero ? 'text-white' : 'text-[#8f3862]'
+            }`}
+          >
+            <span className="h-0.5 w-6 rounded-full bg-current" />
+            <span className="h-0.5 w-6 rounded-full bg-current" />
+            <span className="h-0.5 w-6 rounded-full bg-current" />
+          </button>
+        </div>
+
+        {/* CENTER: logo lockup */}
         <a
           href="#/"
-          className={
-            'shrink-0 font-serif leading-none ' +
-            'text-[#3e2530]'
-          }
+          className={`shrink-0 text-center font-serif leading-none transition ${
+            blendsWithHero ? 'text-white' : 'text-[#3e2530]'
+          }`}
         >
-          <span className="block text-[21px] font-semibold uppercase tracking-[0.16em] sm:text-2xl">
+          <span className="block text-[19px] font-semibold uppercase tracking-[0.3em] sm:text-[28px] sm:tracking-[0.36em]">
             Beryl&apos;s
           </span>
-          <span
-            className={
-              'mt-1 block text-[8px] font-bold uppercase tracking-[0.48em] ' +
-              'text-[#d92c83]'
-            }
-          >
-            Beauty Mark
+          <span className="mt-1.5 flex items-center justify-center gap-2">
+            <span
+              className={`h-px w-5 sm:w-8 ${
+                blendsWithHero ? 'bg-white/50' : 'bg-[#e4bdce]'
+              }`}
+            />
+            <span
+              className={`text-[7px] font-bold uppercase tracking-[0.34em] sm:text-[9px] ${
+                blendsWithHero ? 'text-[#f7b4d2]' : 'text-[#d92c83]'
+              }`}
+            >
+              Beauty Mark
+            </span>
+            <span
+              className={`h-px w-5 sm:w-8 ${
+                blendsWithHero ? 'bg-white/50' : 'bg-[#e4bdce]'
+              }`}
+            />
           </span>
         </a>
 
-        <nav aria-label="Primary navigation" className="hidden items-center gap-6 lg:flex">
-          {links.map(([label, href]) => (
-            <a
-              key={label}
-              href={href}
-              className={
-                'text-[11px] font-bold uppercase tracking-[0.16em] transition ' +
-                'text-[#604c55] hover:text-[#d92c83]'
-              }
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* RIGHT: actions */}
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={() => {
@@ -187,23 +210,21 @@ export function Header({
             }}
             aria-label={searchOpen ? 'Close search' : 'Search products and services'}
             aria-expanded={searchOpen}
-            className="flex h-11 items-center justify-center gap-2 rounded-full border border-[#e4bdce] bg-white/65 px-3 text-[#604c55] transition hover:border-[#d92c83] hover:text-[#d92c83] xl:min-w-32 xl:justify-start xl:px-4"
+            className={`flex h-11 w-11 items-center justify-center rounded-full border transition ${iconClass}`}
           >
             {searchOpen ? (
               <FiX aria-hidden="true" size={19} />
             ) : (
               <FiSearch aria-hidden="true" size={19} />
             )}
-            <span className="hidden truncate text-[11px] font-semibold uppercase tracking-[0.1em] xl:inline">
-              Search
-            </span>
           </button>
+
           <button
             type="button"
             onClick={onOpenCart}
             aria-label={`Open shopping bag with ${cartCount} items`}
             title="Shopping bag"
-            className="relative flex h-11 w-11 items-center justify-center rounded-full border border-[#e4bdce] text-[#604c55] transition hover:border-[#d92c83] hover:bg-[#f8e3ec] hover:text-[#d92c83]"
+            className={`relative flex h-11 w-11 items-center justify-center rounded-full border transition ${iconClass}`}
           >
             <FiShoppingBag aria-hidden="true" size={20} strokeWidth={1.8} />
             {cartCount > 0 && (
@@ -212,13 +233,15 @@ export function Header({
               </span>
             )}
           </button>
+
           <a
             href="#/appointments"
             title="Book an appointment"
-            className="hidden h-11 items-center justify-center rounded-full bg-[#d92c83] px-5 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#b92068] md:flex"
+            className="hidden h-11 items-center justify-center rounded-full bg-[#d92c83] px-5 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#b92068] lg:flex"
           >
             Book
           </a>
+
           <div ref={profileMenuRef} className="relative hidden sm:block">
             <button
               type="button"
@@ -230,7 +253,7 @@ export function Header({
               aria-label={user ? `Open profile menu for ${user.name}` : 'Open account'}
               aria-expanded={user ? profileOpen : undefined}
               title={user ? user.name : 'Account'}
-              className={`flex h-11 items-center justify-center gap-1 rounded-full border border-[#e4bdce] text-[#604c55] transition hover:border-[#d92c83] hover:bg-[#f8e3ec] hover:text-[#d92c83] ${
+              className={`flex h-11 items-center justify-center gap-1 rounded-full border transition ${iconClass} ${
                 user ? 'w-auto px-3' : 'w-11'
               }`}
             >
@@ -300,107 +323,97 @@ export function Header({
               </div>
             )}
           </div>
-          <button
-            type="button"
-            onClick={() => {
-              setMenuOpen((open) => !open)
-              setSearchOpen(false)
-            }}
-            aria-expanded={menuOpen}
-            aria-label="Toggle menu"
-            className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full text-[#8f3862] lg:hidden"
-          >
-            <span className="h-px w-5 bg-current" />
-            <span className="h-px w-5 bg-current" />
-            <span className="h-px w-5 bg-current" />
-          </button>
         </div>
       </div>
 
       {menuOpen && (
-        <nav aria-label="Mobile navigation" className="border-t border-[#ecd7e0] bg-[#fffaf8] px-5 py-5 shadow-[0_18px_45px_rgba(71,35,51,0.12)] lg:hidden">
-          <div className="grid gap-1">
-            {links.map(function (item) {
-              return (
-                <a
-                  key={item[0]}
-                  href={item[1]}
-                  onClick={function () { setMenuOpen(false) }}
-                  className="rounded-xl px-3 py-3 text-sm font-bold uppercase tracking-[0.1em] text-[#604c55] hover:bg-[#f8e3ec]"
-                >
-                  {item[0]}
-                </a>
-              )
-            })}
-          </div>
-
-
-          <div className="mt-3 border-t border-[#ecd7e0] pt-3">
-            {user ? (
-              <div className="grid gap-1">
-                <p className="px-3 pb-2 text-xs font-bold uppercase tracking-[0.1em] text-[#a08a94]">
-                  {user.name}
-                </p>
-                <a
-                  href="#/account"
-                  onClick={function () { setMenuOpen(false) }}
-                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
-                >
-                  <FiSettings aria-hidden="true" />
-                  Account settings
-                </a>
-                <a
-                  href="#/account?tab=bookings"
-                  onClick={function () { setMenuOpen(false) }}
-                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
-                >
-                  <FiCalendar aria-hidden="true" />
-                  My appointments
-                </a>
-                <a
-                  href="#/account?tab=orders"
-                  onClick={function () { setMenuOpen(false) }}
-                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
-                >
-                  <FiPackage aria-hidden="true" />
-                  My orders
-                </a>
-                {user.role === 'admin' && (
+        <nav
+          aria-label="Main navigation"
+          className="border-t border-[#ecd7e0] bg-[#fffaf8] px-5 py-5 shadow-[0_18px_45px_rgba(71,35,51,0.12)] sm:px-8 lg:px-12"
+        >
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+              {links.map(function (item) {
+                return (
                   <a
-                    href="#/dashboard"
+                    key={item[0]}
+                    href={item[1]}
+                    onClick={function () { setMenuOpen(false) }}
+                    className="rounded-xl px-3 py-3 text-sm font-bold uppercase tracking-[0.1em] text-[#604c55] hover:bg-[#f8e3ec] hover:text-[#d92c83]"
+                  >
+                    {item[0]}
+                  </a>
+                )
+              })}
+            </div>
+
+            <div className="mt-3 border-t border-[#ecd7e0] pt-3">
+              {user ? (
+                <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+                  <p className="px-3 pb-2 text-xs font-bold uppercase tracking-[0.1em] text-[#a08a94] sm:col-span-2 lg:col-span-3">
+                    {user.name}
+                  </p>
+                  <a
+                    href="#/account"
                     onClick={function () { setMenuOpen(false) }}
                     className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
                   >
                     <FiSettings aria-hidden="true" />
-                    Admin dashboard
+                    Account settings
                   </a>
-                )}
+                  <a
+                    href="#/account?tab=bookings"
+                    onClick={function () { setMenuOpen(false) }}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
+                  >
+                    <FiCalendar aria-hidden="true" />
+                    My appointments
+                  </a>
+                  <a
+                    href="#/account?tab=orders"
+                    onClick={function () { setMenuOpen(false) }}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
+                  >
+                    <FiPackage aria-hidden="true" />
+                    My orders
+                  </a>
+                  {user.role === 'admin' && (
+                    <a
+                      href="#/dashboard"
+                      onClick={function () { setMenuOpen(false) }}
+                      className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#604c55] hover:bg-[#f8e3ec]"
+                    >
+                      <FiSettings aria-hidden="true" />
+                      Admin dashboard
+                    </a>
+                  )}
+                  <button
+                    type="button"
+                    onClick={function () {
+                      logout()
+                      setMenuOpen(false)
+                      window.location.hash = '#/'
+                    }}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-[#a52261] hover:bg-[#f8e3ec]"
+                  >
+                    <FiLogOut aria-hidden="true" />
+                    Sign out
+                  </button>
+                </div>
+              ) : (
                 <button
                   type="button"
                   onClick={function () {
-                    logout()
                     setMenuOpen(false)
-                    window.location.hash = '#/'
+                    onOpenAccount()
                   }}
-                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold text-[#a52261] hover:bg-[#f8e3ec]"
+                  className="flex w-full items-center gap-3 rounded-xl bg-[#d92c83] px-3 py-3 text-sm font-bold text-white sm:w-auto sm:px-6"
                 >
-                  <FiLogOut aria-hidden="true" />
-                  Sign out
+                  <FiUser aria-hidden="true" />
+                  Sign in or create account
                 </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={function () {
-                  setMenuOpen(false)
-                  onOpenAccount()
-                }}
-                className="flex w-full items-center gap-3 rounded-xl bg-[#d92c83] px-3 py-3 text-sm font-bold text-white"
-              >
-                <FiUser aria-hidden="true" />
-                Sign in or create account
-              </button>
-            )}
+              )}
+            </div>
           </div>
         </nav>
       )}
@@ -424,7 +437,7 @@ export function Header({
                 onChange={(event) => setSearchQuery(event.target.value)}
                 placeholder="Search wigs, braids, treatments..."
                 autoFocus
-                className="h-14 w-full rounded-full border border-[#e4bdce] bg-white pl-13 pr-5 text-sm text-[#3e2530] outline-none placeholder:text-[#9d8790] focus:border-[#d92c83] focus:ring-4 focus:ring-[#d92c83]/10"
+                className="h-14 w-full rounded-full border border-[#e4bdce] bg-white pl-14 pr-5 text-sm text-[#3e2530] outline-none placeholder:text-[#9d8790] focus:border-[#d92c83] focus:ring-4 focus:ring-[#d92c83]/10"
               />
             </div>
 
@@ -453,7 +466,7 @@ export function Header({
                   ))
                 ) : (
                   <p className="px-5 py-6 text-sm text-[#806a73]">
-                    No products or services match "{searchQuery}"
+                    No products or services match that search.
                   </p>
                 )}
               </div>

@@ -458,9 +458,7 @@ function HeroBanner() {
         >
           {/* BRAND */}
 
-          <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#f2a7c9] drop-shadow sm:text-[11px] sm:tracking-[0.28em]">
-            Beryl's Beauty Mark
-          </p>
+          <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#f2a7c9] drop-shadow sm:text-[11px] sm:tracking-[0.28em]">{slide.eyebrow}</p>
 
           {/* MAIN TITLE */}
 
@@ -482,26 +480,24 @@ function HeroBanner() {
             {slide.title}
           </h1>
 
-          {/* ONLY FIRST TWO WORDS */}
+          {/* SUBTITLE */}
 
-          {slide.eyebrow && (
-            <span
+          {slide.subtitle && (
+            <p
               className="
-                mt-2
-                block
-                w-fit
-                font-serif
-                text-xl
-                italic
-                leading-none
-                text-[#f7b4d2]
-                drop-shadow-[0_3px_12px_rgba(0,0,0,0.55)]
-                sm:mt-3
-                sm:text-3xl
+                mt-3
+                max-w-[300px]
+                text-xs
+                leading-5
+                text-white/80
+                sm:mt-4
+                sm:max-w-[420px]
+                sm:text-base
+                sm:leading-7
               "
             >
-              {slide.eyebrow.split(' ').slice(0, 2).join(' ')}
-            </span>
+              {slide.subtitle}
+            </p>
           )}
 
           {/* BUTTONS */}
@@ -591,7 +587,7 @@ function HeroBanner() {
             <Stars className="flex gap-0.5 text-[10px] text-[#f5c56e] sm:text-sm" />
 
             <span className="text-[9px] font-semibold text-white drop-shadow sm:text-sm">
-              4.9 Â· 2,400+
+              4.9/5 &bull; 2,400+ Happy Clients
             </span>
           </div>
         </div>
@@ -703,6 +699,33 @@ function HeroBanner() {
           </div>
         </>
       )}
+
+      {/* CURVED WAVE DIVIDER */}
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] leading-none">
+        <svg
+          viewBox="0 0 1440 130"
+          preserveAspectRatio="none"
+          className="block h-[60px] w-full sm:h-[90px] lg:h-[110px]"
+          aria-hidden="true"
+        >
+          <path
+            d="M0,96 C240,140 480,120 720,88 C960,56 1200,20 1440,34 L1440,130 L0,130 Z"
+            fill="#f7e4ec"
+          />
+          <path
+            d="M0,96 C240,140 480,120 720,88 C960,56 1200,20 1440,34"
+            fill="none"
+            stroke="#c9a24a"
+            strokeWidth="3"
+          />
+          <path
+            d="M0,112 C240,152 480,132 720,102 C960,72 1200,40 1440,52 L1440,130 L0,130 Z"
+            fill="#dc2d83"
+            opacity="0.9"
+          />
+        </svg>
+      </div>
 
       <style>
         {`
@@ -1171,12 +1194,12 @@ export function HomePage(props: HomePageProps) {
       <section className="relative z-10 bg-[#fffaf8] px-4 sm:px-10 lg:px-12">
         <div
           className="
-            mx-auto -mt-10 max-w-7xl
+            mx-auto mt-6 max-w-7xl
             rounded-[1.25rem]
             bg-white
             p-4
             shadow-[0_20px_60px_-30px_rgba(62,37,48,0.35)]
-            sm:-mt-20
+            sm:mt-10
             sm:rounded-[1.5rem]
             sm:p-8
           "
