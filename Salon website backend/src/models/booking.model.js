@@ -138,6 +138,7 @@ export async function listBookingsForUser(userId) {
             b.custom_length_request as "customLengthRequest",
             b.custom_length_price as "customLengthPrice",
             b.custom_length_status as "customLengthStatus",
+            b.confirmed_price as "confirmedPrice",
             s.name as "serviceName", c.name as "categoryName",
             exists(
               select 1 from payments p
@@ -160,6 +161,7 @@ export async function listBookings({ date, categoryId }) {
             b.custom_length_request as "customLengthRequest",
             b.custom_length_price as "customLengthPrice",
             b.custom_length_status as "customLengthStatus",
+            b.confirmed_price as "confirmedPrice",
             json_build_object('id', u.id, 'name', u.name, 'phone', u.phone) as "user",
             json_build_object('id', s.id, 'name', s.name) as "service",
             json_build_object('id', c.id, 'name', c.name) as "category"
@@ -190,14 +192,17 @@ export async function findBookingByCode(code) {
   return result.rows[0] || null;
 }
 
-export async function updateBookingStatus(id, status) {
+export async function updateBookingStatus(id, status, price) {
   const result = await query(
     `update bookings
-     set status = $1, updated_at = now()
-     where id = $2
+     set status = $1,
+         confirmed_price = coalesce($2, confirmed_price),
+         updated_at = now()
+     where id = $3
      returning id, user_id as "userId", service_id as "serviceId",
-               booking_date as date, time_slot as "timeSlot", status`,
-    [status, id]
+               booking_date as date, time_slot as "timeSlot", status,
+               confirmed_price as "confirmedPrice"`,
+    [status, price ?? null, id]
   );
   return result.rows[0] || null;
 }

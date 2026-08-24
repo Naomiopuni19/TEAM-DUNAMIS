@@ -44,7 +44,8 @@ const monthAvailabilitySchema = z.object({
 });
 
 const statusSchema = z.object({
-  status: z.enum(["pending", "confirmed", "cancelled", "completed"])
+  status: z.enum(["pending", "confirmed", "cancelled", "completed"]),
+  price: z.number().positive().optional()
 });
 
 const scheduleSchema = z.object({
@@ -99,7 +100,15 @@ export async function verifyCode(req, res) {
 
 export async function updateStatus(req, res) {
   const body = statusSchema.parse(req.body);
-  const booking = await updateBookingStatus(req.params.id, body.status);
+
+  if (body.status === "confirmed" && !body.price) {
+    throw new (await import("../utils/httpError.js")).HttpError(
+      400,
+      "Set a real price for this appointment before approving it"
+    );
+  }
+
+  const booking = await updateBookingStatus(req.params.id, body.status, body.price);
   if (!booking) throw notFound("Booking not found");
 
   const details = await getBookingDetailsForEmail(booking.id);

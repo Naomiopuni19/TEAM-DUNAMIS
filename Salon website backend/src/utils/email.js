@@ -118,7 +118,7 @@ export function sendBookingApproved(booking) {
       <p>Service: ${booking.serviceName}</p>
       <p>Date: ${booking.date}</p>
       <p>Time: ${booking.timeSlot}</p>
-      <p>Price range: GHC ${booking.priceMin} - GHC ${booking.priceMax}</p>
+      <p>Price: GHC ${booking.confirmedPrice}</p>
       <p>Your confirmation code: <strong>${booking.confirmationCode}</strong></p>
       <p>If you have not already paid, please complete payment from your account to secure this slot.</p>
     `,
