@@ -31,7 +31,8 @@ const createBookingSchema = z.object({
   referenceImageUrl: z.string().optional(),
   lengthLabel: z.string().optional(),
   customLengthRequest: z.string().min(2).max(300).optional(),
-  notes: z.string().max(500).optional()
+  notes: z.string().max(500).optional(),
+  contactEmail: z.string().email().optional()
 });
 
 const approveCustomLengthSchema = z.object({

@@ -103,7 +103,8 @@ export async function getBookingDetailsForEmail(bookingId) {
             b.confirmation_code as "confirmationCode", b.status,
             b.confirmed_price as "confirmedPrice",
             s.name as "serviceName", s.price_min as "priceMin", s.price_max as "priceMax",
-            u.name as "customerName", u.phone as "customerPhone", u.email as "customerEmail"
+            u.name as "customerName", u.phone as "customerPhone",
+            coalesce(b.contact_email, u.email) as "customerEmail"
      from bookings b
      join services s on s.id = b.service_id
      join users u on u.id = b.user_id

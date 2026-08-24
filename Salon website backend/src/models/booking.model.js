@@ -98,16 +98,16 @@ export async function createBooking(userId, input) {
       `insert into bookings (
          user_id, service_id, booking_date, time_slot, status,
          reference_image_url, length_label, confirmation_code,
-         custom_length_request, custom_length_status, notes
+         custom_length_request, custom_length_status, notes, contact_email
        )
-       values ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9, $10)
+       values ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9, $10, $11)
        returning id, user_id as "userId", service_id as "serviceId",
                  booking_date as date, time_slot as "timeSlot", status,
                  reference_image_url as "referenceImageUrl", length_label as "lengthLabel",
                  confirmation_code as "confirmationCode",
                  custom_length_request as "customLengthRequest",
                  custom_length_status as "customLengthStatus",
-                 notes,
+                 notes, contact_email as "contactEmail",
                  created_at as "createdAt"`,
       [
         userId,
@@ -119,7 +119,8 @@ export async function createBooking(userId, input) {
         code,
         input.customLengthRequest || null,
         input.customLengthRequest ? "pending" : null,
-        input.notes || null
+        input.notes || null,
+        input.contactEmail || null
       ]
     );
     await client.query("commit");

@@ -1,0 +1,1 @@
+alter table bookings add column if not exists contact_email text;

@@ -466,7 +466,7 @@ export const api = {
   },
   createBooking(
     token: string,
-    body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string; customLengthRequest?: string },
+    body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string; customLengthRequest?: string; notes?: string },
   ) {
     return request<{ booking: { id: string; status: string; confirmationCode: string } }>('/bookings', {
       method: 'POST',

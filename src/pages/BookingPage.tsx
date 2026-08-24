@@ -42,7 +42,8 @@ export function BookingPage(props) {
   const [selectedDate, setSelectedDate] = useState('')
   const [selectedTime, setSelectedTime] = useState('')
   const [availability, setAvailability] = useState(null)
-  const [momoNumber, setMomoNumber] = useState('')
+  const [notes, setNotes] = useState('')
+  const [submitted, setSubmitted] = useState(false)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
   const [agreedToTerms, setAgreedToTerms] = useState(false)
@@ -156,28 +157,22 @@ export function BookingPage(props) {
       onRequireAuth()
       return
     }
+    if (busy || submitted) return
 
     setBusy(true)
     setMessage('')
     try {
-      const result = await api.createBooking(token, {
+      await api.createBooking(token, {
         serviceId: selectedService,
         date: selectedDate,
         timeSlot: selectedTime,
         lengthLabel: selectedLength ? selectedLength.label : undefined,
         referenceImageUrl: referenceImageUrl || undefined,
         customLengthRequest: wantsCustomLength && customLengthText.trim() ? customLengthText.trim() : undefined,
+        notes: notes.trim() || undefined,
       })
 
-      if (momoNumber.trim()) {
-        const payment = await api.initiatePayment(token, {
-          type: 'booking',
-          refId: result.booking.id,
-          momoNumber: momoNumber.trim(),
-        })
-        window.location.href = payment.authorizationUrl
-        return
-      }
+      setSubmitted(true)
       setMessage('Your booking request was submitted. You can pay online from your account, or in the studio.')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Unable to request this booking.')
@@ -563,14 +558,13 @@ export function BookingPage(props) {
                 )}
                 <label className="mt-5 block">
                   <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em] text-[#765b67]">
-                    Mobile Money number (optional)
+                    Anything else we should know? (optional)
                   </span>
-                  <input
-                    type="tel"
-                    value={momoNumber}
-                    onChange={function (event) { setMomoNumber(event.target.value) }}
-                    placeholder={user ? user.phone : '024 000 0000'}
-                    className="h-13 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 outline-none focus:border-[#dc2d83] focus:ring-4 focus:ring-[#dc2d83]/10"
+                  <textarea
+                    value={notes}
+                    onChange={function (event) { setNotes(event.target.value) }}
+                    placeholder="Allergies, a specific stylist request, anything about your reference photo, etc."
+                    className="h-24 w-full rounded-xl border border-[#dfbdcb] bg-white p-4 text-sm outline-none focus:border-[#dc2d83] focus:ring-4 focus:ring-[#dc2d83]/10"
                   />
                 </label>
 
