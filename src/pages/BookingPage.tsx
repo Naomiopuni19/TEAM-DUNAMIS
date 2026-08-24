@@ -186,7 +186,9 @@ export function BookingPage(props) {
     }
   }
 
-  const extensionStepAnswered = hasOwnExtension === true || (hasOwnExtension === false && wantsToBuyExtension !== null)
+  const extensionStepAnswered = !activeService || activeService.category.name !== 'Braiding'
+    ? true
+    : hasOwnExtension === true || (hasOwnExtension === false && wantsToBuyExtension !== null)
   const lengthStepAnswered = lengthOptions.length === 0 || Boolean(selectedLength) || (wantsCustomLength && customLengthText.trim().length > 1)
 
   return (
@@ -325,7 +327,7 @@ export function BookingPage(props) {
                 </div>
               )}
 
-              {selectedService && (
+              {selectedService && activeService && activeService.category.name === 'Braiding' && (
                 <div className="mt-8 rounded-2xl border border-[#e6c5d3] bg-white p-6">
                   <p className="font-serif text-xl text-[#3e2530]">Are you bringing your own extension?</p>
                   <p className="mt-2 text-sm text-[#745f68]">

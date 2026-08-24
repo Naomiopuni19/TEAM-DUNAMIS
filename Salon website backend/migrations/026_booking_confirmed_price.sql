@@ -1,0 +1,1 @@
+alter table bookings add column if not exists confirmed_price numeric(10,2);
