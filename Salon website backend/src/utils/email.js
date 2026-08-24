@@ -3,7 +3,10 @@ import { env } from "../config/env.js";
 
 const transporter = env.gmailUser && env.gmailAppPassword
   ? nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      family: 4,
       auth: {
         user: env.gmailUser,
         pass: env.gmailAppPassword
