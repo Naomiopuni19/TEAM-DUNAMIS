@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAppData } from '../context/appData'
 import { api } from '../lib/api'
 
 export function PaymentVerifier() {
   const { token } = useAppData()
   const [notice, setNotice] = useState<string | null>(null)
+  const hasRun = useRef(false)
 
   useEffect(() => {
     if (!token) return
@@ -12,6 +13,8 @@ export function PaymentVerifier() {
     const params = new URLSearchParams(window.location.search)
     const reference = params.get('reference') || params.get('trxref')
     if (!reference) return
+    if (hasRun.current) return
+    hasRun.current = true
 
     let cancelled = false
     async function run() {
