@@ -141,7 +141,7 @@ export async function listBookingsForUser(userId) {
             s.name as "serviceName", c.name as "categoryName",
             exists(
               select 1 from payments p
-              where p.type = 'booking' and p.ref_id = b.id and p.status = 'success'
+              where p.payment_type = 'booking' and p.ref_id = b.id and p.status = 'success'
             ) as "isPaid"
      from bookings b
      join services s on s.id = b.service_id
