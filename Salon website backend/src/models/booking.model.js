@@ -148,7 +148,7 @@ export async function listBookingsForUser(userId) {
      join services s on s.id = b.service_id
      join service_categories c on c.id = s.category_id
      where b.user_id = $1
-     order by b.booking_date desc, b.time_slot`,
+     order by b.created_at desc`,
     [userId]
   );
   return result.rows;
@@ -171,7 +171,7 @@ export async function listBookings({ date, categoryId }) {
      join service_categories c on c.id = s.category_id
      where ($1::date is null or b.booking_date = $1::date)
        and ($2::uuid is null or c.id = $2::uuid)
-     order by b.booking_date desc, b.time_slot`,
+     order by b.created_at desc`,
     [date || null, categoryId || null]
   );
   return result.rows;
