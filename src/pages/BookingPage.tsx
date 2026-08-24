@@ -43,6 +43,7 @@ export function BookingPage(props) {
   const [selectedTime, setSelectedTime] = useState('')
   const [availability, setAvailability] = useState(null)
   const [notes, setNotes] = useState('')
+  const [contactEmail, setContactEmail] = useState(user ? user.email || '' : '')
   const [submitted, setSubmitted] = useState(false)
   const [busy, setBusy] = useState(false)
   const [message, setMessage] = useState('')
@@ -170,10 +171,11 @@ export function BookingPage(props) {
         referenceImageUrl: referenceImageUrl || undefined,
         customLengthRequest: wantsCustomLength && customLengthText.trim() ? customLengthText.trim() : undefined,
         notes: notes.trim() || undefined,
+        contactEmail: contactEmail.trim() || undefined,
       })
 
       setSubmitted(true)
-      setMessage('Your booking request was submitted. You can pay online from your account, or in the studio.')
+      setMessage('Your booking request was submitted. We will review it and let you know once it is approved with a confirmed price, at which point you can pay from your account.')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Unable to request this booking.')
     } finally {
@@ -558,6 +560,18 @@ export function BookingPage(props) {
                 )}
                 <label className="mt-5 block">
                   <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em] text-[#765b67]">
+                    Email for booking updates
+                  </span>
+                  <input
+                    type="email"
+                    value={contactEmail}
+                    onChange={function (event) { setContactEmail(event.target.value) }}
+                    placeholder="you@example.com"
+                    className="h-13 w-full rounded-xl border border-[#dfbdcb] bg-white px-4 outline-none focus:border-[#dc2d83] focus:ring-4 focus:ring-[#dc2d83]/10"
+                  />
+                </label>
+                <label className="mt-5 block">
+                  <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em] text-[#765b67]">
                     Anything else we should know? (optional)
                   </span>
                   <textarea
@@ -660,10 +674,10 @@ export function BookingPage(props) {
               <button
                 type="button"
                 onClick={function () { requestBooking() }}
-                disabled={busy || !agreedToTerms}
+                disabled={busy || submitted || !agreedToTerms}
                 className="rounded-full bg-[#dc2d83] px-7 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50"
               >
-                {busy ? 'Submitting...' : 'Request booking'}
+                {busy ? 'Submitting...' : submitted ? 'Request submitted' : 'Request booking'}
               </button>
             )}
           </div>
