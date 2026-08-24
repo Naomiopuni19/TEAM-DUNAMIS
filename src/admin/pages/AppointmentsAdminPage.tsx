@@ -22,6 +22,7 @@ export function AppointmentsAdminPage() {
   const [codeChecking, setCodeChecking] = useState(false)
   const [priceDrafts, setPriceDrafts] = useState<Record<string, string>>({})
   const [approvingId, setApprovingId] = useState('')
+  const [approvalPriceDrafts, setApprovalPriceDrafts] = useState<Record<string, string>>({})
 
   async function checkCode() {
     if (!token || !codeInput.trim()) return
@@ -38,14 +39,23 @@ export function AppointmentsAdminPage() {
     }
   }
 
-  async function status(booking: AdminBooking, next: string) {
+  async function status(booking: AdminBooking, next: string, price?: number) {
     if (!token) return
     try {
-      await api.updateBookingStatus(token, booking.id, next)
+      await api.updateBookingStatus(token, booking.id, next, price)
       await reload()
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Update failed.')
     }
+  }
+
+  async function approveWithPrice(booking: AdminBooking) {
+    const price = Number(approvalPriceDrafts[booking.id])
+    if (!price || price <= 0) {
+      setError('Enter a real price before approving.')
+      return
+    }
+    await status(booking, 'confirmed', price)
   }
 
   async function approveCustomLengthPrice(booking: AdminBooking) {
@@ -146,6 +156,29 @@ export function AppointmentsAdminPage() {
                 </span>
               </div>
 
+              {(booking.referenceImageUrl || booking.notes || booking.lengthLabel) && (
+                <div className="mt-4 flex flex-wrap gap-4 rounded-2xl bg-[#fff7fa] p-4">
+                  {booking.referenceImageUrl && (
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#a08a94]">Reference photo</p>
+                      <img src={booking.referenceImageUrl} alt="" className="mt-2 h-24 w-24 rounded-xl object-cover" />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1 space-y-2">
+                    {booking.lengthLabel && (
+                      <p className="text-sm text-[#3e2530]">
+                        <span className="font-bold">Length:</span> {booking.lengthLabel}
+                      </p>
+                    )}
+                    {booking.notes && (
+                      <p className="text-sm text-[#3e2530]">
+                        <span className="font-bold">Notes:</span> {booking.notes}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {booking.customLengthRequest && (
                 <div className="mt-4 rounded-2xl border border-[#e6a94a] bg-[#fdf2e0] p-4">
                   <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#8a5a1f]">
@@ -179,7 +212,19 @@ export function AppointmentsAdminPage() {
 
               <div className="mt-5 flex flex-wrap gap-2 border-t border-[#f0dfe6] pt-5">
                 {booking.status === 'pending' && (
-                  <PrimaryButton onClick={() => status(booking, 'confirmed')}>Approve</PrimaryButton>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="Set the real price, GHC"
+                      value={approvalPriceDrafts[booking.id] ?? ''}
+                      onChange={(e) =>
+                        setApprovalPriceDrafts((all) => ({ ...all, [booking.id]: e.target.value }))
+                      }
+                      className={fieldClass + ' max-w-[180px]'}
+                    />
+                    <PrimaryButton onClick={() => approveWithPrice(booking)}>Approve</PrimaryButton>
+                  </div>
                 )}
                 {booking.status !== 'completed' && booking.status !== 'cancelled' && (
                   <button

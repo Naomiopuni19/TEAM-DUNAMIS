@@ -36,6 +36,10 @@ export type AdminBooking = {
   customLengthRequest?: string
   customLengthPrice?: number
   customLengthStatus?: string
+  referenceImageUrl?: string
+  lengthLabel?: string
+  notes?: string
+  confirmedPrice?: number
 }
 
 export type AdminOrder = {
@@ -530,11 +534,11 @@ export const api = {
   adminBookings(token: string) {
     return request<AdminBooking[]>('/bookings', { token })
   },
-  updateBookingStatus(token: string, id: string, status: string) {
+  updateBookingStatus(token: string, id: string, status: string, price?: number) {
     return request<{ booking: AdminBooking }>(`/bookings/${id}/status`, {
       method: 'PUT',
       token,
-      body: JSON.stringify({ status }),
+      body: JSON.stringify({ status, price }),
     })
   },
   rescheduleBooking(token: string, id: string, date: string, timeSlot: string) {
