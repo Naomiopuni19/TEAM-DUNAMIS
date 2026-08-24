@@ -138,7 +138,11 @@ export async function listBookingsForUser(userId) {
             b.custom_length_request as "customLengthRequest",
             b.custom_length_price as "customLengthPrice",
             b.custom_length_status as "customLengthStatus",
-            s.name as "serviceName", c.name as "categoryName"
+            s.name as "serviceName", c.name as "categoryName",
+            exists(
+              select 1 from payments p
+              where p.type = 'booking' and p.ref_id = b.id and p.status = 'success'
+            ) as "isPaid"
      from bookings b
      join services s on s.id = b.service_id
      join service_categories c on c.id = s.category_id

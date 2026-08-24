@@ -355,7 +355,7 @@ export function AccountPage(props) {
                               Your requested style is being reviewed, we will confirm a price soon.
                             </p>
                           )}
-                          {booking.status === 'confirmed' && (
+                          {booking.status === 'confirmed' && !booking.isPaid && (
                             <button
                               type="button"
                               onClick={function () { payForBooking(booking.id) }}
@@ -364,6 +364,11 @@ export function AccountPage(props) {
                             >
                               {payingId === booking.id ? 'Redirecting...' : 'Pay now'}
                             </button>
+                          )}
+                          {booking.isPaid && (
+                            <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700">
+                              Paid
+                            </p>
                           )}
                         </div>
                         <span className="w-fit rounded-full bg-[#f5d5e3] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#a82061]">

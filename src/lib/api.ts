@@ -154,6 +154,7 @@ export type CustomerBooking = {
   customLengthRequest?: string
   customLengthPrice?: number
   customLengthStatus?: string
+  isPaid?: boolean
 }
 
 export type CustomerOrder = {
