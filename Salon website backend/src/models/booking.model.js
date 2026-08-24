@@ -98,15 +98,16 @@ export async function createBooking(userId, input) {
       `insert into bookings (
          user_id, service_id, booking_date, time_slot, status,
          reference_image_url, length_label, confirmation_code,
-         custom_length_request, custom_length_status
+         custom_length_request, custom_length_status, notes
        )
-       values ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9)
+       values ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9, $10)
        returning id, user_id as "userId", service_id as "serviceId",
                  booking_date as date, time_slot as "timeSlot", status,
                  reference_image_url as "referenceImageUrl", length_label as "lengthLabel",
                  confirmation_code as "confirmationCode",
                  custom_length_request as "customLengthRequest",
                  custom_length_status as "customLengthStatus",
+                 notes,
                  created_at as "createdAt"`,
       [
         userId,
@@ -117,7 +118,8 @@ export async function createBooking(userId, input) {
         input.lengthLabel || null,
         code,
         input.customLengthRequest || null,
-        input.customLengthRequest ? "pending" : null
+        input.customLengthRequest ? "pending" : null,
+        input.notes || null
       ]
     );
     await client.query("commit");
@@ -162,6 +164,7 @@ export async function listBookings({ date, categoryId }) {
             b.custom_length_price as "customLengthPrice",
             b.custom_length_status as "customLengthStatus",
             b.confirmed_price as "confirmedPrice",
+            b.notes,
             json_build_object('id', u.id, 'name', u.name, 'phone', u.phone) as "user",
             json_build_object('id', s.id, 'name', s.name) as "service",
             json_build_object('id', c.id, 'name', c.name) as "category"
