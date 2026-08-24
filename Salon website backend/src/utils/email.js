@@ -1,29 +1,33 @@
 import nodemailer from "nodemailer";
 import { env } from "../config/env.js";
 
-const transporter = env.gmailUser && env.gmailAppPassword
-  ? nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      requireTLS: true,
-      family: 4,
-      auth: {
-        user: env.gmailUser,
-        pass: env.gmailAppPassword
-      }
-    })
-  : null;
-
-const FROM = "Beryl's Beauty Mark <" + env.gmailUser + ">";
+const FROM_EMAIL = env.gmailUser;
+const FROM_NAME = "Beryl's Beauty Mark";
 
 export async function sendEmail({ to, subject, html }) {
-  if (!transporter) {
-    console.log("Gmail sender not set, skipping email:", subject);
+  if (!env.sendgridApiKey || !FROM_EMAIL) {
+    console.log("SendGrid not set, skipping email:", subject);
     return;
   }
   try {
-    await transporter.sendMail({ from: FROM, to, subject, html });
+    const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + env.sendgridApiKey,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        personalizations: [{ to: [{ email: to }] }],
+        from: { email: FROM_EMAIL, name: FROM_NAME },
+        subject,
+        content: [{ type: "text/html", value: html }]
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Failed to send email:", subject, response.status, errorText);
+    }
   } catch (error) {
     console.error("Failed to send email:", subject, error.message);
   }

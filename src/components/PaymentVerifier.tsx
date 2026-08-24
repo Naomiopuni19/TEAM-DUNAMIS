@@ -43,7 +43,7 @@ export function PaymentVerifier() {
       }
 
       if (!cancelled) {
-        setNotice('We could not confirm that payment. If money left your account, please contact the salon.')
+        setNotice('Still confirming your payment, check your account in a moment, if money left your account it will show there shortly.')
       }
     }
 

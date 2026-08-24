@@ -21,5 +21,6 @@ export const env = {
   adminEmail: process.env.ADMIN_EMAIL || "",
   gmailUser: process.env.GMAIL_USER || "",
   gmailAppPassword: process.env.GMAIL_APP_PASSWORD || "",
-  reminderSecret: process.env.REMINDER_SECRET || ""
+  reminderSecret: process.env.REMINDER_SECRET || "",
+  sendgridApiKey: process.env.SENDGRID_API_KEY || ""
 };
