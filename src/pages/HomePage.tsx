@@ -1130,6 +1130,7 @@ export function HomePage(props: HomePageProps) {
   const realTestimonials = realReviews.slice(0, 6).map(function (review) {
     return {
       name: review.customerName,
+      rating: review.rating,
       quote:
         review.comment ||
         'A genuinely wonderful experience from start to finish.',
@@ -1146,6 +1147,7 @@ export function HomePage(props: HomePageProps) {
     fallbackTestimonials.slice(0, fakeNeeded).map(function (item) {
       return {
         name: item.name,
+        rating: 5,
         quote: item.quote,
         avatar: null,
       }
@@ -1602,7 +1604,7 @@ export function HomePage(props: HomePageProps) {
                     &#8220;
                   </span>
 
-                  <Stars className="mt-3 flex gap-0.5 text-sm text-[#c8952f]" />
+                  <Stars count={item.rating} className="mt-3 flex gap-0.5 text-sm text-[#c8952f]" />
 
                   <blockquote className="mt-3 text-sm leading-6 text-[#745f68]">
                     {item.quote}
