@@ -18,8 +18,8 @@ export async function createReview(userId, input) {
       }
 
       const result = await client.query(
-        `insert into reviews (order_id, user_id, rating, comment, media_url, media_type)
-         values ($1, $2, $3, $4, $5, $6)
+        `insert into reviews (order_id, user_id, rating, comment, media_url, media_type, status)
+         values ($1, $2, $3, $4, $5, $6, 'approved')
          returning id, order_id as "orderId", rating, comment,
                    media_url as "mediaUrl", media_type as "mediaType", status, created_at as "createdAt"`,
         [input.orderId, userId, input.rating, input.comment || "", input.mediaUrl || null, input.mediaType || null]
@@ -39,8 +39,8 @@ export async function createReview(userId, input) {
     }
 
     const result = await client.query(
-      `insert into reviews (booking_id, user_id, rating, comment, media_url, media_type)
-       values ($1, $2, $3, $4, $5, $6)
+      `insert into reviews (booking_id, user_id, rating, comment, media_url, media_type, status)
+       values ($1, $2, $3, $4, $5, $6, 'approved')
        returning id, booking_id as "bookingId", rating, comment,
                  media_url as "mediaUrl", media_type as "mediaType", status, created_at as "createdAt"`,
       [input.bookingId, userId, input.rating, input.comment || "", input.mediaUrl || null, input.mediaType || null]
