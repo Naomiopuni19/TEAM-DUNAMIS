@@ -6,14 +6,18 @@ import { useAdminResource } from '../hooks/useAdminResource'
 const statusStyle: Record<string, string> = {
   pending_payment: 'bg-[#fbe7d0] text-[#8a5a1f]',
   paid: 'bg-[#dcefe3] text-[#2f7d55]',
+  preparing: 'bg-[#e0ecfb] text-[#2f5d8a]',
+  out_for_delivery: 'bg-[#f0e0fb] text-[#6a2f8a]',
   fulfilled: 'bg-[#e4e1f0] text-[#5a4e8a]',
   cancelled: 'bg-[#f3ecee] text-[#8f7480]',
 }
 
 const statusLabel: Record<string, string> = {
   pending_payment: 'Awaiting payment',
-  paid: 'Paid',
-  fulfilled: 'Fulfilled',
+  paid: 'Order received',
+  preparing: 'Preparing',
+  out_for_delivery: 'Out for delivery',
+  fulfilled: 'Delivered',
   cancelled: 'Cancelled',
 }
 
@@ -93,10 +97,26 @@ export function OrdersAdminPage() {
                 )}
                 {order.status === 'paid' && (
                   <button
+                    onClick={() => change(order.id, 'preparing')}
+                    className="rounded-full bg-[#dc2d83] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-white"
+                  >
+                    Start preparing
+                  </button>
+                )}
+                {order.status === 'preparing' && (
+                  <button
+                    onClick={() => change(order.id, 'out_for_delivery')}
+                    className="rounded-full bg-[#dc2d83] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-white"
+                  >
+                    Mark out for delivery
+                  </button>
+                )}
+                {order.status === 'out_for_delivery' && (
+                  <button
                     onClick={() => change(order.id, 'fulfilled')}
                     className="rounded-full bg-[#dc2d83] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.1em] text-white"
                   >
-                    Mark fulfilled
+                    Mark delivered
                   </button>
                 )}
                 {(order.status === 'pending_payment' || order.status === 'paid') && (
