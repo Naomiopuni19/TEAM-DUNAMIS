@@ -30,6 +30,7 @@ export function BookingPage(props) {
   const [extensionProducts, setExtensionProducts] = useState([])
   const [extensionsLoading, setExtensionsLoading] = useState(false)
   const [addedExtensionId, setAddedExtensionId] = useState(null)
+  const [agreedToExtensionPickup, setAgreedToExtensionPickup] = useState(false)
   const [lengthOptions, setLengthOptions] = useState([])
   const [selectedLength, setSelectedLength] = useState(null)
   const [wantsCustomLength, setWantsCustomLength] = useState(false)
@@ -97,6 +98,10 @@ export function BookingPage(props) {
   function addExtension(product) {
     onAdd(product)
     setAddedExtensionId(product.id)
+    setNotes(function (current) {
+      const line = 'Purchased extensions for this appointment (' + product.name + '), to be held at the salon, not delivered.'
+      return current.trim() ? current.trim() + ' | ' + line : line
+    })
   }
 
   function isoDate(year, month, day) {
@@ -394,7 +399,20 @@ export function BookingPage(props) {
                               No extensions have been added yet, ask the salon directly for now.
                             </p>
                           )}
-                          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                          <div className="rounded-xl border border-[#e6c5d3] bg-[#f7e4ec] p-4">
+                            <label className="flex cursor-pointer items-start gap-3">
+                              <input
+                                type="checkbox"
+                                checked={agreedToExtensionPickup}
+                                onChange={function (event) { setAgreedToExtensionPickup(event.target.checked) }}
+                                className="mt-0.5 h-4 w-4 accent-[#dc2d83]"
+                              />
+                              <span className="text-sm text-[#3e2530]">
+                                Extensions bought here are held at the salon for your appointment, they are not delivered to your address. I agree to this before adding one to my bag.
+                              </span>
+                            </label>
+                          </div>
+                          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {extensionProducts.map(function (product) {
                               const added = addedExtensionId === product.id
                               return (
@@ -407,11 +425,12 @@ export function BookingPage(props) {
                                     </p>
                                     <button
                                       type="button"
+                                      disabled={!agreedToExtensionPickup}
                                       onClick={function () { addExtension(product) }}
                                       className={
                                         added
-                                          ? 'mt-2 w-full rounded-full bg-emerald-600 px-3 py-2 text-xs font-bold uppercase text-white'
-                                          : 'mt-2 w-full rounded-full bg-[#dc2d83] px-3 py-2 text-xs font-bold uppercase text-white'
+                                          ? 'mt-2 w-full rounded-full bg-emerald-600 px-3 py-2 text-xs font-bold uppercase text-white disabled:cursor-not-allowed disabled:opacity-40'
+                                          : 'mt-2 w-full rounded-full bg-[#dc2d83] px-3 py-2 text-xs font-bold uppercase text-white disabled:cursor-not-allowed disabled:opacity-40'
                                       }
                                     >
                                       {added ? 'Added to bag' : 'Add to bag'}
