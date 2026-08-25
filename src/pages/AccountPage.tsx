@@ -24,6 +24,64 @@ const tabs = [
   ['security', 'Security'],
 ]
 
+const ratingLabels = {
+  1: 'Awful',
+  2: 'Not good',
+  3: 'Okay',
+  4: 'Good',
+  5: 'Excellent',
+}
+
+function ReviewForm(props) {
+  return (
+    <div className="mt-5 rounded-2xl border border-[#ead4de] bg-white p-5">
+      <p className="font-serif text-xl text-[#3e2530]">Share your experience with {props.reviewingLabel}</p>
+      <div className="mt-4 flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map(function (n) {
+          const starClass = n <= props.rating ? 'text-[#dc2d83]' : 'text-[#e6d3da]'
+          return (
+            <button
+              key={n}
+              type="button"
+              onClick={function () { props.setRating(n) }}
+              aria-label={n + ' star' + (n === 1 ? '' : 's')}
+              className={starClass + ' text-2xl leading-none transition hover:scale-110'}
+            >
+              &#9733;
+            </button>
+          )
+        })}
+        {props.rating > 0 && (
+          <span className="ml-2 text-sm font-semibold text-[#745f68]">{ratingLabels[props.rating]}</span>
+        )}
+      </div>
+      <textarea
+        value={props.comment}
+        onChange={function (e) { props.setComment(e.target.value) }}
+        placeholder="Optional, tell us how it went in more detail"
+        className="mt-4 h-24 w-full rounded-xl border border-[#dfbdcb] p-3 text-sm outline-none focus:border-[#dc2d83]"
+      />
+      <div className="mt-4">
+        <ReviewMediaField
+          onChange={function (url, type) {
+            props.setMediaUrl(url)
+            props.setMediaType(type)
+          }}
+        />
+      </div>
+      {props.reviewMessage && <p className="mt-3 text-xs text-[#b32269]">{props.reviewMessage}</p>}
+      <div className="mt-5 flex gap-3">
+        <button type="button" onClick={function () { props.submitReview() }} disabled={props.reviewSubmitting} className="rounded-full bg-[#dc2d83] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50">
+          {props.reviewSubmitting ? 'Submitting...' : 'Submit review'}
+        </button>
+        <button type="button" onClick={function () { props.setReviewingId('') }} className="text-sm text-[#745f68]">
+          Cancel
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export function AccountPage(props) {
   const onAdd = props.onAdd
   const onRequireAuth = props.onRequireAuth
@@ -194,52 +252,6 @@ export function AccountPage(props) {
     }
   }
 
-  function ReviewForm() {
-    return (
-      <div className="mt-5 rounded-2xl border border-[#ead4de] bg-white p-5">
-        <p className="font-serif text-xl text-[#3e2530]">Share your experience with {reviewingLabel}</p>
-        <div className="mt-4 flex gap-1">
-          {[1, 2, 3, 4, 5].map(function (n) {
-            const starClass = n <= rating ? 'text-[#dc2d83]' : 'text-[#e6d3da]'
-            return (
-              <button
-                key={n}
-                type="button"
-                onClick={function () { setRating(n) }}
-                aria-label={n + ' star' + (n === 1 ? '' : 's')}
-                className={starClass + ' text-2xl leading-none transition hover:scale-110'}
-              >
-                &#9733;
-              </button>
-            )
-          })}
-        </div>
-        <textarea
-          value={comment}
-          onChange={function (e) { setComment(e.target.value) }}
-          placeholder="Tell us how it went"
-          className="mt-4 h-24 w-full rounded-xl border border-[#dfbdcb] p-3 text-sm outline-none focus:border-[#dc2d83]"
-        />
-        <div className="mt-4">
-          <ReviewMediaField
-            onChange={function (url, type) {
-              setMediaUrl(url)
-              setMediaType(type)
-            }}
-          />
-        </div>
-        {reviewMessage && <p className="mt-3 text-xs text-[#b32269]">{reviewMessage}</p>}
-        <div className="mt-5 flex gap-3">
-          <button type="button" onClick={function () { submitReview() }} disabled={reviewSubmitting} className="rounded-full bg-[#dc2d83] px-6 py-3 text-xs font-bold uppercase tracking-[0.14em] text-white disabled:opacity-50">
-            {reviewSubmitting ? 'Submitting...' : 'Submit review'}
-          </button>
-          <button type="button" onClick={function () { setReviewingId('') }} className="text-sm text-[#745f68]">
-            Cancel
-          </button>
-        </div>
-      </div>
-    )
-  }
 
   if (authLoading) {
     return (
@@ -333,7 +345,21 @@ export function AccountPage(props) {
                   </div>
                 )}
 
-                {reviewingId && reviewingType === 'booking' && <ReviewForm />}
+                {reviewingId && reviewingType === 'booking' && (
+                  <ReviewForm
+                    reviewingLabel={reviewingLabel}
+                    rating={rating}
+                    setRating={setRating}
+                    comment={comment}
+                    setComment={setComment}
+                    setMediaUrl={setMediaUrl}
+                    setMediaType={setMediaType}
+                    reviewMessage={reviewMessage}
+                    reviewSubmitting={reviewSubmitting}
+                    submitReview={submitReview}
+                    setReviewingId={setReviewingId}
+                  />
+                )}
 
                 <div className="mt-7 space-y-4">
                   {recordsLoading && <p>Loading appointments...</p>}
@@ -413,7 +439,21 @@ export function AccountPage(props) {
                   </div>
                 )}
 
-                {reviewingId && reviewingType === 'order' && <ReviewForm />}
+                {reviewingId && reviewingType === 'order' && (
+                  <ReviewForm
+                    reviewingLabel={reviewingLabel}
+                    rating={rating}
+                    setRating={setRating}
+                    comment={comment}
+                    setComment={setComment}
+                    setMediaUrl={setMediaUrl}
+                    setMediaType={setMediaType}
+                    reviewMessage={reviewMessage}
+                    reviewSubmitting={reviewSubmitting}
+                    submitReview={submitReview}
+                    setReviewingId={setReviewingId}
+                  />
+                )}
 
                 <div className="mt-7 space-y-4">
                   {recordsLoading && <p>Loading orders...</p>}
