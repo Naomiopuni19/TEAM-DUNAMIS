@@ -197,10 +197,13 @@ async function request<T>(path: string, options: ApiOptions = {}) {
   const payload = await response.json().catch(() => null)
 
   if (!response.ok) {
-    throw new ApiError(
-      response.status,
-      payload?.error ?? 'Unable to complete your request',
-    )
+    let message = payload?.error ?? 'Unable to complete your request'
+    const fieldErrors = payload?.details?.fieldErrors
+    if (fieldErrors) {
+      const firstField = Object.keys(fieldErrors).find((key) => fieldErrors[key]?.length)
+      if (firstField) message = fieldErrors[firstField][0]
+    }
+    throw new ApiError(response.status, message)
   }
 
   return payload as T
