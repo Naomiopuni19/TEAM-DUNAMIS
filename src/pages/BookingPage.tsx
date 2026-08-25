@@ -58,7 +58,7 @@ export function BookingPage(props) {
     setExtensionsLoading(true)
     api.products().then(function (allProducts) {
       const extras = allProducts.filter(function (product) {
-        return product.category === 'Extensions'
+        return product.category.trim().toLowerCase() === 'extensions'
       })
       setExtensionProducts(extras)
       setExtensionsLoading(false)
@@ -421,6 +421,7 @@ export function BookingPage(props) {
                               )
                             })}
                           </div>
+                          <a href="#/shop?category=Extensions" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-xs font-bold uppercase tracking-[0.1em] text-[#dc2d83] underline underline-offset-4">Browse more extensions in our shop, opens in a new tab</a>
                         </div>
                       )}
                     </div>
