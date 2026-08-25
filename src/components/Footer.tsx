@@ -158,7 +158,7 @@ export function Footer() {
               </div>
 
               <p className="mt-2 px-1 text-[9px] text-white/30">
-                No spam. Just beautiful things. ÃƒÂ¢Ã¢â€žÂ¢Ã‚Â¡
+                No spam. Just beautiful things. ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡
               </p>
             </form>
           </div>
@@ -177,7 +177,7 @@ export function Footer() {
               </div>
 
               <p className="mt-3 text-[7px] font-bold uppercase tracking-[0.3em] text-[#f5b0d0]">
-                Hair ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ Beauty ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ Luxury
+                Hair ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Beauty ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ Luxury
               </p>
             </a>
 
@@ -423,7 +423,7 @@ export function Footer() {
         ====================================================== */}
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-6 text-center sm:px-8 md:flex-row md:items-center md:justify-between md:text-left lg:px-12">
           <p className="text-[10px] leading-5 text-white/35">
-            Ãƒâ€šÃ‚Â© 2026 Beryl's Beauty Mark. All rights reserved.
+            &copy; 2026 Beryl's Beauty Mark. All rights reserved.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] text-white/35 md:justify-end">
@@ -445,12 +445,12 @@ export function Footer() {
 
             <span className="h-1 w-1 rounded-full bg-white/20" />
 
-            <a
-              href="#"
-              className="transition hover:text-[#f5b0d0]"
+            <button
+              type="button"
+              onClick={function () { window.scrollTo({ top: 0, behavior: 'smooth' }) }}
             >
-              Back to top ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Ëœ
-            </a>
+              Back to top &uarr;
+            </button>
           </div>
         </div>
       </div>
