@@ -161,7 +161,14 @@ export function AppointmentsAdminPage() {
                   {booking.referenceImageUrl && (
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#a08a94]">Reference photo</p>
-                      <img src={booking.referenceImageUrl} alt="" className="mt-2 h-24 w-24 rounded-xl object-cover" />
+                      <a href={booking.referenceImageUrl} target="_blank" rel="noopener noreferrer">
+                        <img
+                          src={booking.referenceImageUrl}
+                          alt=""
+                          className="mt-2 h-40 w-40 rounded-xl object-cover transition hover:opacity-90"
+                        />
+                      </a>
+                      <p className="mt-1.5 text-[10px] font-semibold text-[#a08a94]">Click to view full size</p>
                     </div>
                   )}
                   <div className="min-w-0 flex-1 space-y-2">
