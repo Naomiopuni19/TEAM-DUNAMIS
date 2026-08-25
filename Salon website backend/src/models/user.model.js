@@ -4,7 +4,7 @@ export async function createCustomer({ name, phone, passwordHash, email, area })
   const result = await query(
     `insert into users (name, phone, password_hash, role, email, area)
      values ($1, $2, $3, 'customer', $4, $5)
-     returning id, name, phone, role, email, area`,
+     returning id, name, phone, role, email, area, avatar_url`,
     [name, phone, passwordHash, email || null, area || null]
   );
   return result.rows[0];
@@ -22,7 +22,7 @@ export async function findUserByEmail(email) {
 
 export async function findUserById(id) {
   const result = await query(
-    "select id, name, phone, role, email, area, is_active as \"isActive\" from users where id = $1",
+    "select id, name, phone, role, email, area, avatar_url, is_active as \"isActive\" from users where id = $1",
     [id]
   );
   return result.rows[0] || null;
@@ -33,13 +33,14 @@ export async function findUserWithPasswordById(id) {
   return result.rows[0] || null;
 }
 
-export async function updateUserProfile(id, { name, phone, email, area }) {
+export async function updateUserProfile(id, { name, phone, email, area, avatarUrl }) {
   const result = await query(
     `update users
-     set name = $1, phone = $2, email = coalesce($3, email), area = coalesce($4, area), updated_at = now()
-     where id = $5
-     returning id, name, phone, role, email, area`,
-    [name, phone, email || null, area || null, id]
+     set name = $1, phone = $2, email = coalesce($3, email), area = coalesce($4, area),
+         avatar_url = coalesce($5, avatar_url), updated_at = now()
+     where id = $6
+     returning id, name, phone, role, email, area, avatar_url`,
+    [name, phone, email || null, area || null, avatarUrl || null, id]
   );
   return result.rows[0] || null;
 }

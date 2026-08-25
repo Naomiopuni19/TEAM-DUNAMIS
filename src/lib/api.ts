@@ -451,7 +451,7 @@ export const api = {
   me(token: string) {
     return request<{ user: User }>('/auth/me', { token })
   },
-  updateProfile(token: string, body: { name: string; phone: string }) {
+  updateProfile(token: string, body: { name: string; phone: string; avatarUrl?: string }) {
     return request<{ user: User }>('/auth/me', {
       method: 'PUT',
       token,

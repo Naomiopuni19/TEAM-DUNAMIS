@@ -36,7 +36,8 @@ const profileSchema = z.object({
   name: z.string().min(2),
   phone: z.string().min(7).max(20),
   email: z.string().email().optional().or(z.literal("")),
-  area: z.string().max(120).optional()
+  area: z.string().max(120).optional(),
+  avatarUrl: z.string().optional().or(z.literal(""))
 });
 
 const passwordSchema = z.object({
@@ -51,7 +52,8 @@ function publicUser(user) {
     phone: user.phone,
     role: user.role,
     email: user.email || null,
-    area: user.area || null
+    area: user.area || null,
+    avatarUrl: user.avatar_url || null
   };
 }
 

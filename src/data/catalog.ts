@@ -37,6 +37,7 @@ export type User = {
   role: 'customer' | 'admin'
   email?: string | null
   area?: string | null
+  avatarUrl?: string | null
 }
 
 export const imageBase =

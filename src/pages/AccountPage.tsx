@@ -10,6 +10,7 @@ import {
 } from '../lib/api'
 import { productImage } from '../data/catalog'
 import { ReviewMediaField } from '../components/ReviewMediaField'
+import { ImageUploadField } from '../admin/components/ImageUploadField'
 
 type AccountPageProps = {
   onRequireAuth: () => void
@@ -214,13 +215,15 @@ export function AccountPage(props) {
     }
   }
 
+  const [avatarUrl, setAvatarUrl] = useState(user ? user.avatarUrl || '' : '')
+
   async function saveProfile(event) {
     event.preventDefault()
     setBusy(true)
     setMessage('')
     const form = new FormData(event.currentTarget)
     try {
-      await updateProfile(String(form.get('name')), String(form.get('phone')))
+      await updateProfile(String(form.get('name')), String(form.get('phone')), avatarUrl || undefined)
       setMessage('Your profile has been updated.')
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Update failed.')
@@ -309,6 +312,12 @@ export function AccountPage(props) {
               <div>
                 <h2 className="font-serif text-3xl text-[#3e2530]">Profile details</h2>
                 <form onSubmit={saveProfile} className="mt-7 grid gap-5 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    {avatarUrl && (
+                      <img src={avatarUrl} alt="" className="mb-3 h-20 w-20 rounded-full object-cover" />
+                    )}
+                    <ImageUploadField label="Profile picture" value={avatarUrl} onChange={setAvatarUrl} />
+                  </div>
                   <label className="block">
                     <span className="mb-2 block text-xs font-bold uppercase tracking-[0.12em]">Full name</span>
                     <input required name="name" minLength={2} defaultValue={user.name} autoComplete="name" className="h-13 w-full rounded-xl border border-[#dfbdcb] px-4 outline-none focus:border-[#dc2d83]" />

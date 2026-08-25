@@ -131,9 +131,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     return result.user
   }
 
-  async function updateProfile(name: string, phone: string) {
+  async function updateProfile(name: string, phone: string, avatarUrl?: string) {
     if (!token) throw new Error('Sign in to update your profile.')
-    const result = await api.updateProfile(token, { name, phone })
+    const result = await api.updateProfile(token, { name, phone, avatarUrl })
     sessionStorage.setItem(userStorageKey, JSON.stringify(result.user))
     setUser(result.user)
     return result.user

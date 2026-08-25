@@ -257,7 +257,11 @@ export function Header({
                 user ? 'w-auto px-3' : 'w-11'
               }`}
             >
-              <FiUser aria-hidden="true" size={20} strokeWidth={1.8} />
+              {user && user.avatarUrl ? (
+                <img src={user.avatarUrl} alt="" className="h-6 w-6 rounded-full object-cover" />
+              ) : (
+                <FiUser aria-hidden="true" size={20} strokeWidth={1.8} />
+              )}
               {user && <FiChevronDown aria-hidden="true" size={14} />}
             </button>
 
