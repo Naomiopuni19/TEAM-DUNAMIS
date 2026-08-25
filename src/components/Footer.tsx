@@ -158,7 +158,7 @@ export function Footer() {
               </div>
 
               <p className="mt-2 px-1 text-[9px] text-white/30">
-                No spam. Just beautiful things. ♡
+                No spam. Just beautiful things. Ã¢â„¢Â¡
               </p>
             </form>
           </div>
@@ -177,7 +177,7 @@ export function Footer() {
               </div>
 
               <p className="mt-3 text-[7px] font-bold uppercase tracking-[0.3em] text-[#f5b0d0]">
-                Hair • Beauty • Luxury
+                Hair Ã¢â‚¬Â¢ Beauty Ã¢â‚¬Â¢ Luxury
               </p>
             </a>
 
@@ -284,7 +284,7 @@ export function Footer() {
                   href="#/appointments"
                   className="font-semibold text-[#f5b0d0] transition hover:text-white"
                 >
-                  Book Now →
+                  Book Now Ã¢â€ â€™
                 </a>
               </div>
             </div>
@@ -322,13 +322,6 @@ export function Footer() {
 
                 <a href="#/terms" className="transition hover:text-white">
                   Terms
-                </a>
-
-                <a
-                  href="#/staff-login"
-                  className="font-semibold text-[#f5b0d0] transition hover:text-white"
-                >
-                  Staff Portal →
                 </a>
               </div>
             </div>
@@ -430,7 +423,7 @@ export function Footer() {
         ====================================================== */}
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-6 text-center sm:px-8 md:flex-row md:items-center md:justify-between md:text-left lg:px-12">
           <p className="text-[10px] leading-5 text-white/35">
-            © 2026 Beryl's Beauty Mark. All rights reserved.
+            Ã‚Â© 2026 Beryl's Beauty Mark. All rights reserved.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] text-white/35 md:justify-end">
@@ -456,7 +449,7 @@ export function Footer() {
               href="#"
               className="transition hover:text-[#f5b0d0]"
             >
-              Back to top ↑
+              Back to top Ã¢â€ â€˜
             </a>
           </div>
         </div>
