@@ -2,7 +2,7 @@ import { query } from "../config/db.js";
 
 export async function listProducts() {
   const result = await query(
-    `select id, name, description, category, price, stock_qty as "stockQty",
+    `select id, name, description, category, price::float8 as price, stock_qty as "stockQty",
             stock_qty > 0 as "inStock", images
      from products
      where is_active = true
@@ -15,7 +15,7 @@ export async function createProduct(input) {
   const result = await query(
     `insert into products (name, description, category, price, stock_qty, images)
      values ($1, $2, $3, $4, $5, $6)
-     returning id, name, description, category, price, stock_qty as "stockQty",
+     returning id, name, description, category, price::float8 as price, stock_qty as "stockQty",
                stock_qty > 0 as "inStock", images`,
     [
       input.name,
@@ -34,7 +34,7 @@ export async function updateProductStock(id, stockQty) {
     `update products
      set stock_qty = $1, updated_at = now()
      where id = $2
-     returning id, name, description, category, price, stock_qty as "stockQty",
+     returning id, name, description, category, price::float8 as price, stock_qty as "stockQty",
                stock_qty > 0 as "inStock", images`,
     [stockQty, id]
   );
@@ -50,7 +50,7 @@ export async function updateProduct(id, input) {
      set name = $1, description = $2, category = $3, price = $4,
          stock_qty = $5, images = $6, updated_at = now()
      where id = $7
-     returning id, name, description, category, price, stock_qty as "stockQty",
+     returning id, name, description, category, price::float8 as price, stock_qty as "stockQty",
                stock_qty > 0 as "inStock", images`,
     [
       merged.name,

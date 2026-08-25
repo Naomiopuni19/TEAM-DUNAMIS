@@ -99,7 +99,7 @@ export function BookingPage(props) {
     onAdd(product)
     setAddedExtensionId(product.id)
     setNotes(function (current) {
-      const line = 'Purchased extensions for this appointment (' + product.name + '), to be held at the salon, not delivered.'
+      const line = 'Purchased extensions for this appointment (' + product.name + ', GHC ' + product.price.toLocaleString() + '), to be held at the salon, not delivered. Add this to the service price when setting the final confirmed price.'
       return current.trim() ? current.trim() + ' | ' + line : line
     })
   }

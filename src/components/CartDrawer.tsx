@@ -37,7 +37,7 @@ export function CartDrawer({
 
   if (!open) return null
 
-  const total = items.reduce((sum, item) => sum + item.price, 0)
+  const total = items.reduce((sum, item) => sum + Number(item.price || 0), 0)
   const discount = appliedGiftCard ? Math.min(appliedGiftCard.balance, total) : 0
   const finalTotal = Math.max(0, total - discount)
 

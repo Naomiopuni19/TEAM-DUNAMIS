@@ -2,7 +2,7 @@ import { query } from "../config/db.js";
 
 export async function listVariantsForProduct(productId) {
   const result = await query(
-    `select id, product_id as "productId", label, price, stock_qty as "stockQty",
+    `select id, product_id as "productId", label, price::float8 as price, stock_qty as "stockQty",
             image_url as "imageUrl", sort_order as "sortOrder", is_active as "isActive",
             option1_name as "option1Name", option1_value as "option1Value",
             option2_name as "option2Name", option2_value as "option2Value"
@@ -16,7 +16,7 @@ export async function listVariantsForProduct(productId) {
 
 export async function listAllVariantsForProduct(productId) {
   const result = await query(
-    `select id, product_id as "productId", label, price, stock_qty as "stockQty",
+    `select id, product_id as "productId", label, price::float8 as price, stock_qty as "stockQty",
             image_url as "imageUrl", sort_order as "sortOrder", is_active as "isActive",
             option1_name as "option1Name", option1_value as "option1Value",
             option2_name as "option2Name", option2_value as "option2Value"
