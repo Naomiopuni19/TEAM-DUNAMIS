@@ -202,8 +202,14 @@ export function AccountPage(props) {
           {[1, 2, 3, 4, 5].map(function (n) {
             const starClass = n <= rating ? 'text-[#dc2d83]' : 'text-[#e6d3da]'
             return (
-              <button key={n} type="button" onClick={function () { setRating(n) }} className={starClass}>
-                star
+              <button
+                key={n}
+                type="button"
+                onClick={function () { setRating(n) }}
+                aria-label={n + ' star' + (n === 1 ? '' : 's')}
+                className={starClass + ' text-2xl leading-none transition hover:scale-110'}
+              >
+                &#9733;
               </button>
             )
           })}
