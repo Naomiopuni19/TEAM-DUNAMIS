@@ -355,15 +355,20 @@ export function AccountPage(props) {
                               Your requested style is being reviewed, we will confirm a price soon.
                             </p>
                           )}
-                          {booking.status === 'confirmed' && !booking.isPaid && (
+                          {booking.status === 'confirmed' && !booking.isPaid && booking.confirmedPrice && (
                             <button
                               type="button"
                               onClick={function () { payForBooking(booking.id) }}
                               disabled={payingId === booking.id}
                               className="mt-3 rounded-full bg-[#dc2d83] px-5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white disabled:opacity-50"
                             >
-                              {payingId === booking.id ? 'Redirecting...' : 'Pay now'}
+                              {payingId === booking.id ? 'Redirecting...' : 'Pay now, GHC ' + booking.confirmedPrice}
                             </button>
+                          )}
+                          {booking.status === 'confirmed' && !booking.isPaid && !booking.confirmedPrice && (
+                            <p className="mt-3 rounded-lg bg-[#fdf2e0] px-3 py-2 text-xs font-bold text-[#8a5a1f]">
+                              Waiting for the salon to confirm your final price before you can pay
+                            </p>
                           )}
                           {booking.isPaid && (
                             <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700">
