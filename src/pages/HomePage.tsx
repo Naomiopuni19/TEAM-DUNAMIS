@@ -445,6 +445,35 @@ function HeroBanner() {
           lg:pb-16
         "
       >
+        {/* SMALL HEADLINE, LEFT SIDE, OPTIONAL, ADMIN CONTROLLED */}
+        {(slide.title || slide.subtitle) && (
+          <div
+            className="
+              absolute
+              left-5
+              top-1/2
+              hidden
+              max-w-[220px]
+              -translate-y-1/2
+              text-left
+              sm:left-10
+              md:block
+              lg:left-12
+            "
+          >
+            {slide.title && (
+              <p className="font-serif text-lg leading-tight text-white drop-shadow sm:text-xl">
+                {slide.title}
+              </p>
+            )}
+            {slide.subtitle && (
+              <p className="mt-2 text-xs leading-5 text-white/75 sm:text-sm">
+                {slide.subtitle}
+              </p>
+            )}
+          </div>
+        )}
+
         <div
           key={slide.id}
           className="
@@ -459,7 +488,7 @@ function HeroBanner() {
         >
           {/* BRAND */}
 
-          <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#f2a7c9] drop-shadow sm:text-[11px] sm:tracking-[0.28em]">{slide.eyebrow}</p>
+          <p className="text-[9px] font-bold uppercase tracking-[0.22em] text-[#f2a7c9] drop-shadow sm:text-[11px] sm:tracking-[0.28em]">Welcome to</p>
 
           {/* MAIN TITLE */}
 
@@ -479,29 +508,9 @@ function HeroBanner() {
               sm:text-[clamp(4rem,9vw,6.8rem)]
             "
           >
-            {slide.title}
+            Beryl&apos;s Beauty Mark
           </h1>
 
-          {/* SUBTITLE */}
-
-          {slide.subtitle && (
-            <p
-              className="
-                mx-auto
-                mt-3
-                max-w-[340px]
-                text-xs
-                leading-5
-                text-white/80
-                sm:mt-4
-                sm:max-w-[500px]
-                sm:text-base
-                sm:leading-7
-              "
-            >
-              {slide.subtitle}
-            </p>
-          )}
 
           {/* BUTTONS */}
 
