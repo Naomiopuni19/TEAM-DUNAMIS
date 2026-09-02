@@ -448,12 +448,13 @@ function HeroBanner() {
         <div
           key={slide.id}
           className="
+            mx-auto
             w-full
-            max-w-[300px]
-            text-left
+            max-w-[380px]
+            text-center
             animate-[bbm-rise_800ms_cubic-bezier(0.22,1,0.36,1)_both]
-            sm:max-w-[430px]
-            lg:max-w-[500px]
+            sm:max-w-[560px]
+            lg:max-w-[680px]
           "
         >
           {/* BRAND */}
@@ -464,17 +465,18 @@ function HeroBanner() {
 
           <h1
             className="
+              mx-auto
               mt-2
-              max-w-[310px]
+              max-w-[380px]
               font-serif
-              text-[clamp(2.7rem,12vw,4.7rem)]
-              leading-[0.88]
+              text-[clamp(3.2rem,14vw,5.6rem)]
+              leading-[0.9]
               tracking-[-0.045em]
               text-white
               drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]
               sm:mt-4
-              sm:max-w-[450px]
-              sm:text-[clamp(3.4rem,8vw,5.7rem)]
+              sm:max-w-[560px]
+              sm:text-[clamp(4rem,9vw,6.8rem)]
             "
           >
             {slide.title}
@@ -485,13 +487,14 @@ function HeroBanner() {
           {slide.subtitle && (
             <p
               className="
+                mx-auto
                 mt-3
-                max-w-[300px]
+                max-w-[340px]
                 text-xs
                 leading-5
                 text-white/80
                 sm:mt-4
-                sm:max-w-[420px]
+                sm:max-w-[500px]
                 sm:text-base
                 sm:leading-7
               "
@@ -508,6 +511,7 @@ function HeroBanner() {
               flex
               flex-row
               items-center
+              justify-center
               gap-2.5
               sm:mt-8
               sm:gap-3
