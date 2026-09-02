@@ -10,6 +10,7 @@ export function ProductsAdminPage() {
   const [editing, setEditing] = useState<Product | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [message, setMessage] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
 
   const [variantsByProduct, setVariantsByProduct] = useState<Record<string, any[]>>({})
   const [variantForms, setVariantForms] = useState<Record<string, any>>({})
@@ -22,7 +23,7 @@ export function ProductsAdminPage() {
       name: String(form.get('name')), description: String(form.get('description')),
       category: String(form.get('category')), price: Number(form.get('price')),
       stockQty: Number(form.get('stockQty')),
-      images: String(form.get('image')).trim() ? [String(form.get('image')).trim()] : [],
+      images: imageUrl ? [imageUrl] : [],
     }
     try {
       if (editing) await api.updateProduct(token, editing.id, body)
@@ -111,7 +112,7 @@ export function ProductsAdminPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Products" title="Inventory and products" description="Manage product details, prices and available stock." action={<PrimaryButton onClick={() => { setEditing(null); setShowForm(true) }}>Add product</PrimaryButton>} />
+      <PageHeader eyebrow="Products" title="Inventory and products" description="Manage product details, prices and available stock." action={<PrimaryButton onClick={() => { setEditing(null); setImageUrl(''); setShowForm(true) }}>Add product</PrimaryButton>} />
       {message && <div className="mt-6"><Notice>{message}</Notice></div>}
       {showForm && (
         <Panel className="mt-6">
@@ -121,7 +122,7 @@ export function ProductsAdminPage() {
             <textarea name="description" required defaultValue={editing?.description} placeholder="Description" className={`${fieldClass} h-24 py-3 md:col-span-2`} />
             <input name="price" required type="number" min="0" defaultValue={editing?.price} placeholder="Price" className={fieldClass} />
             <input name="stockQty" required type="number" min="0" defaultValue={editing?.stockQty} placeholder="Stock quantity" className={fieldClass} />
-            <input name="image" defaultValue={editing?.images[0]} placeholder="Image URL or /images/path.jpg" className={`${fieldClass} md:col-span-2`} />
+            <div className="md:col-span-2"><ImageUploadField label="Product photo" value={imageUrl} onChange={setImageUrl} /></div>
             <div className="flex gap-3 md:col-span-2"><PrimaryButton type="submit">Save product</PrimaryButton><button type="button" onClick={() => setShowForm(false)} className="text-sm">Cancel</button></div>
           </form>
         </Panel>
@@ -141,7 +142,7 @@ export function ProductsAdminPage() {
                   <td><span className={product.stockQty <= 5 ? 'font-bold text-amber-600' : ''}>{product.stockQty}</span></td>
                   <td>
                     <div className="flex flex-wrap gap-4 text-xs font-bold uppercase">
-                      <button onClick={() => { setEditing(product); setShowForm(true) }} className="text-[#a52261]">Edit</button>
+                      <button onClick={() => { setEditing(product); setImageUrl(product.images[0] || ''); setShowForm(true) }} className="text-[#a52261]">Edit</button>
                       <button onClick={() => remove(product)} className="text-red-600">Delete</button>
                       <button onClick={() => toggleVariants(product.id)} className="text-[#604c55]">
                         {variants ? 'Hide variants' : 'Manage variants'}
