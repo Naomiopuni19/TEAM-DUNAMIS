@@ -176,7 +176,7 @@ export function Header({
             blendsWithHero ? 'text-white' : 'text-[#3e2530]'
           }`}
         >
-          <span className="block text-[19px] font-semibold uppercase tracking-[0.3em] sm:text-[28px] sm:tracking-[0.36em]">
+          <span className="block text-[24px] font-semibold uppercase tracking-[0.28em] sm:text-[34px] sm:tracking-[0.34em]">
             Beryl&apos;s
           </span>
           <span className="mt-1.5 flex items-center justify-center gap-2">
@@ -186,7 +186,7 @@ export function Header({
               }`}
             />
             <span
-              className={`text-[7px] font-bold uppercase tracking-[0.34em] sm:text-[9px] ${
+              className={`text-[11px] font-bold uppercase tracking-[0.3em] sm:text-[14px] ${
                 blendsWithHero ? 'text-[#f7b4d2]' : 'text-[#d92c83]'
               }`}
             >
