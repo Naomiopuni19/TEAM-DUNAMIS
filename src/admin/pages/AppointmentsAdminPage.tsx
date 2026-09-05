@@ -166,7 +166,7 @@ export function AppointmentsAdminPage() {
                 </span>
               </div>
 
-              {(booking.referenceImageUrl || booking.notes || booking.lengthLabel) && (
+              {(booking.referenceImageUrl || booking.notes || booking.lengthLabel || booking.extensionProductName) && (
                 <div className="mt-4 flex flex-wrap gap-4 rounded-2xl bg-[#fff7fa] p-4">
                   {booking.referenceImageUrl && (
                     <div>
