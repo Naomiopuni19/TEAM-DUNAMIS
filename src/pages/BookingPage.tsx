@@ -679,8 +679,18 @@ export function BookingPage(props) {
                       <dd className="text-right">{customLengthText.trim()}</dd>
                     </div>
                   )}
+                  {selectedExtension && (
+                    <div className="flex justify-between gap-4">
+                      <dt>Extension</dt>
+                      <dd className="text-right">
+                        {extensionQuantity}x {selectedExtension.name}
+                        <br />
+                        GHC {(selectedExtension.price * extensionQuantity).toLocaleString()}
+                      </dd>
+                    </div>
+                  )}
                   <div className="flex justify-between gap-4 border-t border-white/15 pt-3">
-                    <dt>Price range</dt>
+                    <dt>Service price range</dt>
                     <dd>
                       {wantsCustomLength
                         ? 'To be confirmed'
@@ -691,6 +701,9 @@ export function BookingPage(props) {
                         : ''}
                     </dd>
                   </div>
+                  <p className="pt-2 text-xs text-white/60">
+                    The salon will confirm one final price covering the service and any extension together before you pay.
+                  </p>
                 </dl>
               </aside>
             </div>
