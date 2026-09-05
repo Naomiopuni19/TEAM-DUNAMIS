@@ -59,13 +59,18 @@ export function AppointmentsAdminPage() {
     }
   }
 
+  function extensionTotalFor(booking: AdminBooking) {
+    return (booking.extensionProductPrice || 0) * (booking.extensionQuantity || 0)
+  }
+
   async function approveWithPrice(booking: AdminBooking) {
-    const price = Number(approvalPriceDrafts[booking.id])
-    if (!price || price <= 0) {
+    const servicePrice = Number(approvalPriceDrafts[booking.id])
+    if (!servicePrice || servicePrice <= 0) {
       setError('Enter a real price before approving.')
       return
     }
-    await status(booking, 'confirmed', price)
+    const finalPrice = servicePrice + extensionTotalFor(booking)
+    await status(booking, 'confirmed', finalPrice)
   }
 
   async function approveCustomLengthPrice(booking: AdminBooking) {
@@ -252,18 +257,25 @@ export function AppointmentsAdminPage() {
 
               <div className="mt-5 flex flex-wrap gap-2 border-t border-[#f0dfe6] pt-5">
                 {booking.status === 'pending' && (
-                  <div className="flex flex-wrap items-center gap-3">
-                    <input
-                      type="number"
-                      min="0"
-                      placeholder="Set the real price, GHC"
-                      value={approvalPriceDrafts[booking.id] ?? ''}
-                      onChange={(e) =>
-                        setApprovalPriceDrafts((all) => ({ ...all, [booking.id]: e.target.value }))
-                      }
-                      className={fieldClass + ' max-w-[180px]'}
-                    />
-                    <PrimaryButton onClick={() => approveWithPrice(booking)}>Approve</PrimaryButton>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder={extensionTotalFor(booking) > 0 ? 'Service price only, GHC' : 'Set the real price, GHC'}
+                        value={approvalPriceDrafts[booking.id] ?? ''}
+                        onChange={(e) =>
+                          setApprovalPriceDrafts((all) => ({ ...all, [booking.id]: e.target.value }))
+                        }
+                        className={fieldClass + ' max-w-[180px]'}
+                      />
+                      <PrimaryButton onClick={() => approveWithPrice(booking)}>Approve</PrimaryButton>
+                    </div>
+                    {extensionTotalFor(booking) > 0 && (
+                      <p className="mt-2 text-xs font-semibold text-[#a52261]">
+                        Plus GHC {extensionTotalFor(booking)} for the extension, real total the client will pay: GHC {(Number(approvalPriceDrafts[booking.id]) || 0) + extensionTotalFor(booking)}
+                      </p>
+                    )}
                   </div>
                 )}
                 {booking.status !== 'completed' && booking.status !== 'cancelled' && (
