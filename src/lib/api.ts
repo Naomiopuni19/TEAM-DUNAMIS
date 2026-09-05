@@ -23,6 +23,7 @@ export type Availability = {
   bookedCount: number
   slotsRemaining: number
   available: boolean
+  bookedTimeSlots?: string[]
 }
 
 export type AdminBooking = {

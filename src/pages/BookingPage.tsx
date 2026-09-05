@@ -578,14 +578,17 @@ export function BookingPage(props) {
               <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {times.map(function (time) {
                   const selected = selectedTime === time
+                  const isTaken = Boolean(availability && availability.bookedTimeSlots && availability.bookedTimeSlots.indexOf(time) !== -1)
                   const timeClass = selected
                     ? 'rounded-full border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 border-[#dc2d83] bg-[#fbe0eb] text-[#a51e61]'
+                    : isTaken
+                    ? 'rounded-full border px-4 py-3 text-sm font-semibold transition cursor-not-allowed border-[#ecd8e1] bg-[#f3e6ec] text-[#c7a9b6] line-through'
                     : 'rounded-full border px-4 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 border-[#e5cbd6] bg-white text-[#604c55]'
                   return (
                     <button
                       key={time}
                       type="button"
-                      disabled={!availability || !availability.available}
+                      disabled={!availability || !availability.available || isTaken}
                       onClick={function () { setSelectedTime(time) }}
                       className={timeClass}
                     >

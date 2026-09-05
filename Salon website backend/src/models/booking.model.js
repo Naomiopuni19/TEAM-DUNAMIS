@@ -29,6 +29,17 @@ async function availabilityWithClient(client, serviceId, date) {
   const row = result.rows[0];
   if (!row) throw new HttpError(404, "Service not found");
 
+  const takenResult = await client.query(
+    `select distinct b.time_slot
+     from bookings b
+     join services category_service on category_service.id = b.service_id
+     where category_service.category_id = $1
+       and b.booking_date = $2
+       and b.status in ('pending', 'confirmed')`,
+    [row.category_id, date]
+  );
+  const bookedTimeSlots = takenResult.rows.map(function (r) { return r.time_slot; });
+
   const slotsRemaining = Math.max(row.daily_cap - row.booked_count, 0);
   return {
     date,
@@ -37,7 +48,8 @@ async function availabilityWithClient(client, serviceId, date) {
     dailyCap: row.daily_cap,
     bookedCount: row.booked_count,
     slotsRemaining,
-    available: slotsRemaining > 0
+    available: slotsRemaining > 0,
+    bookedTimeSlots
   };
 }
 
