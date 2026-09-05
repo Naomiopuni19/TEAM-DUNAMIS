@@ -403,7 +403,11 @@ export function AccountPage(props) {
                               disabled={payingId === booking.id}
                               className="mt-3 rounded-full bg-[#dc2d83] px-5 py-2 text-xs font-bold uppercase tracking-[0.12em] text-white disabled:opacity-50"
                             >
-                              {payingId === booking.id ? 'Redirecting...' : 'Pay now, GHC ' + booking.confirmedPrice}
+                              {payingId === booking.id
+                                ? 'Redirecting...'
+                                : (booking.amountPaid > 0
+                                    ? 'Pay remaining balance, GHC ' + (booking.confirmedPrice - booking.amountPaid)
+                                    : 'Pay deposit, GHC ' + (booking.confirmedPrice / 2) + ' of ' + booking.confirmedPrice)}
                             </button>
                           )}
                           {booking.status === 'confirmed' && !booking.isPaid && !booking.confirmedPrice && (
