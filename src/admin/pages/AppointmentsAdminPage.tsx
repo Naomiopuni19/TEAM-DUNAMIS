@@ -180,6 +180,9 @@ export function AppointmentsAdminPage() {
                     {booking.extensionProductName && (
                       <p className="text-sm font-semibold text-[#a52261]">
                         <span className="font-bold">Extension requested:</span> {booking.extensionQuantity}x {booking.extensionProductName}
+                        {booking.extensionProductPrice != null && (
+                          <> (GHC {booking.extensionProductPrice} each, GHC {(booking.extensionProductPrice * (booking.extensionQuantity || 1)).toLocaleString()} total)</>
+                        )}
                       </p>
                     )}
                     {booking.notes && (

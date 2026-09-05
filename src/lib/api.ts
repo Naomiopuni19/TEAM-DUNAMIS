@@ -42,6 +42,7 @@ export type AdminBooking = {
   confirmedPrice?: number
   extensionProductName?: string
   extensionQuantity?: number
+  extensionProductPrice?: number
 }
 
 export type AdminOrder = {
@@ -476,7 +477,7 @@ export const api = {
   },
   createBooking(
     token: string,
-    body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string; customLengthRequest?: string; notes?: string; contactEmail?: string; extensionProductId?: string; extensionProductName?: string; extensionQuantity?: number },
+    body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string; customLengthRequest?: string; notes?: string; contactEmail?: string; extensionProductId?: string; extensionProductName?: string; extensionQuantity?: number; extensionProductPrice?: number },
   ) {
     return request<{ booking: { id: string; status: string; confirmationCode: string } }>('/bookings', {
       method: 'POST',

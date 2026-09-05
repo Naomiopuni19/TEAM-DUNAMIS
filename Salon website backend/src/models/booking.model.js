@@ -99,9 +99,9 @@ export async function createBooking(userId, input) {
          user_id, service_id, booking_date, time_slot, status,
          reference_image_url, length_label, confirmation_code,
          custom_length_request, custom_length_status, notes, contact_email,
-         extension_product_id, extension_product_name, extension_quantity
+         extension_product_id, extension_product_name, extension_quantity, extension_product_price
        )
-       values ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+       values ($1, $2, $3, $4, 'pending', $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
        returning id, user_id as "userId", service_id as "serviceId",
                  booking_date as date, time_slot as "timeSlot", status,
                  reference_image_url as "referenceImageUrl", length_label as "lengthLabel",
@@ -112,6 +112,7 @@ export async function createBooking(userId, input) {
                  extension_product_id as "extensionProductId",
                  extension_product_name as "extensionProductName",
                  extension_quantity as "extensionQuantity",
+                 extension_product_price as "extensionProductPrice",
                  created_at as "createdAt"`,
       [
         userId,
@@ -127,7 +128,8 @@ export async function createBooking(userId, input) {
         input.contactEmail || null,
         input.extensionProductId || null,
         input.extensionProductName || null,
-        input.extensionQuantity || null
+        input.extensionQuantity || null,
+        input.extensionProductPrice || null
       ]
     );
     await client.query("commit");
@@ -175,6 +177,7 @@ export async function listBookings({ date, categoryId }) {
             b.notes,
             b.extension_product_name as "extensionProductName",
             b.extension_quantity as "extensionQuantity",
+            b.extension_product_price as "extensionProductPrice",
             json_build_object('id', u.id, 'name', u.name, 'phone', u.phone) as "user",
             json_build_object('id', s.id, 'name', s.name) as "service",
             json_build_object('id', c.id, 'name', c.name) as "category"

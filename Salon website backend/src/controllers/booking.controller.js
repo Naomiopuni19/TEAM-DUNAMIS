@@ -35,7 +35,8 @@ const createBookingSchema = z.object({
   contactEmail: z.string().email().optional(),
   extensionProductId: z.string().uuid().optional(),
   extensionProductName: z.string().max(200).optional(),
-  extensionQuantity: z.number().int().positive().optional()
+  extensionQuantity: z.number().int().positive().optional(),
+  extensionProductPrice: z.number().nonnegative().optional()
 });
 
 const approveCustomLengthSchema = z.object({

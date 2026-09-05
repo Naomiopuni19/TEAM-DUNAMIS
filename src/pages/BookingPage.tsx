@@ -180,6 +180,7 @@ export function BookingPage(props) {
         extensionProductId: selectedExtension ? selectedExtension.id : undefined,
         extensionProductName: selectedExtension ? selectedExtension.name : undefined,
         extensionQuantity: selectedExtension ? extensionQuantity : undefined,
+        extensionProductPrice: selectedExtension ? selectedExtension.price : undefined,
       })
 
       setSubmitted(true)
