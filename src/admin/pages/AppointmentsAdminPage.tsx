@@ -49,6 +49,16 @@ export function AppointmentsAdminPage() {
     }
   }
 
+  async function settleBalance(booking: AdminBooking) {
+    if (!token || !window.confirm('Confirm you have genuinely received the rest of the payment from this client, in cash or Mobile Money?')) return
+    try {
+      await api.settleBookingBalance(token, booking.id)
+      await reload()
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Unable to mark this as settled.')
+    }
+  }
+
   async function approveWithPrice(booking: AdminBooking) {
     const price = Number(approvalPriceDrafts[booking.id])
     if (!price || price <= 0) {
@@ -189,6 +199,21 @@ export function AppointmentsAdminPage() {
                       <p className="text-sm text-[#3e2530]">
                         <span className="font-bold">Notes:</span> {booking.notes}
                       </p>
+                    )}
+                    {booking.confirmedPrice != null && (
+                      <div className="mt-2 rounded-xl bg-white p-3">
+                        <p className="text-xs text-[#745f68]">
+                          Total GHC {booking.confirmedPrice}, paid so far GHC {booking.amountPaid || 0}, remaining GHC {booking.confirmedPrice - (booking.amountPaid || 0)}
+                        </p>
+                        {(booking.amountPaid || 0) > 0 && (booking.amountPaid || 0) < booking.confirmedPrice && (
+                          <button
+                            onClick={() => settleBalance(booking)}
+                            className="mt-2 rounded-full border border-emerald-600 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-700"
+                          >
+                            Mark remaining balance as settled in person
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>

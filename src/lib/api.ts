@@ -40,6 +40,7 @@ export type AdminBooking = {
   lengthLabel?: string
   notes?: string
   confirmedPrice?: number
+  amountPaid?: number
   extensionProductName?: string
   extensionQuantity?: number
   extensionProductPrice?: number
@@ -541,6 +542,12 @@ export const api = {
   },
   adminBookings(token: string) {
     return request<AdminBooking[]>('/bookings', { token })
+  },
+  settleBookingBalance(token: string, id: string) {
+    return request<{ booking: unknown }>('/payments/bookings/' + id + '/settle-balance', {
+      method: 'PUT',
+      token,
+    })
   },
   updateBookingStatus(token: string, id: string, status: string, price?: number) {
     return request<{ booking: AdminBooking }>(`/bookings/${id}/status`, {
