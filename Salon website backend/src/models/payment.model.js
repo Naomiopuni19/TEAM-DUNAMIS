@@ -1,6 +1,6 @@
 import { query } from "../config/db.js";
 
-export async function findPaymentAmount(type, refId, userId) {
+export async function findPaymentAmount(type, refId, userId, portion) {
   if (type === "order") {
     const result = await query(
       "select total_amount as amount from orders where id = $1 and user_id = $2",
@@ -18,12 +18,22 @@ export async function findPaymentAmount(type, refId, userId) {
   }
 
   const result = await query(
-    `select b.confirmed_price as amount
+    `select b.confirmed_price as "confirmedPrice", b.amount_paid as "amountPaid"
      from bookings b
      where b.id = $1 and b.user_id = $2`,
     [refId, userId]
   );
-  return result.rows[0]?.amount ?? null;
+  const booking = result.rows[0];
+  if (!booking || booking.confirmedPrice == null) return null;
+
+  const remaining = Number(booking.confirmedPrice) - Number(booking.amountPaid || 0);
+  if (remaining <= 0) return null;
+
+  if (portion === "half" && Number(booking.amountPaid || 0) === 0) {
+    return Math.round((Number(booking.confirmedPrice) / 2) * 100) / 100;
+  }
+
+  return remaining;
 }
 
 export async function createPayment({
@@ -101,7 +111,7 @@ export async function getBookingDetailsForEmail(bookingId) {
   const result = await query(
     `select b.id, b.booking_date as date, b.time_slot as "timeSlot",
             b.confirmation_code as "confirmationCode", b.status,
-            b.confirmed_price as "confirmedPrice",
+            b.confirmed_price as "confirmedPrice", b.amount_paid as "amountPaid",
             s.name as "serviceName", s.price_min as "priceMin", s.price_max as "priceMax",
             u.name as "customerName", u.phone as "customerPhone",
             coalesce(b.contact_email, u.email) as "customerEmail"
@@ -129,8 +139,24 @@ export async function markPaymentSuccessAndUnlock(reference) {
   } else if (payment.type === "gift_card") {
     await query("update gift_cards set status = 'active', updated_at = now() where id = $1", [payment.refId]);
   } else {
-    await query("update bookings set status = 'confirmed' where id = $1", [payment.refId]);
+    await query(
+      `update bookings
+       set status = 'confirmed', amount_paid = amount_paid + $1
+       where id = $2`,
+      [payment.amount, payment.refId]
+    );
   }
 
   return payment;
+}
+
+export async function markBookingBalanceSettledInPerson(id) {
+  const result = await query(
+    `update bookings
+     set amount_paid = confirmed_price, updated_at = now()
+     where id = $1
+     returning id, confirmed_price as "confirmedPrice", amount_paid as "amountPaid"`,
+    [id]
+  );
+  return result.rows[0] || null;
 }

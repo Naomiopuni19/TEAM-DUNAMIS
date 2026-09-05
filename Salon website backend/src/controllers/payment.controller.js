@@ -7,6 +7,7 @@ import {
   findPaymentByReference,
   updatePaymentStatus,
   markPaymentSuccessAndUnlock,
+  markBookingBalanceSettledInPerson,
   getOrderDetailsForEmail,
   getBookingDetailsForEmail,
   getGiftCardForEmail
@@ -17,7 +18,8 @@ import { sendOrderConfirmation, sendAdminOrderNotification, sendGiftCardEmail } 
 const initiateSchema = z.object({
   type: z.enum(["booking", "order", "gift_card"]),
   refId: z.string().uuid(),
-  momoNumber: z.string().min(7).max(20)
+  momoNumber: z.string().min(7).max(20),
+  portion: z.enum(["half", "full"]).optional()
 });
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
@@ -25,7 +27,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 export async function initiate(req, res) {
   const body = initiateSchema.parse(req.body);
-  const amount = await findPaymentAmount(body.type, body.refId, req.user.id);
+  const amount = await findPaymentAmount(body.type, body.refId, req.user.id, body.portion);
   if (amount === null) throw notFound(`${body.type} not found`);
 
   const reference = `SALON-${crypto.randomUUID()}`;
@@ -128,4 +130,10 @@ export async function show(req, res) {
   const payment = await findPaymentByReference(req.params.reference, req.user.id);
   if (!payment) throw notFound("Payment not found");
   res.json(payment);
+}
+
+export async function settleBookingBalance(req, res) {
+  const booking = await markBookingBalanceSettledInPerson(req.params.id);
+  if (!booking) throw notFound("Booking not found");
+  res.json({ booking });
 }

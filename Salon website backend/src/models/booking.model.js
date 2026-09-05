@@ -151,11 +151,9 @@ export async function listBookingsForUser(userId) {
             b.custom_length_price as "customLengthPrice",
             b.custom_length_status as "customLengthStatus",
             b.confirmed_price as "confirmedPrice",
-            s.name as "serviceName", c.name as "categoryName",
-            exists(
-              select 1 from payments p
-              where p.payment_type = 'booking' and p.ref_id = b.id and p.status = 'success'
-            ) as "isPaid"
+            b.amount_paid as "amountPaid",
+            (b.confirmed_price is not null and b.amount_paid >= b.confirmed_price) as "isPaid",
+            s.name as "serviceName", c.name as "categoryName"
      from bookings b
      join services s on s.id = b.service_id
      join service_categories c on c.id = s.category_id
@@ -174,6 +172,7 @@ export async function listBookings({ date, categoryId }) {
             b.custom_length_price as "customLengthPrice",
             b.custom_length_status as "customLengthStatus",
             b.confirmed_price as "confirmedPrice",
+            b.amount_paid as "amountPaid",
             b.notes,
             b.extension_product_name as "extensionProductName",
             b.extension_quantity as "extensionQuantity",
