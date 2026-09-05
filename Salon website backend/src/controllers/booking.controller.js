@@ -32,7 +32,10 @@ const createBookingSchema = z.object({
   lengthLabel: z.string().optional(),
   customLengthRequest: z.string().min(2).max(300).optional(),
   notes: z.string().max(500).optional(),
-  contactEmail: z.string().email().optional()
+  contactEmail: z.string().email().optional(),
+  extensionProductId: z.string().uuid().optional(),
+  extensionProductName: z.string().max(200).optional(),
+  extensionQuantity: z.number().int().positive().optional()
 });
 
 const approveCustomLengthSchema = z.object({

@@ -474,7 +474,7 @@ export const api = {
   },
   createBooking(
     token: string,
-    body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string; customLengthRequest?: string; notes?: string; contactEmail?: string },
+    body: { serviceId: string; date: string; timeSlot: string; referenceImageUrl?: string; lengthLabel?: string; customLengthRequest?: string; notes?: string; contactEmail?: string; extensionProductId?: string; extensionProductName?: string; extensionQuantity?: number },
   ) {
     return request<{ booking: { id: string; status: string; confirmationCode: string } }>('/bookings', {
       method: 'POST',

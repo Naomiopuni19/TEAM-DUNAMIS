@@ -29,7 +29,8 @@ export function BookingPage(props) {
   const [wantsToBuyExtension, setWantsToBuyExtension] = useState(null)
   const [extensionProducts, setExtensionProducts] = useState([])
   const [extensionsLoading, setExtensionsLoading] = useState(false)
-  const [addedExtensionId, setAddedExtensionId] = useState(null)
+  const [selectedExtension, setSelectedExtension] = useState(null)
+  const [extensionQuantity, setExtensionQuantity] = useState(1)
   const [agreedToExtensionPickup, setAgreedToExtensionPickup] = useState(false)
   const [lengthOptions, setLengthOptions] = useState([])
   const [selectedLength, setSelectedLength] = useState(null)
@@ -82,7 +83,8 @@ export function BookingPage(props) {
     setHasOwnExtension(null)
     setWantsToBuyExtension(null)
     setExtensionProducts([])
-    setAddedExtensionId(null)
+    setSelectedExtension(null)
+    setExtensionQuantity(1)
     setSelectedDate('')
     setSelectedTime('')
     setAvailability(null)
@@ -95,13 +97,11 @@ export function BookingPage(props) {
     })
   }
 
-  function addExtension(product) {
-    onAdd(product)
-    setAddedExtensionId(product.id)
-    setNotes(function (current) {
-      const line = 'Purchased extensions for this appointment (' + product.name + ', GHC ' + product.price.toLocaleString() + '), to be held at the salon, not delivered. Add this to the service price when setting the final confirmed price.'
-      return current.trim() ? current.trim() + ' | ' + line : line
+  function selectExtension(product) {
+    setSelectedExtension(function (current) {
+      return current && current.id === product.id ? null : product
     })
+    setExtensionQuantity(1)
   }
 
   function isoDate(year, month, day) {
@@ -177,6 +177,9 @@ export function BookingPage(props) {
         customLengthRequest: wantsCustomLength && customLengthText.trim() ? customLengthText.trim() : undefined,
         notes: notes.trim() || undefined,
         contactEmail: contactEmail.trim() || undefined,
+        extensionProductId: selectedExtension ? selectedExtension.id : undefined,
+        extensionProductName: selectedExtension ? selectedExtension.name : undefined,
+        extensionQuantity: selectedExtension ? extensionQuantity : undefined,
       })
 
       setSubmitted(true)
@@ -408,38 +411,67 @@ export function BookingPage(props) {
                                 className="mt-0.5 h-4 w-4 accent-[#dc2d83]"
                               />
                               <span className="text-sm text-[#3e2530]">
-                                Extensions bought here are held at the salon for your appointment, they are not delivered to your address. I agree to this before adding one to my bag.
+                                Choose the extension you would like, the salon will hold it for you at your appointment, no need to pay for it separately or wait for delivery.
                               </span>
                             </label>
                           </div>
                           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {extensionProducts.map(function (product) {
-                              const added = addedExtensionId === product.id
+                              const isSelected = selectedExtension && selectedExtension.id === product.id
                               return (
-                                <div key={product.id} className="overflow-hidden rounded-2xl border border-[#ecd8e1] bg-white">
+                                <button
+                                  key={product.id}
+                                  type="button"
+                                  onClick={function () { selectExtension(product) }}
+                                  className={
+                                    'overflow-hidden rounded-2xl border text-left transition ' +
+                                    (isSelected ? 'border-[#dc2d83] ring-2 ring-[#dc2d83]/30' : 'border-[#ecd8e1] hover:border-[#dc2d83]')
+                                  }
+                                >
                                   <img src={product.image} alt="" className="h-32 w-full object-cover" />
                                   <div className="p-3">
                                     <p className="text-sm font-semibold text-[#3e2530]">{product.name}</p>
                                     <p className="mt-1 text-xs font-bold text-[#b32269]">
-                                      {'GHC ' + product.price.toLocaleString()}
+                                      {'GHC ' + product.price.toLocaleString()} each
                                     </p>
-                                    <button
-                                      type="button"
-                                      disabled={!agreedToExtensionPickup}
-                                      onClick={function () { addExtension(product) }}
-                                      className={
-                                        added
-                                          ? 'mt-2 w-full rounded-full bg-emerald-600 px-3 py-2 text-xs font-bold uppercase text-white disabled:cursor-not-allowed disabled:opacity-40'
-                                          : 'mt-2 w-full rounded-full bg-[#dc2d83] px-3 py-2 text-xs font-bold uppercase text-white disabled:cursor-not-allowed disabled:opacity-40'
-                                      }
-                                    >
-                                      {added ? 'Added to bag' : 'Add to bag'}
-                                    </button>
+                                    <p className={'mt-2 text-[10px] font-bold uppercase tracking-[0.1em] ' + (isSelected ? 'text-[#dc2d83]' : 'text-[#a08a94]')}>
+                                      {isSelected ? 'Selected' : 'Tap to select'}
+                                    </p>
                                   </div>
-                                </div>
+                                </button>
                               )
                             })}
                           </div>
+
+                          {selectedExtension && (
+                            <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-[#e6c5d3] bg-[#f7e4ec] p-4">
+                              <p className="text-sm font-semibold text-[#3e2530]">
+                                How many {selectedExtension.name} do you think you need?
+                              </p>
+                              <div className="flex items-center gap-3 rounded-full border border-[#e5cbd6] bg-white px-3 py-1.5">
+                                <button
+                                  type="button"
+                                  onClick={function () { setExtensionQuantity(Math.max(1, extensionQuantity - 1)) }}
+                                  className="text-lg font-bold text-[#604c55]"
+                                >
+                                  -
+                                </button>
+                                <span className="w-6 text-center text-sm font-bold">{extensionQuantity}</span>
+                                <button
+                                  type="button"
+                                  onClick={function () { setExtensionQuantity(extensionQuantity + 1) }}
+                                  className="text-lg font-bold text-[#604c55]"
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          <p className="mt-3 text-xs leading-5 text-[#8f707d]">
+                            Not sure exactly how many you will need? The salon will confirm and set the real total price for your service and extensions together once they review your request. If it is not quite enough on the day, more can be bought directly at the salon.
+                          </p>
+
                           <a href="#/shop?category=Extensions" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-xs font-bold uppercase tracking-[0.1em] text-[#dc2d83] underline underline-offset-4">Browse more extensions in our shop, opens in a new tab</a>
                         </div>
                       )}
