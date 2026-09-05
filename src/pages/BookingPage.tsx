@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAppData } from '../context/appData'
 import { formatDuration } from '../data/catalog'
 import { api } from '../lib/api'
@@ -54,6 +54,17 @@ export function BookingPage(props) {
   const activeService = useMemo(function () {
     return services.find(function (service) { return service.id === selectedService })
   }, [selectedService, services])
+
+  const hasHandledServiceFromHash = useRef(false)
+
+  useEffect(function () {
+    if (hasHandledServiceFromHash.current) return
+    if (!serviceFromHash || !services.length) return
+    const match = services.find(function (service) { return service.id === serviceFromHash })
+    if (!match) return
+    hasHandledServiceFromHash.current = true
+    selectService(match)
+  }, [serviceFromHash, services])
 
   useEffect(function () {
     if (wantsToBuyExtension !== true) return
