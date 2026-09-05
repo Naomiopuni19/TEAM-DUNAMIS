@@ -40,6 +40,8 @@ export type AdminBooking = {
   lengthLabel?: string
   notes?: string
   confirmedPrice?: number
+  extensionProductName?: string
+  extensionQuantity?: number
 }
 
 export type AdminOrder = {

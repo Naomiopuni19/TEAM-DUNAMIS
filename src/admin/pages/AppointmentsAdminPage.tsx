@@ -177,6 +177,11 @@ export function AppointmentsAdminPage() {
                         <span className="font-bold">Length:</span> {booking.lengthLabel}
                       </p>
                     )}
+                    {booking.extensionProductName && (
+                      <p className="text-sm font-semibold text-[#a52261]">
+                        <span className="font-bold">Extension requested:</span> {booking.extensionQuantity}x {booking.extensionProductName}
+                      </p>
+                    )}
                     {booking.notes && (
                       <p className="text-sm text-[#3e2530]">
                         <span className="font-bold">Notes:</span> {booking.notes}
