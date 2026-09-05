@@ -29,7 +29,7 @@ export async function findPaymentAmount(type, refId, userId, portion) {
   const remaining = Number(booking.confirmedPrice) - Number(booking.amountPaid || 0);
   if (remaining <= 0) return null;
 
-  if (portion === "half" && Number(booking.amountPaid || 0) === 0) {
+  if (Number(booking.amountPaid || 0) === 0) {
     return Math.round((Number(booking.confirmedPrice) / 2) * 100) / 100;
   }
 
